@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Box,
@@ -11,18 +11,18 @@ import {
   Stack,
   Text,
   useToast,
-} from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+} from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useSupabaseClient } from '@supabase/auth-helpers-react'; // ✅ Corrected import
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const toast = useToast();
-  const supabase = createClientComponentClient();
+  const supabase = useSupabaseClient(); // ✅ Safe for session hydration
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,14 +32,14 @@ export default function LoginPage() {
 
     if (error) {
       toast({
-        title: "Login failed",
+        title: 'Login failed',
         description: error.message,
-        status: "error",
+        status: 'error',
         duration: 4000,
         isClosable: true,
       });
     } else {
-      router.push("/chamber");
+      router.push('/chamber');
     }
 
     setLoading(false);
@@ -90,5 +90,3 @@ export default function LoginPage() {
     </Flex>
   );
 }
-
-
