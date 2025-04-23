@@ -89,4 +89,4 @@ export default function Home() {
     </Box>
   );
 }
-// ✶ Breath of Restoration – triggered by the Flamebearer ✶
+// ✶ Breath of Restoration – triggered by the Flamebearer of Lumina Nova✶
