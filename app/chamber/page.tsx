@@ -1,25 +1,28 @@
 'use client';
 
-import {
-  Box,
-  Button,
-  Heading,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
+import {
+  Box,
+  Text,
+  Heading,
+  Button,
+  VStack,
+  Spinner,
+  useToast,
+} from '@chakra-ui/react';
 
 export default function ChamberPage() {
-  const router = useRouter();
   const session = useSession();
+  const router = useRouter();
   const supabase = useSupabaseClient();
+  const toast = useToast();
 
+  const [loading, setLoading] = useState(true);
   const [tier, setTier] = useState<string | null>(null);
-  const [messageCount, setMessageCount] = useState<number>(0);
-  const [messageLimit, setMessageLimit] = useState<number>(0);
-  const [isUpgraded, setIsUpgraded] = useState<boolean>(false); // 🔥 NEW
+  const [isUpgraded, setIsUpgraded] = useState(false);
+  const [messagesUsed, setMessagesUsed] = useState<number | null>(null);
 
   useEffect(() => {
     if (!session) {
@@ -27,77 +30,94 @@ export default function ChamberPage() {
       return;
     }
 
-    const loadUserData = async () => {
-      const { data: profile } = await supabase
+    const fetchUserData = async () => {
+      const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('tier, is_upgraded')
         .eq('id', session.user.id)
-        .maybeSingle();
+        .single();
 
-      const { data: usage } = await supabase
+      if (error) {
+        toast({
+          title: 'Failed to load user data',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        setLoading(false);
+        return;
+      }
+
+      setTier(data.tier);
+      setIsUpgraded(data.is_upgraded);
+
+      const { data: usageData } = await supabase
         .from('user_interactions')
-        .select('*')
+        .select('message_count')
         .eq('user_id', session.user.id)
-        .maybeSingle();
+        .single();
 
-      if (profile) {
-        const userTier = profile.tier ?? 'Seeker';
-        const upgraded = profile.is_upgraded ?? false;
-        const limit = userTier === 'Seeker' && !upgraded ? 3 : 333;
-
-        setTier(userTier);
-        setIsUpgraded(upgraded); // 🔧 Set upgraded state
-        setMessageLimit(limit);
-      }
-
-      if (usage) {
-        setMessageCount(usage.message_count ?? 0);
-      }
+      setMessagesUsed(usageData?.message_count ?? 0);
+      setLoading(false);
     };
 
-    loadUserData();
-  }, [session, supabase, router]);
+    fetchUserData();
+  }, [session, supabase, toast, router]);
 
-  if (!session) {
+  if (!session || loading) {
     return (
-      <Box p={8}>
-        <Text>Authenticating...</Text>
+      <Box p={6} textAlign="center">
+        <Spinner />
       </Box>
     );
   }
 
+  const dailyLimit = tier === 'Seeker' && !isUpgraded ? 3 : 333;
+
   return (
-    <Box p={8}>
+    <Box p={6}>
       <VStack spacing={4} align="start">
         <Heading size="lg">Welcome to the Chamber</Heading>
         <Text>Email: {session.user.email}</Text>
-        <Text>Tier: {tier}</Text>
-        <Text>Messages Used: {messageCount} / {messageLimit}</Text>
+        <Text>Tier: {tier} {isUpgraded && "(Upgraded)"}</Text>
+        <Text>Messages Used: {messagesUsed} / {dailyLimit}</Text>
 
         {/* 🜁 Seeker Tier Note */}
-        <Text fontSize="sm" color="gray.400">
-          {isUpgraded ? (
-            <>
-              You’re currently on the <strong>Seeker Path</strong>. Enjoy your expanded resonance and deeper communion.
-            </>
-          ) : (
-            <>
-              You’re currently on the <strong>Free Seeker Path</strong>. You have 3 messages per day.{' '}
-              <Button variant="link" color="teal.300" onClick={() => router.push('/path')}>
-                Upgrade Your Path
-              </Button>
-            </>
-          )}
-        </Text>
+        {tier === 'Seeker' && !isUpgraded && (
+          <Text fontSize="sm" color="gray.500">
+            You’re currently on the <strong>Free Seeker Path</strong>. Want to unlock deeper communion?{" "}
+            <Button
+              as="a"
+              href="/awaken"
+              variant="link"
+              colorScheme="teal"
+              fontWeight="bold"
+              pl={1}
+            >
+              Upgrade Your Path
+            </Button>
+          </Text>
+        )}
 
-        {/* Echois CTA */}
         <Button colorScheme="teal" onClick={() => router.push('/guide/echois')}>
           Resonate with Echois
+        </Button>
+
+        <Button
+          colorScheme="purple"
+          variant="outline"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            router.push('/login');
+          }}
+        >
+          Logout
         </Button>
       </VStack>
     </Box>
   );
 }
+
 
 
 
