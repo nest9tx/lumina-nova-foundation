@@ -1,118 +1,93 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/utils/supabase/client';
 import {
+  Box,
   Button,
-  Container,
+  Flex,
+  FormControl,
+  FormLabel,
   Heading,
   Input,
+  Stack,
   Text,
-  VStack,
-} from '@chakra-ui/react';
+  useToast,
+} from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isSignup, setIsSignup] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const toast = useToast();
+  const supabase = createClientComponentClient();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setMessage(null);
+    setLoading(true);
 
-    try {
-      if (isSignup) {
-        const result = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: 'https://www.luminanova.org/chamber',
-          },
-        });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-        console.log('🔍 Signup result:', result);
-
-        if (result.error) throw result.error;
-
-        setMessage('✅ Success! Check your email to confirm your signup.');
-      } else {
-        const result = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        console.log('🔍 Login result:', result);
-
-        if (result.error) throw result.error;
-
-        router.push('/chamber');
-      }
-    } catch (err) {
-      let errorMessage = 'An unknown error occurred.';
-      let errorStatus: number | undefined;
-      let errorDetails: string | undefined;
-
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      } else if (typeof err === 'object' && err !== null) {
-        errorMessage = (err as { message?: string }).message ?? errorMessage;
-        errorStatus = (err as { status?: number }).status;
-        errorDetails = (err as { error_description?: string; msg?: string }).error_description ?? (err as { msg?: string }).msg;
-      }
-
-      console.error('❌ Auth error full object:', err);
-      console.error('❌ Auth error message:', errorMessage);
-      if (errorStatus) console.error('❌ Auth error status:', errorStatus);
-      if (errorDetails) console.error('❌ Auth error details:', errorDetails);
-
-      setError(errorMessage);
+    if (error) {
+      toast({
+        title: "Login failed",
+        description: error.message,
+        status: "error",
+        duration: 4000,
+        isClosable: true,
+      });
+    } else {
+      router.push("/chamber");
     }
+
+    setLoading(false);
   };
 
   return (
-    <Container maxW="md" py={10}>
-      <VStack spacing={4} align="stretch">
-        <Heading>{isSignup ? 'New Seeker' : 'Login'}</Heading>
-
-        {error && <Text color="red.500">{error}</Text>}
-        {message && <Text color="green.500">{message}</Text>}
-
-        <form onSubmit={handleSubmit}>
-          <VStack spacing={4}>
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              isRequired
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              isRequired
-            />
-            <Button type="submit" colorScheme="purple" w="full">
-              {isSignup ? 'Sign Up' : 'Login'}
-            </Button>
+    <Flex align="center" justify="center" minH="100vh" bg="gray.900" color="white">
+      <Box p={8} maxW="md" borderWidth={1} borderRadius="xl" boxShadow="xl" bg="gray.800">
+        <Heading mb={6} textAlign="center">
+          Login to Lumina Nova
+        </Heading>
+        <form onSubmit={handleLogin}>
+          <Stack spacing={4}>
+            <FormControl>
+              <FormLabel>Email</FormLabel>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@lumina.org"
+                isRequired
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Password</FormLabel>
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                isRequired
+              />
+            </FormControl>
             <Button
-              variant="link"
-              onClick={() => setIsSignup(!isSignup)}
-              color="purple.500"
+              type="submit"
+              colorScheme="purple"
+              isLoading={loading}
+              loadingText="Logging in"
             >
-              {isSignup
-                ? 'Already have an account? Login'
-                : 'New here? Sign up'}
+              Login
             </Button>
-          </VStack>
+          </Stack>
         </form>
-      </VStack>
-    </Container>
+        <Text mt={4} fontSize="sm" textAlign="center">
+          New here? <a href="/signup">Sign up</a>
+        </Text>
+      </Box>
+    </Flex>
   );
 }
+

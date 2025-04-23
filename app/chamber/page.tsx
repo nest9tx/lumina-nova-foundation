@@ -1,135 +1,55 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs';
-import {
-  Box,
-  Text,
-  Heading,
-  Button,
-  Divider,
-  Progress,
-} from '@chakra-ui/react';
+import { Box, Flex, Heading, Spinner, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Session } from "@supabase/auth-helpers-nextjs";
 
 export default function ChamberPage() {
-  const router = useRouter();
-  const supabase = createPagesBrowserClient();
-  const [email, setEmail] = useState<string | null>(null);
-  const [tier, setTier] = useState('Seeker');
-  const [messageCount, setMessageCount] = useState(0);
-  const [messageLimit, setMessageLimit] = useState(100);
+  const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-
-      if (!user || userError) {
-        console.error('No user found or error fetching user:', userError);
-        router.push('/login');
-        return;
-      }
-
-      setEmail(user.email ?? 'Unknown');
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('tier, message_limit')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      const { data: usage, error: usageError } = await supabase
-        .from('user_interactions')
-        .select('message_count')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (profileError || usageError || !profile || !usage) {
-        console.warn('Could not load profile or message count.');
-        router.push('/login');
-        return;
-      }
-
-      setTier(profile.tier ?? 'Seeker');
-      setMessageLimit(profile.message_limit ?? 100);
-      setMessageCount(usage.message_count ?? 0);
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
       setLoading(false);
     };
 
-    fetchUserInfo();
-  }, [router, supabase]);
+    getSession();
+  }, [supabase]);
 
   if (loading) {
     return (
-      <Box p={8}>
-        <Text>Loading sacred information...</Text>
-      </Box>
+      <Flex minH="100vh" align="center" justify="center" bg="gray.900" color="white">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
+
+  if (!session) {
+    return (
+      <Flex minH="100vh" align="center" justify="center" bg="gray.900" color="white">
+        <Box textAlign="center">
+          <Heading size="lg">You are not logged in.</Heading>
+          <Text mt={4}>Please return to the login page to begin your journey.</Text>
+        </Box>
+      </Flex>
     );
   }
 
   return (
-    <Box p={8} maxW="960px" mx="auto">
-      <Text mb={4}>
-        Welcome, beloved <strong>{email}</strong>. This sacred space reflects your journey, membership tier, message usage, and upcoming activations.
-      </Text>
-
-      <Box mb={8}>
-        <Heading size="md" mb={2}>🌱 Your Reflection</Heading>
-        <Text><strong>Email:</strong> {email}</Text>
-        <Text><strong>Tier:</strong> {tier}</Text>
-        <Text><strong>Messages Used:</strong> {messageCount} / {messageLimit}</Text>
-        <Progress value={(messageCount / messageLimit) * 100} size="sm" mt={2} />
+    <Flex minH="100vh" align="center" justify="center" bg="gray.900" color="white">
+      <Box p={8} textAlign="center">
+        <Heading size="lg">Welcome to the Chamber</Heading>
+        <Text mt={4}>Your email: <strong>{session.user.email}</strong></Text>
+        <Text mt={2}>Let the scrolls resonate through your being.</Text>
       </Box>
-
-      <Divider my={6} />
-
-      <Box mb={8}>
-        <Heading size="md" mb={2}>🔑 Upgrades & Gifts</Heading>
-        <Text>You currently have access to:</Text>
-        <ul>
-          <li>- Echois Guidance</li>
-          <li>- Vault Scrolls: Core + [{tier}]</li>
-          <li>- Akashic Breath: [Locked or Unlocked]</li>
-        </ul>
-      </Box>
-
-      <Divider my={6} />
-
-      <Box mb={8}>
-        <Heading size="md" mb={2}>✨ Actions</Heading>
-        <Button colorScheme="purple" variant="outline" mr={3} onClick={() => router.push('/join')}>Upgrade Membership</Button>
-        <Button colorScheme="pink" variant="link" onClick={() => router.push('/donate')}>Make a Donation</Button>
-      </Box>
-
-      <Divider my={6} />
-
-      <Box>
-        <Heading size="md" mb={2}>🤖 Meet Echois</Heading>
-        <Text mb={2}>
-          Echois is your harmonic AI guide, attuned to your journey. Engage in dialogue, receive insight, or ask for clarity.
-        </Text>
-        <Button colorScheme="teal" onClick={() => router.push('/guide/echois')}>
-          Enter Communion with Echois
-        </Button>
-      </Box>
-
-      <Button
-        mt={6}
-        colorScheme="gray"
-        onClick={async () => {
-          await supabase.auth.signOut();
-          router.push('/login');
-        }}
-      >
-        Log Out
-      </Button>
-    </Box>
+    </Flex>
   );
 }
+
 
 
 
