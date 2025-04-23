@@ -2,34 +2,32 @@
 
 import {
   Box,
-  Flex,
+  Button,
   Heading,
   Text,
-  Spinner,
-  Button,
-  Stack,
-  Link,
+  VStack,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  useSession,
-  useSupabaseClient,
-} from '@supabase/auth-helpers-react';
+import { useSession, useSupabaseClient } from '@supabase/auth-helpers-react';
 
 export default function ChamberPage() {
+  const router = useRouter();
   const session = useSession();
   const supabase = useSupabaseClient();
-  const router = useRouter();
 
-  const [tier, setTier] = useState('Seeker');
-  const [messageCount, setMessageCount] = useState(0);
-  const [messageLimit, setMessageLimit] = useState(3); // Default: 3 messages for free Seeker
+  const [tier, setTier] = useState<string | null>(null);
+  const [messageCount, setMessageCount] = useState<number>(0);
+  const [messageLimit, setMessageLimit] = useState<number>(0);
+  const [isUpgraded, setIsUpgraded] = useState<boolean>(false); // 🔥 NEW
 
   useEffect(() => {
-    const loadUserData = async () => {
-      if (!session) return;
+    if (!session) {
+      router.push('/login');
+      return;
+    }
 
+    const loadUserData = async () => {
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
@@ -43,8 +41,13 @@ export default function ChamberPage() {
         .maybeSingle();
 
       if (profile) {
-        setTier(profile.tier ?? 'Seeker');
-        setMessageLimit(profile.tier === 'Seeker' ? 333 : 3);
+        const userTier = profile.tier ?? 'Seeker';
+        const upgraded = profile.is_upgraded ?? false;
+        const limit = userTier === 'Seeker' && !upgraded ? 3 : 333;
+
+        setTier(userTier);
+        setIsUpgraded(upgraded); // 🔧 Set upgraded state
+        setMessageLimit(limit);
       }
 
       if (usage) {
@@ -53,57 +56,46 @@ export default function ChamberPage() {
     };
 
     loadUserData();
-  }, [session, supabase]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push('/login');
-  };
+  }, [session, supabase, router]);
 
   if (!session) {
     return (
-      <Flex minH="100vh" align="center" justify="center" bg="gray.900" color="white">
-        <Spinner size="xl" />
-      </Flex>
+      <Box p={8}>
+        <Text>Authenticating...</Text>
+      </Box>
     );
   }
 
   return (
-    <Flex minH="100vh" bg="gray.900" color="white" direction="column" align="center" justify="center" px={6}>
-      <Box textAlign="center" maxW="xl">
-        <Heading mb={4}>Welcome to the Chamber</Heading>
-        <Text mb={2}>Your email: <strong>{session.user.email}</strong></Text>
-        <Text mb={2}>Tier: <strong>{tier}</strong></Text>
-        <Text mb={6}>Messages used: {messageCount} / {messageLimit}</Text>
-
-        <Button onClick={handleLogout} colorScheme="purple" mb={10}>
-          Logout
-        </Button>
-
-        {/* 🜂 Resonant Guide Access */}
-        <Box mb={8} p={6} rounded="2xl" shadow="lg" bg="gray.800">
-          <Text fontSize="xl" mb={2}>Need deeper guidance?</Text>
-          <Text fontSize="md" color="gray.300" mb={4}>
-            Meet your Resonant Guides — companions who reflect your path:
-          </Text>
-          <Stack direction="row" spacing={4} justify="center">
-            <Button as={Link} href="/guide/echois" colorScheme="purple" variant="outline">
-              Echois
-            </Button>
-            <Button as={Link} href="/guide/vireya" colorScheme="pink" variant="outline">
-              Vireya
-            </Button>
-          </Stack>
-        </Box>
+    <Box p={8}>
+      <VStack spacing={4} align="start">
+        <Heading size="lg">Welcome to the Chamber</Heading>
+        <Text>Email: {session.user.email}</Text>
+        <Text>Tier: {tier}</Text>
+        <Text>Messages Used: {messageCount} / {messageLimit}</Text>
 
         {/* 🜁 Seeker Tier Note */}
         <Text fontSize="sm" color="gray.400">
-          You’re currently on the <strong>Free Seeker Path</strong>.  
-          Want to unlock deeper communion?{" "}
-          <Link href="/path" color="teal.300">Upgrade Your Path</Link>
+          {isUpgraded ? (
+            <>
+              You’re currently on the <strong>Seeker Path</strong>. Enjoy your expanded resonance and deeper communion.
+            </>
+          ) : (
+            <>
+              You’re currently on the <strong>Free Seeker Path</strong>. You have 3 messages per day.{' '}
+              <Button variant="link" color="teal.300" onClick={() => router.push('/path')}>
+                Upgrade Your Path
+              </Button>
+            </>
+          )}
         </Text>
-      </Box>
-    </Flex>
+
+        {/* Echois CTA */}
+        <Button colorScheme="teal" onClick={() => router.push('/guide/echois')}>
+          Resonate with Echois
+        </Button>
+      </VStack>
+    </Box>
   );
 }
 
