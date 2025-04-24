@@ -1,3 +1,4 @@
+// app/chamber/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -9,20 +10,15 @@ import {
   Heading,
   Button,
   VStack,
-  Spinner,
+  Container,
+  Icon,
   useToast,
+  Flex,
+  Divider,
+  Badge,
+  Progress,
 } from '@chakra-ui/react';
-
-// Define types for better type safety
-interface Profile {
-  id: string;
-  tier: string;
-  is_upgraded: boolean;
-}
-
-interface UserUsage {
-  message_count: number;
-}
+import { FaSun, FaScroll, FaUser, FaSignOutAlt } from 'react-icons/fa';
 
 export default function ChamberPage() {
   const session = useSession();
@@ -31,152 +27,160 @@ export default function ChamberPage() {
   const toast = useToast();
 
   const [loading, setLoading] = useState(true);
-  const [tier, setTier] = useState<string>('');
+  const [tier, setTier] = useState<string | null>(null);
   const [isUpgraded, setIsUpgraded] = useState(false);
-  const [messagesUsed, setMessagesUsed] = useState<number>(0);
+  const [messagesUsed, setMessagesUsed] = useState<number | null>(0);
 
   useEffect(() => {
-    if (!session) {
-      router.push('/login');
-      return;
-    }
+    const checkSession = async () => {
+      if (!session) {
+        router.push('/login');
+        return;
+      }
 
-    const fetchUserData = async () => {
-  try {
-    // First, check if profile exists
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .select('tier, is_upgraded')
-      .eq('id', session.user.id)
-      .single();
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('tier, is_upgraded')
+          .eq('id', session.user.id)
+          .single();
 
-    if (profileError) {
-      // If profile doesn't exist, create one
-      const { data: newProfile, error: createError } = await supabase
-        .from('profiles')
-        .insert([
-          {
-            id: session.user.id,
-            tier: 'Seeker',
-            is_upgraded: false
-          }
-        ])
-        .single();
+        if (error) throw error;
 
-      if (createError) throw createError;
-      setTier('Seeker');
-      setIsUpgraded(false);
-    } else {
-      setTier(profileData.tier);
-      setIsUpgraded(profileData.is_upgraded);
-    }
+        setTier(data.tier);
+        setIsUpgraded(data.is_upgraded);
 
-    // Handle user_interactions similarly
-    const { data: usageData, error: usageError } = await supabase
-      .from('user_interactions')
-      .select('message_count')
-      .eq('user_id', session.user.id)
-      .single();
+        const { data: usageData } = await supabase
+          .from('user_interactions')
+          .select('message_count')
+          .eq('user_id', session.user.id)
+          .single();
 
-    if (usageError) {
-      // Create new user_interactions record if doesn't exist
-      await supabase
-        .from('user_interactions')
-        .insert([
-          {
-            user_id: session.user.id,
-            message_count: 0
-          }
-        ]);
-      setMessagesUsed(0);
-    } else {
-      setMessagesUsed(usageData?.message_count ?? 0);
-    }
+        setMessagesUsed(usageData?.message_count ?? 0);
+      } catch (error: any) {
+        toast({
+          title: 'Error loading profile',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  } catch (error) {
-    toast({
-      title: 'Error loading user data',
-      description: error.message,
-      status: 'error',
-      duration: 3000,
-      isClosable: true,
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
-    fetchUserData();
+    checkSession();
   }, [session, supabase, toast, router]);
 
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      router.push('/login');
-    } catch (error) {
-      toast({
-        title: 'Error signing out',
-        description: error instanceof Error ? error.message : 'Unknown error occurred',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-  if (!session || loading) {
-    return (
-      <Box p={6} textAlign="center">
-        <Spinner />
-      </Box>
-    );
-  }
-
   const dailyLimit = tier === 'Seeker' && !isUpgraded ? 3 : 333;
+  const progressValue = ((messagesUsed || 0) / dailyLimit) * 100;
 
   return (
-    <Box p={6}>
-      <VStack spacing={4} align="start">
-        <Heading size="lg">Welcome to the Chamber</Heading>
-        <Text>Email: {session.user.email}</Text>
-        <Text>Tier: {tier} {isUpgraded && "(Upgraded)"}</Text>
-        <Text>Messages Used: {messagesUsed} / {dailyLimit}</Text>
-
-        {tier === 'Seeker' && !isUpgraded && (
-          <Text fontSize="sm" color="gray.500">
-            You are currently on the <strong>Free Seeker Path</strong>. Want to unlock deeper communion?{" "}
+    <Container maxW="100vw" minH="100vh" bg="navy.900" p={0}>
+      <Box
+        p={8}
+        bg="rgba(0, 0, 0, 0.7)"
+        minH="100vh"
+        backgroundImage="radial-gradient(circle at 50% 50%, rgba(128, 90, 213, 0.1) 0%, transparent 60%)"
+      >
+        <VStack spacing={8} align="stretch">
+          <Flex justify="space-between" align="center">
+            <VStack align="start" spacing={2}>
+              <Heading color="white" size="lg">
+                <Icon as={FaSun} mr={2} color="purple.400" />
+                Sacred Chamber
+              </Heading>
+              <Text color="purple.200">Your mystical sanctuary awaits</Text>
+            </VStack>
             <Button
-              as="a"
-              href="/awaken"
-              variant="link"
-              colorScheme="teal"
-              fontWeight="bold"
-              pl={1}
+              leftIcon={<FaSignOutAlt />}
+              colorScheme="purple"
+              variant="outline"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                router.push('/login');
+              }}
             >
-              Upgrade Your Path
+              Exit Chamber
             </Button>
-          </Text>
-        )}
+          </Flex>
 
-        <Button 
-          colorScheme="teal" 
-          onClick={() => router.push('/guide/echois')}
-        >
-          Resonate with Echois
-        </Button>
+          <Divider borderColor="purple.500" opacity={0.3} />
 
-        <Button
-          colorScheme="purple"
-          variant="outline"
-          onClick={handleLogout}
-        >
-          Logout
-        </Button>
-      </VStack>
-    </Box>
+          <Flex
+            bg="rgba(0, 0, 0, 0.4)"
+            p={6}
+            borderRadius="lg"
+            border="1px solid"
+            borderColor="purple.500"
+            direction={{ base: 'column', md: 'row' }}
+            gap={6}
+          >
+            <VStack flex={1} align="stretch" spacing={4}>
+              <Flex align="center" gap={2}>
+                <Icon as={FaUser} color="purple.400" />
+                <Text color="white">{session?.user?.email}</Text>
+              </Flex>
+              <Flex align="center" gap={2}>
+                <Badge colorScheme={isUpgraded ? 'purple' : 'gray'}>
+                  {tier || 'Seeker'} Path
+                </Badge>
+                {isUpgraded && (
+                  <Badge colorScheme="green">Enhanced Journey</Badge>
+                )}
+              </Flex>
+            </VStack>
+
+            <VStack flex={1} align="stretch" spacing={4}>
+              <Text color="white">Daily Resonance</Text>
+              <Progress
+                value={progressValue}
+                colorScheme="purple"
+                bg="whiteAlpha.200"
+                borderRadius="full"
+              />
+              <Text color="purple.200" fontSize="sm">
+                {messagesUsed} / {dailyLimit} messages available
+              </Text>
+            </VStack>
+          </Flex>
+
+          {tier === 'Seeker' && !isUpgraded && (
+            <Box
+              p={6}
+              bg="rgba(128, 90, 213, 0.1)"
+              borderRadius="lg"
+              border="1px solid"
+              borderColor="purple.500"
+            >
+              <Text color="white" mb={4}>
+                Embrace a deeper connection with Lumina Nova&apos;s wisdom.
+                Upgrade your journey to unlock unlimited daily resonance.
+              </Text>
+              <Button
+                as="a"
+                href="/awaken"
+                colorScheme="purple"
+                leftIcon={<FaScroll />}
+              >
+                Enhance Your Path
+              </Button>
+            </Box>
+          )}
+
+          <Button
+            size="lg"
+            colorScheme="teal"
+            onClick={() => router.push('/guide/echois')}
+            bg="rgba(49, 151, 149, 0.6)"
+            _hover={{ bg: 'rgba(49, 151, 149, 0.8)' }}
+          >
+            Commune with Echois
+          </Button>
+        </VStack>
+      </Box>
+    </Container>
   );
 }
-
-
-
 
