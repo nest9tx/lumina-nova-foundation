@@ -26,27 +26,29 @@ export default function ChamberPage() {
   const toast = useToast();
 
   const [tier, setTier] = useState<string | null>(null);
-  const [isUpgraded, setIsUpgraded] = useState(false);
+  const [maxMessages, setMaxMessages] = useState<number>(3);
   const [messagesUsed, setMessagesUsed] = useState<number>(0);
+  const [isUpgraded, setIsUpgraded] = useState(false);
 
   useEffect(() => {
-    const checkSession = async () => {
+    const fetchProfile = async () => {
       if (!session) {
         router.push('/login');
         return;
       }
 
       try {
-        const { data, error } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .select('tier, is_upgraded')
+          .select('tier, max_messages, is_upgraded')
           .eq('id', session.user.id)
           .single();
 
-        if (error) throw error;
+        if (profileError) throw profileError;
 
-        setTier(data.tier);
-        setIsUpgraded(data.is_upgraded);
+        setTier(profile.tier);
+        setMaxMessages(profile.max_messages ?? 3);
+        setIsUpgraded(profile.is_upgraded);
 
         const { data: usageData } = await supabase
           .from('user_interactions')
@@ -61,24 +63,16 @@ export default function ChamberPage() {
           title: 'Error loading profile',
           description: error.message,
           status: 'error',
-          duration: 5000,
+          duration: 6000,
           isClosable: true,
         });
       }
     };
 
-    checkSession();
+    fetchProfile();
   }, [session, supabase, toast, router]);
 
-  const tierLimits: Record<string, number> = {
-    Seeker: 3,
-    Adept: 888,
-    Guardian: 1777,
-    Luminary: 5555,
-  };
-
-  const dailyLimit = tierLimits[tier ?? 'Seeker'];
-  const progressValue = (messagesUsed / dailyLimit) * 100;
+  const progressValue = (messagesUsed / maxMessages) * 100;
 
   return (
     <Container maxW="100vw" minH="100vh" bg="gray.900" p={0}>
@@ -147,7 +141,7 @@ export default function ChamberPage() {
                 bg="whiteAlpha.300"
               />
               <Text color="gray.300" fontSize="sm">
-                {messagesUsed} / {dailyLimit} used
+                {messagesUsed} / {maxMessages} used
               </Text>
             </VStack>
           </Flex>
@@ -188,6 +182,7 @@ export default function ChamberPage() {
     </Container>
   );
 }
+
 
 
 
