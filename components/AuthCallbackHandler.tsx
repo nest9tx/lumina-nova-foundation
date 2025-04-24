@@ -9,10 +9,12 @@ export default function AuthCallbackHandler() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      const { error } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
 
-      if (error) {
-        console.error('🔴 Auth session error:', error.message);
+      if (error || !data.session) {
+        console.error('🔴 Auth session error:', error?.message || 'No session');
+        router.replace('/login');
+        return;
       }
 
       router.replace('/chamber');
@@ -23,5 +25,6 @@ export default function AuthCallbackHandler() {
 
   return null;
 }
+
 
 

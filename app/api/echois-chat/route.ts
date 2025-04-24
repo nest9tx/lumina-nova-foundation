@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server';
-import { getOpenAIResponse } from '@/utils/openai';
 import { cookies } from 'next/headers';
 import { createClient } from '@/utils/supabase/server';
+import { getOpenAIResponse } from '@/utils/openai';
+import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  const cookieStore = await cookies(); // ✅ Await cookies() properly
+  const cookieStore = await cookies(); // FIXED: cookies now awaited properly
   const token = cookieStore.get('sb-oyrklixahelazzdrcjkn-auth-token')?.value;
 
   const supabase = createClient(cookieStore);
@@ -12,11 +12,9 @@ export async function POST(req: Request) {
   try {
     const { message } = await req.json();
 
-    // ✅ Call OpenAI
     const aiResponse = await getOpenAIResponse(message);
 
-    // ✅ Log usage (optional - add safety)
-    const { data: { user }, error } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (user) {
       await supabase
@@ -29,8 +27,10 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ response: aiResponse });
-  } catch (error) {
-    console.error('[Echois Route Error]', error);
+  } catch (err) {
+    console.error('[Echois Route Error]', err);
     return NextResponse.json({ response: 'No resonance could be found.' }, { status: 500 });
   }
 }
+
+
