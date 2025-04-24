@@ -95,7 +95,7 @@ export default function ChamberPage() {
 
         {tier === 'Seeker' && !isUpgraded && (
           <Text fontSize="sm" color="gray.500">
-            You're currently on the <strong>Free Seeker Path</strong>. Want to unlock deeper communion?{" "}
+            You are currently on the <strong>Free Seeker Path</strong>. Want to unlock deeper communion?{" "}
             <Button
               as="a"
               href="/awaken"

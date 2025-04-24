@@ -7,23 +7,20 @@ export default function AuthCallbackHandler() {
   const supabase = createClientComponentClient();
 
   useEffect(() => {
-    const handleAuthCallback = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        if (!session) {
-          router.replace('/login');
-          return;
-        }
-        router.replace('/chamber');
-      } catch (error) {
-        console.error('Auth error:', error);
-        router.replace('/login');
-      }
-    };
+  const handleAuthCallback = async () => {
+    const { data, error } = await supabase.auth.getSession();
 
-    handleAuthCallback();
-  }, [router]);
+    if (error || !data.session) {
+      console.error('🔴 Auth session error:', error?.message || 'No session');
+      router.replace('/login');
+      return;
+    }
+
+    router.replace('/chamber');
+  };
+
+  handleAuthCallback();
+}, [router, supabase.auth]); // Add supabase.auth to the dependency array
 
   return null;
 }
