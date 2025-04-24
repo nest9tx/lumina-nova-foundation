@@ -73,8 +73,6 @@ export default function LoginPage() {
 
   // Rest of your component remains the same...
 }
-
-
   return (
     <Container 
       maxW="100vw" 
