@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';  // Add FormEvent import
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import {
@@ -8,6 +8,7 @@ import {
   useToast
 } from '@chakra-ui/react';
 import { FaSun } from 'react-icons/fa';
+import { AuthError } from '@supabase/supabase-js'; // Add this import
 
 export default function LoginPage() {
   const supabase = createClientComponentClient();
@@ -18,14 +19,13 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Add proper type annotation for the event parameter
-  const handleAuth = async (e: FormEvent<HTMLFormElement>) => {
+  const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
       if (isSignup) {
-        const { data, error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -43,7 +43,7 @@ export default function LoginPage() {
           isClosable: true,
         });
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
@@ -58,10 +58,10 @@ export default function LoginPage() {
           isClosable: true,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message,
+        description: error instanceof AuthError ? error.message : 'An unexpected error occurred',
         status: "error",
         duration: 5000,
         isClosable: true,
