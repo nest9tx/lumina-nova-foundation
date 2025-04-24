@@ -43,8 +43,13 @@ export default function LoginPage() {
           isClosable: true,
         });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-if (error) throw error;
+        const { error } = await supabase.auth.signInWithPassword({
+  email,
+  password,
+  options: {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/chamber`,
+  },
+});
 
 // Wait for Supabase session to be ready before redirecting
 let attempts = 0;
