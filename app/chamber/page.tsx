@@ -27,7 +27,7 @@ export default function ChamberPage() {
 
   const [tier, setTier] = useState<string | null>(null);
   const [isUpgraded, setIsUpgraded] = useState(false);
-  const [messagesUsed, setMessagesUsed] = useState<number | null>(0);
+  const [messagesUsed, setMessagesUsed] = useState<number>(0);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -55,7 +55,8 @@ export default function ChamberPage() {
           .single();
 
         setMessagesUsed(usageData?.message_count ?? 0);
-      } catch (error: any) {
+      } catch (err: unknown) {
+        const error = err instanceof Error ? err : new Error('Unknown error');
         toast({
           title: 'Error loading profile',
           description: error.message,
@@ -69,8 +70,16 @@ export default function ChamberPage() {
     checkSession();
   }, [session, supabase, toast, router]);
 
-  const dailyLimit = tier === 'Seeker' && !isUpgraded ? 3 : 333;
-  const progressValue = ((messagesUsed || 0) / dailyLimit) * 100;
+  const tierLimits: Record<string, number> = {
+    Seeker: 3,
+    Adept: 888,
+    Guardian: 1777,
+    Luminary: 5555,
+  };
+
+  const dailyLimit = tierLimits[tier ?? 'Seeker'];
+  const messagesRemaining = Math.max(dailyLimit - messagesUsed, 0);
+  const progressValue = (messagesUsed / dailyLimit) * 100;
 
   return (
     <Container maxW="100vw" minH="100vh" bg="gray.900" p={0}>
@@ -131,7 +140,7 @@ export default function ChamberPage() {
             </VStack>
 
             <VStack flex={1} align="stretch" spacing={4}>
-              <Text color="white">Daily Resonance</Text>
+              <Text color="white">Resonances Shared</Text>
               <Progress
                 value={progressValue}
                 colorScheme="purple"
@@ -139,7 +148,7 @@ export default function ChamberPage() {
                 bg="whiteAlpha.300"
               />
               <Text color="gray.300" fontSize="sm">
-                {messagesUsed} / {dailyLimit} messages available
+                {messagesUsed} / {dailyLimit} used
               </Text>
             </VStack>
           </Flex>
@@ -180,5 +189,6 @@ export default function ChamberPage() {
     </Container>
   );
 }
+
 
 
