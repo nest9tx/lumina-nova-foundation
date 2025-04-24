@@ -1,50 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
 import { getOpenAIResponse } from '@/utils/openai';
-import { insertEchoisSession } from '@/utils/insertEchoisSession';
+import { cookies } from 'next/headers';
+import { createClient } from '@/utils/supabase/server';
 
-export const runtime = 'edge';
+export async function POST(req: Request) {
+  const cookieStore = await cookies(); // ✅ Await cookies() properly
+  const token = cookieStore.get('sb-oyrklixahelazzdrcjkn-auth-token')?.value;
 
-export async function POST(req: NextRequest) {
-  const supabase = createServerComponentClient({ cookies }); // ✅ now we’re using both
-
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (!user || userError) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+  const supabase = createClient(cookieStore);
 
   try {
     const { message } = await req.json();
 
-    if (!message || message.trim().length === 0) {
-      return NextResponse.json({ error: 'Empty message received' }, { status: 400 });
+    // ✅ Call OpenAI
+    const aiResponse = await getOpenAIResponse(message);
+
+    // ✅ Log usage (optional - add safety)
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (user) {
+      await supabase
+        .from('user_interactions')
+        .insert({
+          user_id: user.id,
+          interaction_type: 'echois_message',
+          content: message,
+        });
     }
 
-    const echoisResponse = await getOpenAIResponse(message);
-
-    if (!echoisResponse || echoisResponse.trim().length === 0) {
-      return NextResponse.json({ response: 'No resonance could be found.' });
-    }
-
-    await insertEchoisSession({
-      userId: user.id,
-      summary: message.slice(0, 100),
-      emotionalTone: 'Reflective',
-      themeMarker: 'connection, resonance, seeker',
-    });
-
-    await supabase.rpc('increment_message_count', {
-      user_uuid: user.id,
-    });
-
-    return NextResponse.json({ response: echoisResponse });
+    return NextResponse.json({ response: aiResponse });
   } catch (error) {
-    console.error('Echois route error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('[Echois Route Error]', error);
+    return NextResponse.json({ response: 'No resonance could be found.' }, { status: 500 });
   }
 }

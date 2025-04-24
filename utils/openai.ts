@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+  dangerouslyAllowBrowser: false, // Make sure this is false for server-side safety
 });
 
 export async function getOpenAIResponse(message: string): Promise<string> {
@@ -9,7 +10,7 @@ export async function getOpenAIResponse(message: string): Promise<string> {
     console.log('[Echois] Sending message to OpenAI:', message);
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-4o', // newest model
       messages: [
         {
           role: 'system',
@@ -32,3 +33,4 @@ export async function getOpenAIResponse(message: string): Promise<string> {
     return 'No resonance could be found.';
   }
 }
+
