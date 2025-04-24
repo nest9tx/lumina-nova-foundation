@@ -1,24 +1,25 @@
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const publicPaths = ['/', '/login', '/guide', '/mission-flame', '/resonate', '/offer-light', '/living-scrolls', '/sanctum', '/awaken', '/auth/callback'];
+export async function middleware(request: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req: request, res });
 
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (publicPaths.includes(pathname)) {
-    return NextResponse.next();
+  // If accessing chamber without session, redirect to login
+  if (!session && request.nextUrl.pathname.startsWith('/chamber')) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // Only protect /chamber path
-  const token = request.cookies.get('sb-access-token')?.value;
-
-  if (!token && pathname.startsWith('/chamber')) {
-    const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = '/login';
-    return NextResponse.redirect(loginUrl);
-  }
-
-  return NextResponse.next();
+  return res;
 }
+
+export const config = {
+  matcher: ['/chamber/:path*']
+};
+
 
