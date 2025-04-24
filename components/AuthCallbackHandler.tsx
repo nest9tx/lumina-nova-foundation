@@ -3,7 +3,7 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function AuthCallbackHandler() {
-  const router = useRouter();
+  const router = router();
   const supabase = createClientComponentClient();
 
   useEffect(() => {
