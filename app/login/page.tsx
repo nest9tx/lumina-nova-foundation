@@ -1,10 +1,17 @@
 'use client';
 
-import { useState, FormEvent } from 'react';  // Add FormEvent import
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import {
-  Box, Button, Input, Heading, Text, VStack, Container, Icon,
+  Box,
+  Button,
+  Input,
+  Heading,
+  Text,
+  VStack,
+  Container,
+  Icon,
   useToast
 } from '@chakra-ui/react';
 import { FaSun } from 'react-icons/fa';
@@ -18,8 +25,7 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Add proper type annotation for the event parameter
-  const handleAuth = async (e: FormEvent<HTMLFormElement>) => {
+  const handleAuth = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -34,6 +40,7 @@ export default function LoginPage() {
         });
 
         if (error) throw error;
+        
         router.push('/check-email');
         toast({
           title: "Journey Begun",
@@ -49,6 +56,8 @@ export default function LoginPage() {
         });
 
         if (error) throw error;
+        
+        router.refresh();
         router.push('/chamber');
         toast({
           title: "Welcome Back",
@@ -58,7 +67,7 @@ export default function LoginPage() {
           isClosable: true,
         });
       }
-    } catch (error: any) { // Add type annotation for error
+    } catch (error) {
       toast({
         title: "Error",
         description: error.message,
@@ -71,16 +80,13 @@ export default function LoginPage() {
     }
   };
 
-  // Rest of your component remains the same
-
-
   return (
     <Container 
       maxW="100vw" 
       minH="100vh" 
       bg="black" 
-      backgroundImage="linear-gradient(to bottom, rgba(0, 0, 20, 0.95), rgba(0, 0, 20, 0.98))"
       p={0}
+      backgroundImage="linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.98))"
     >
       <VStack spacing={10} justify="center" align="center" px={4} py={20}>
         <VStack spacing={4} textAlign="center" maxW="600px">
@@ -93,7 +99,7 @@ export default function LoginPage() {
 
         <Box
           p={8}
-          bg="rgba(0, 0, 20, 0.8)"
+          bg="rgba(0, 0, 0, 0.8)"
           borderRadius="lg"
           boxShadow="0 0 20px rgba(128, 90, 213, 0.2)"
           w={["90%", "400px"]}
@@ -137,8 +143,8 @@ export default function LoginPage() {
                 size="lg"
                 isLoading={isLoading}
                 loadingText="Opening Portal..."
-                _hover={{ bg: "purple.500" }}
-                _active={{ bg: "purple.600" }}
+                bg="purple.500"
+                _hover={{ bg: "purple.600" }}
               >
                 {isSignup ? 'Begin Your Journey' : 'Enter Portal'}
               </Button>
