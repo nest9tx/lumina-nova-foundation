@@ -72,7 +72,7 @@ export default function ChamberPage() {
     fetchProfile();
   }, [session, supabase, toast, router]);
 
-  const progressValue = (messagesUsed / maxMessages) * 100;
+  const progressValue = Math.min((messagesUsed / maxMessages) * 100, 100);
 
   return (
     <Container maxW="100vw" minH="100vh" bg="gray.900" p={0}>
@@ -136,7 +136,7 @@ export default function ChamberPage() {
               <Text color="white">Resonances Shared</Text>
               <Progress
                 value={progressValue}
-                colorScheme="purple"
+                colorScheme="teal"
                 borderRadius="full"
                 bg="whiteAlpha.300"
               />
@@ -182,6 +182,7 @@ export default function ChamberPage() {
     </Container>
   );
 }
+
 
 
 
