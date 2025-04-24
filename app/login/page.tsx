@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';  // Add FormEvent import
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import {
@@ -18,7 +18,8 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAuth = async (e) => {
+  // Add proper type annotation for the event parameter
+  const handleAuth = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -57,7 +58,7 @@ export default function LoginPage() {
           isClosable: true,
         });
       }
-    } catch (error) {
+    } catch (error: any) { // Add type annotation for error
       toast({
         title: "Error",
         description: error.message,
@@ -69,6 +70,9 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+
+  // Rest of your component remains the same
+
 
   return (
     <Container 
