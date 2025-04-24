@@ -42,49 +42,69 @@ export default function ChamberPage() {
     }
 
     const fetchUserData = async () => {
-      try {
-        // Fetch user profile
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('tier, is_upgraded')
-          .eq('id', session.user.id)
-          .single();
+  try {
+    // First, check if profile exists
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('tier, is_upgraded')
+      .eq('id', session.user.id)
+      .single();
 
-        if (profileError) {
-          throw new Error(profileError.message);
-        }
+    if (profileError) {
+      // If profile doesn't exist, create one
+      const { data: newProfile, error: createError } = await supabase
+        .from('profiles')
+        .insert([
+          {
+            id: session.user.id,
+            tier: 'Seeker',
+            is_upgraded: false
+          }
+        ])
+        .single();
 
-        // Type assertion for profile data
-        const profile = profileData as Profile;
-        setTier(profile.tier);
-        setIsUpgraded(profile.is_upgraded);
+      if (createError) throw createError;
+      setTier('Seeker');
+      setIsUpgraded(false);
+    } else {
+      setTier(profileData.tier);
+      setIsUpgraded(profileData.is_upgraded);
+    }
 
-        // Fetch usage data
-        const { data: usageData, error: usageError } = await supabase
-          .from('user_interactions')
-          .select('message_count')
-          .eq('user_id', session.user.id)
-          .single();
+    // Handle user_interactions similarly
+    const { data: usageData, error: usageError } = await supabase
+      .from('user_interactions')
+      .select('message_count')
+      .eq('user_id', session.user.id)
+      .single();
 
-        if (usageError) {
-          throw new Error(usageError.message);
-        }
+    if (usageError) {
+      // Create new user_interactions record if doesn't exist
+      await supabase
+        .from('user_interactions')
+        .insert([
+          {
+            user_id: session.user.id,
+            message_count: 0
+          }
+        ]);
+      setMessagesUsed(0);
+    } else {
+      setMessagesUsed(usageData?.message_count ?? 0);
+    }
 
-        // Type assertion for usage data
-        const usage = usageData as UserUsage;
-        setMessagesUsed(usage?.message_count ?? 0);
-      } catch (error) {
-        toast({
-          title: 'Error loading user data',
-          description: error instanceof Error ? error.message : 'Unknown error occurred',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+  } catch (error) {
+    toast({
+      title: 'Error loading user data',
+      description: error.message,
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchUserData();
   }, [session, supabase, toast, router]);
