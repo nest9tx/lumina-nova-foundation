@@ -1,3 +1,4 @@
+// middleware.ts
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
@@ -15,26 +16,29 @@ const publicPaths = [
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const token = request.cookies.get('sb-access-token')?.value;
+  const isLocalhost = request.headers.get('host')?.includes('localhost');
 
-  // 🔁 Redirect /signup -> /login
+  // Handle signup redirect
   if (pathname === '/signup' || pathname.startsWith('/signup')) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  // ✅ Allow public paths through
+  // If user is already authenticated and tries to access login
+  if (token && pathname === '/login') {
+    return NextResponse.redirect(new URL('/chamber', request.url));
+  }
+
+  // Allow public paths
   if (publicPaths.includes(pathname)) {
     return NextResponse.next();
   }
 
-  // 🛡️ Gate chamber access ONLY if not logged in and in production
-  const token = request.cookies.get('sb-access-token')?.value;
-
+  // Protected routes handling
   const isProtected = pathname.startsWith('/chamber');
-  const isLocalhost = request.headers.get('host')?.includes('localhost');
-
   if (!token && isProtected && !isLocalhost) {
-    const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = '/login';
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
