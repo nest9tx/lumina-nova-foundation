@@ -78,7 +78,6 @@ export default function ChamberPage() {
   };
 
   const dailyLimit = tierLimits[tier ?? 'Seeker'];
-  const messagesRemaining = Math.max(dailyLimit - messagesUsed, 0);
   const progressValue = (messagesUsed / dailyLimit) * 100;
 
   return (
