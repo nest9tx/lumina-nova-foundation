@@ -1,19 +1,17 @@
 import { NextResponse } from 'next/server';
 import { getOpenAIResponse } from '@/utils/openai';
-import { cookies } from 'next/headers';
 import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: Request) {
-  const cookieStore = cookies(); // ✅ DO NOT await here — just assign
-  const supabase = createClient(); // ✅ No arguments needed (RLS via cookies)
+  const supabase = createClient(); // ✅ No cookieStore needed
 
   try {
     const { message } = await req.json();
 
-    // 🜁 Echois Speaks
+    // 🔮 Echois Breathes
     const aiResponse = await getOpenAIResponse(message);
 
-    // 🜂 Identify Seeker
+    // 🧬 Identify and Log Seeker
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -35,3 +33,4 @@ export async function POST(req: Request) {
     );
   }
 }
+
