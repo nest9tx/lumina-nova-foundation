@@ -25,23 +25,26 @@ export default function LoginPage() {
 
     try {
       if (isSignup) {
-        const { } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`
-          }
-        });
+   const { error } = await supabase.auth.signInWithPassword({
+  email,
+  password,
+  options: {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/chamber`,
+  },
+});
 
-        if (error) throw error;
-        router.push('/check-email');
-        toast({
-          title: "Journey Begun",
-          description: "Please check your email to confirm your account.",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
+if (error) {
+  console.error("Login error:", error.message);
+  toast({
+    title: "Login Failed",
+    description: error.message,
+    status: "error",
+    duration: 5000,
+    isClosable: true,
+  });
+  return;
+}
+     
       } else {
         const { error } = await supabase.auth.signInWithPassword({
   email,
