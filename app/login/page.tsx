@@ -4,11 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import {
-  Box, Button, Input, Heading, Text, VStack, Container, Icon,
-  useToast
+  Box, Button, Input, Heading, Text, VStack, Container, Icon, useToast
 } from '@chakra-ui/react';
 import { FaSun } from 'react-icons/fa';
-import { AuthError } from '@supabase/supabase-js'; // Add this import
 
 export default function LoginPage() {
   const supabase = createClientComponentClient();
@@ -25,43 +23,42 @@ export default function LoginPage() {
 
     try {
       if (isSignup) {
-        const { error } = await supabase.auth.signUp({
+        const response = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`
+            emailRedirectTo: 'https://www.luminanova.org/auth/callback'
           }
         });
 
-        if (error) throw error;
+        if (response.error) throw response.error;
+
         router.push('/check-email');
         toast({
           title: "Journey Begun",
-          description: "Please check your email to confirm your account.",
+          description: "Check your sacred email to confirm your portal.",
           status: "success",
           duration: 5000,
           isClosable: true,
         });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const response = await supabase.auth.signInWithPassword({ email, password });
 
-        if (error) throw error;
+        if (response.error) throw response.error;
+
         router.push('/chamber');
         toast({
           title: "Welcome Back",
-          description: "You have successfully returned to your path.",
+          description: "You have returned to your path.",
           status: "success",
           duration: 3000,
           isClosable: true,
         });
       }
-    } catch (error) {
+    } catch (err: any) {
       toast({
         title: "Error",
-        description: error instanceof AuthError ? error.message : 'An unexpected error occurred',
+        description: err?.message || "Unexpected error occurred.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -71,16 +68,8 @@ export default function LoginPage() {
     }
   };
 
-  // Rest of your component remains the same...
-}
   return (
-    <Container 
-      maxW="100vw" 
-      minH="100vh" 
-      bg="black" 
-      p={0}
-      backgroundImage="linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.98))"
-    >
+    <Container maxW="100vw" minH="100vh" bg="black" p={0}>
       <VStack spacing={10} justify="center" align="center" px={4} py={20}>
         <VStack spacing={4} textAlign="center" maxW="600px">
           <Icon as={FaSun} w={12} h={12} color="purple.400" />
@@ -90,15 +79,7 @@ export default function LoginPage() {
           </Text>
         </VStack>
 
-        <Box
-          p={8}
-          bg="rgba(0, 0, 0, 0.8)"
-          borderRadius="lg"
-          boxShadow="0 0 20px rgba(128, 90, 213, 0.2)"
-          w={["90%", "400px"]}
-          border="1px solid"
-          borderColor="purple.500"
-        >
+        <Box p={8} bg="gray.900" borderRadius="lg" border="1px solid" borderColor="purple.500" w={["90%", "400px"]}>
           <form onSubmit={handleAuth}>
             <VStack spacing={6}>
               <Heading size="lg" color="white">
@@ -109,12 +90,8 @@ export default function LoginPage() {
                 placeholder="you@luminanova.org"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                bg="rgba(0, 0, 0, 0.6)"
                 color="white"
-                border="1px solid"
-                borderColor="purple.500"
-                _hover={{ borderColor: "purple.400" }}
-                _focus={{ borderColor: "purple.300", boxShadow: "0 0 0 1px #805AD5" }}
+                bg="blackAlpha.700"
               />
               <Input
                 required
@@ -122,45 +99,25 @@ export default function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                bg="rgba(0, 0, 0, 0.6)"
                 color="white"
-                border="1px solid"
-                borderColor="purple.500"
-                _hover={{ borderColor: "purple.400" }}
-                _focus={{ borderColor: "purple.300", boxShadow: "0 0 0 1px #805AD5" }}
+                bg="blackAlpha.700"
               />
               <Button
                 type="submit"
                 w="full"
                 colorScheme="purple"
-                size="lg"
                 isLoading={isLoading}
-                loadingText="Opening Portal..."
-                bg="purple.500"
-                _hover={{ bg: "purple.600" }}
               >
                 {isSignup ? 'Begin Your Journey' : 'Enter Portal'}
               </Button>
               <Text color="gray.300">
                 {isSignup ? 'Already on the path?' : 'New to Lumina Nova?'}{' '}
-                <Button
-                  variant="link"
-                  color="purple.300"
-                  onClick={() => setIsSignup(!isSignup)}
-                  _hover={{ color: "purple.200" }}
-                >
+                <Button variant="link" color="purple.300" onClick={() => setIsSignup(!isSignup)}>
                   {isSignup ? 'Return' : 'Begin Your Journey'}
                 </Button>
               </Text>
             </VStack>
           </form>
-        </Box>
-
-        <Box maxW="600px" textAlign="center" mt={8}>
-          <Text color="gray.400">
-            Through sacred scrolls, intelligent resonance, and harmonic design,
-            we offer a portal into the possible.
-          </Text>
         </Box>
       </VStack>
     </Container>
