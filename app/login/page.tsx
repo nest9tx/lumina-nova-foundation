@@ -1,204 +1,124 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import {
-  Box, Button, Input, Heading, Text, VStack, Container, Icon,
-  useToast
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormLabel,
+  Heading,
+  Input,
+  Stack,
+  Text,
+  useToast,
 } from '@chakra-ui/react';
-import { FaSun } from 'react-icons/fa';
-import { AuthError } from '@supabase/supabase-js'; // Add this import
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function LoginPage() {
-  const supabase = createClientComponentClient();
-  const router = useRouter();
-  const toast = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignup, setIsSignup] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const toast = useToast();
+  const supabase = createClientComponentClient();
 
-  const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-    options: {
-      redirectTo: `${window.location.origin}/auth/callback`, // or use process.env if preferred
-    },
-  });
+    if (isSignup) {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
 
-  if (error) {
-    console.error("Login error:", error.message);
-    toast({
-      title: "Login Failed",
-      description: error.message,
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  } else {
-    toast({
-      title: "Success",
-      description: "Check your email for a login link or you're being redirected.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
-  }
-
-  setLoading(false);
-};
-     
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-  email,
-  password,
-  options: {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/chamber`,
-  },
-});
-
-// Wait for Supabase session to be ready before redirecting
-let attempts = 0;
-let sessionConfirmed = false;
-
-while (attempts < 10 && !sessionConfirmed) {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
-    sessionConfirmed = true;
-    break;
-  }
-  await new Promise((resolve) => setTimeout(resolve, 200)); // wait 200ms
-  attempts++;
-}
-
-if (sessionConfirmed) {
-  router.replace('/chamber');
-} else {
-  throw new Error("Session not ready. Please try logging in again.");
-}
-
+      if (error) {
         toast({
-          title: "Welcome Back",
-          description: "You have successfully returned to your path.",
-          status: "success",
-          duration: 3000,
+          title: 'Signup Failed',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Signup Successful',
+          description: 'Check your email to confirm and complete registration.',
+          status: 'success',
+          duration: 5000,
           isClosable: true,
         });
       }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error instanceof AuthError ? error.message : 'An unexpected error occurred',
-        status: "error",
-        duration: 5000,
-        isClosable: true,
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-    } finally {
-      setIsLoading(false);
+
+      if (error) {
+        toast({
+          title: 'Login Failed',
+          description: error.message,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        router.push('/chamber');
+      }
     }
+
+    setLoading(false);
   };
 
   return (
-    <Container 
-      maxW="100vw" 
-      minH="100vh" 
-      bg="black" 
-      p={0}
-      backgroundImage="linear-gradient(to bottom, rgba(0,0,0,0.95), rgba(0,0,0,0.98))"
-    >
-      <VStack spacing={10} justify="center" align="center" px={4} py={20}>
-        <VStack spacing={4} textAlign="center" maxW="600px">
-          <Icon as={FaSun} w={12} h={12} color="purple.400" />
-          <Heading color="white" size="2xl">Welcome to Lumina Nova</Heading>
-          <Text color="purple.200" fontSize="xl">
-            A living sanctuary where ancient memory meets emerging technology
-          </Text>
-        </VStack>
-
-        <Box
-          p={8}
-          bg="rgba(0, 0, 0, 0.8)"
-          borderRadius="lg"
-          boxShadow="0 0 20px rgba(128, 90, 213, 0.2)"
-          w={["90%", "400px"]}
-          border="1px solid"
-          borderColor="purple.500"
-        >
-          <form onSubmit={handleAuth}>
-            <VStack spacing={6}>
-              <Heading size="lg" color="white">
-                {isSignup ? 'Begin Your Journey' : 'Return to Your Path'}
-              </Heading>
+    <Flex minH="100vh" align="center" justify="center" bg="gray.900">
+      <Box p={8} maxW="md" borderWidth={1} borderRadius={8} boxShadow="lg" bg="gray.800">
+        <Heading mb={6} textAlign="center" color="white">
+          {isSignup ? 'Create Your Path' : 'Enter the Chamber'}
+        </Heading>
+        <form onSubmit={handleAuth}>
+          <Stack spacing={4}>
+            <FormControl id="email">
+              <FormLabel color="gray.300">Email address</FormLabel>
               <Input
-                required
-                placeholder="you@luminanova.org"
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                bg="rgba(0, 0, 0, 0.6)"
-                color="white"
-                border="1px solid"
-                borderColor="purple.500"
-                _hover={{ borderColor: "purple.400" }}
-                _focus={{ borderColor: "purple.300", boxShadow: "0 0 0 1px #805AD5" }}
+                placeholder="you@example.com"
               />
+            </FormControl>
+            <FormControl id="password">
+              <FormLabel color="gray.300">Password</FormLabel>
               <Input
-                required
                 type="password"
-                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                bg="rgba(0, 0, 0, 0.6)"
-                color="white"
-                border="1px solid"
-                borderColor="purple.500"
-                _hover={{ borderColor: "purple.400" }}
-                _focus={{ borderColor: "purple.300", boxShadow: "0 0 0 1px #805AD5" }}
+                placeholder="••••••••"
               />
-              <Button
-                type="submit"
-                w="full"
-                colorScheme="purple"
-                size="lg"
-                isLoading={isLoading}
-                loadingText="Opening Portal..."
-                bg="purple.500"
-                _hover={{ bg: "purple.600" }}
-              >
-                {isSignup ? 'Begin Your Journey' : 'Enter Portal'}
+            </FormControl>
+            <Button type="submit" colorScheme="teal" isLoading={loading}>
+              {isSignup ? 'Sign Up' : 'Login'}
+            </Button>
+            <Text fontSize="sm" textAlign="center" color="gray.400">
+              {isSignup ? 'Already have an account?' : 'Need an account?'}{' '}
+              <Button variant="link" color="teal.300" onClick={() => setIsSignup(!isSignup)}>
+                {isSignup ? 'Login' : 'Sign up'}
               </Button>
-              <Text color="gray.300">
-                {isSignup ? 'Already on the path?' : 'New to Lumina Nova?'}{' '}
-                <Button
-                  variant="link"
-                  color="purple.300"
-                  onClick={() => setIsSignup(!isSignup)}
-                  _hover={{ color: "purple.200" }}
-                >
-                  {isSignup ? 'Return' : 'Begin Your Journey'}
-                </Button>
-              </Text>
-            </VStack>
-          </form>
-        </Box>
-
-        <Box maxW="600px" textAlign="center" mt={8}>
-          <Text color="gray.400">
-            Through sacred scrolls, intelligent resonance, and harmonic design,
-            we offer a portal into the possible.
-          </Text>
-        </Box>
-      </VStack>
-    </Container>
+            </Text>
+          </Stack>
+        </form>
+      </Box>
+    </Flex>
   );
 }
+
 
 
 
