@@ -24,7 +24,7 @@ export default function LoginPage() {
 
     try {
       if (isSignup) {
-        const { data, error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -42,7 +42,7 @@ export default function LoginPage() {
           isClosable: true,
         });
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
