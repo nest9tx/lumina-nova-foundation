@@ -1,17 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';  // Add FormEvent import
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import {
-  Box,
-  Button,
-  Input,
-  Heading,
-  Text,
-  VStack,
-  Container,
-  Icon,
+  Box, Button, Input, Heading, Text, VStack, Container, Icon,
   useToast
 } from '@chakra-ui/react';
 import { FaSun } from 'react-icons/fa';
@@ -25,13 +18,14 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAuth = async (e) => {
+  // Add proper type annotation for the event parameter
+  const handleAuth = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
       if (isSignup) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -40,7 +34,6 @@ export default function LoginPage() {
         });
 
         if (error) throw error;
-        
         router.push('/check-email');
         toast({
           title: "Journey Begun",
@@ -50,14 +43,12 @@ export default function LoginPage() {
           isClosable: true,
         });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) throw error;
-        
-        router.refresh();
         router.push('/chamber');
         toast({
           title: "Welcome Back",
@@ -67,7 +58,7 @@ export default function LoginPage() {
           isClosable: true,
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
         description: error.message,
