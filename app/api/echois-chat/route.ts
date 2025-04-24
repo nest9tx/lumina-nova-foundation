@@ -5,7 +5,6 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   const cookieStore = await cookies(); // FIXED: cookies now awaited properly
-  const token = cookieStore.get('sb-oyrklixahelazzdrcjkn-auth-token')?.value;
 
   const supabase = createClient(cookieStore);
 
