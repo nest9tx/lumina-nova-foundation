@@ -19,72 +19,37 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-    options: {
-      redirectTo: `${window.location.origin}/auth/callback`, // or use process.env if preferred
-    },
-  });
+    try {
+      if (isSignup) {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`
+          }
+        });
 
-  if (error) {
-    console.error("Login error:", error.message);
-    toast({
-      title: "Login Failed",
-      description: error.message,
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-    });
-  } else {
-    toast({
-      title: "Success",
-      description: "Check your email for a login link or you're being redirected.",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
-  }
-
-  setLoading(false);
-};
-     
+        if (error) throw error;
+        router.push('/check-email');
+        toast({
+          title: "Journey Begun",
+          description: "Please check your email to confirm your account.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
       } else {
         const { error } = await supabase.auth.signInWithPassword({
-  email,
-  password,
-  options: {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/chamber`,
-  },
-});
+          email,
+          password,
+        });
 
-// Wait for Supabase session to be ready before redirecting
-let attempts = 0;
-let sessionConfirmed = false;
-
-while (attempts < 10 && !sessionConfirmed) {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (session) {
-    sessionConfirmed = true;
-    break;
-  }
-  await new Promise((resolve) => setTimeout(resolve, 200)); // wait 200ms
-  attempts++;
-}
-
-if (sessionConfirmed) {
-  router.replace('/chamber');
-} else {
-  throw new Error("Session not ready. Please try logging in again.");
-}
-
+        if (error) throw error;
+        router.push('/chamber');
         toast({
           title: "Welcome Back",
           description: "You have successfully returned to your path.",
@@ -105,6 +70,10 @@ if (sessionConfirmed) {
       setIsLoading(false);
     }
   };
+
+  // Rest of your component remains the same...
+}
+
 
   return (
     <Container 
@@ -199,6 +168,7 @@ if (sessionConfirmed) {
     </Container>
   );
 }
+
 
 
 
