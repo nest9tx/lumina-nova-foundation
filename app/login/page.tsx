@@ -94,4 +94,5 @@ export default function LoginPage() {
     </VStack>
   </Container>
 );
+}
 
