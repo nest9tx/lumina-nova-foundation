@@ -55,14 +55,15 @@ export default function LoginPage() {
           isClosable: true,
         });
       }
-    } catch (err: any) {
-      toast({
-        title: "Error",
-        description: err?.message || "Unexpected error occurred.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+    } catch (err: unknown) {
+  const error = err as { message?: string };
+  toast({
+    title: "Error",
+    description: error?.message || "Unexpected error occurred.",
+    status: "error",
+    duration: 5000,
+    isClosable: true,
+  });
     } finally {
       setIsLoading(false);
     }
