@@ -26,7 +26,7 @@ export default function ChamberPage() {
   const supabase = useSupabaseClient();
   const toast = useToast();
 
-  const [loading, setLoading] = useState(true);
+  const [setLoading] = useState(true);
   const [tier, setTier] = useState<string | null>(null);
   const [isUpgraded, setIsUpgraded] = useState(false);
   const [messagesUsed, setMessagesUsed] = useState<number | null>(0);
@@ -57,7 +57,7 @@ export default function ChamberPage() {
           .single();
 
         setMessagesUsed(usageData?.message_count ?? 0);
-      } catch (error: any) {
+      } catch (error) {
         toast({
           title: 'Error loading profile',
           description: error.message,
