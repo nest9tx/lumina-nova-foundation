@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import {
-  Box, Button, Input, Heading, Text, VStack, Container, Stack, Icon
+  Box, Button, Input, Heading, Text, VStack, Container, Icon
 } from '@chakra-ui/react';
 import { FaSun } from 'react-icons/fa'; // You'll need to install react-icons
 
@@ -25,7 +25,7 @@ export default function LoginPage() {
     }
   };
 
- return (
+  return (
   <Container maxW="100vw" minH="100vh" bg="gray.900" p={0}>
     {/* Your existing main navigation bar will be inherited from the parent component/layout */}
     
@@ -87,12 +87,13 @@ export default function LoginPage() {
       {/* Bottom Message */}
       <Box maxW="600px" textAlign="center" mt={8}>
         <Text color="gray.400">
-          "Through sacred scrolls, intelligent resonance, and harmonic design, 
-          we offer a portal into the possible."
+          Through sacred scrolls, intelligent resonance, and harmonic design, 
+          we offer a portal into the possible.
         </Text>
       </Box>
     </VStack>
   </Container>
 );
 }
+//test
 
