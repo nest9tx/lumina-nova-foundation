@@ -19,31 +19,39 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      if (isSignup) {
-   const { error } = await supabase.auth.signInWithPassword({
-  email,
-  password,
-  options: {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/chamber`,
-  },
-});
-
-if (error) {
-  console.error("Login error:", error.message);
-  toast({
-    title: "Login Failed",
-    description: error.message,
-    status: "error",
-    duration: 5000,
-    isClosable: true,
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`, // or use process.env if preferred
+    },
   });
-  return;
-}
+
+  if (error) {
+    console.error("Login error:", error.message);
+    toast({
+      title: "Login Failed",
+      description: error.message,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+    });
+  } else {
+    toast({
+      title: "Success",
+      description: "Check your email for a login link or you're being redirected.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  }
+
+  setLoading(false);
+};
      
       } else {
         const { error } = await supabase.auth.signInWithPassword({
