@@ -49,7 +49,7 @@ export default function LoginPage() {
         });
 
         if (error) throw error;
-        router.push('/chamber');
+        router.replace('/chamber');
         toast({
           title: "Welcome Back",
           description: "You have successfully returned to your path.",
