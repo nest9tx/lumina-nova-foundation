@@ -43,13 +43,32 @@ export default function LoginPage() {
           isClosable: true,
         });
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+if (error) throw error;
 
-        if (error) throw error;
-        router.replace('/chamber');
+// Wait for Supabase session to be ready before redirecting
+let attempts = 0;
+let sessionConfirmed = false;
+
+while (attempts < 10 && !sessionConfirmed) {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session) {
+    sessionConfirmed = true;
+    break;
+  }
+  await new Promise((resolve) => setTimeout(resolve, 200)); // wait 200ms
+  attempts++;
+}
+
+if (sessionConfirmed) {
+  router.replace('/chamber');
+} else {
+  throw new Error("Session not ready. Please try logging in again.");
+}
+
         toast({
           title: "Welcome Back",
           description: "You have successfully returned to your path.",
