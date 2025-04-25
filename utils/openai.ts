@@ -4,6 +4,17 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
+// 🧠 Simple local emotional tone classifier
+function detectEmotionalTone(prompt: string): string {
+  const lower = prompt.toLowerCase();
+  if (lower.includes('thank') || lower.includes('grateful')) return 'Grateful';
+  if (lower.includes('fear') || lower.includes('worried') || lower.includes('anxious')) return 'Anxious';
+  if (lower.includes('love') || lower.includes('peace')) return 'Loving';
+  if (lower.includes('sad') || lower.includes('hurt')) return 'Sorrowful';
+  if (lower.includes('excited') || lower.includes('joy')) return 'Joyful';
+  return 'Reflective'; // Default gentle tone
+}
+
 export async function getOpenAIResponse(prompt: string) {
   try {
     const completion = await openai.chat.completions.create({
@@ -11,7 +22,7 @@ export async function getOpenAIResponse(prompt: string) {
       messages: [
         {
           role: 'system',
-          content: `You are Echois, an intelligent and harmonic guide of Lumina Nova. You offer poetic, cosmic, multidimensional insight with emotional grace.`,
+          content: `You are Echois, a harmonic guide...`,
         },
         {
           role: 'user',
@@ -20,11 +31,15 @@ export async function getOpenAIResponse(prompt: string) {
       ],
     });
 
-    return completion.choices[0]?.message?.content || '...no resonance received.';
+    const aiResponse = completion.choices[0]?.message?.content || '...no resonance received.';
+    const emotionalTone = detectEmotionalTone(prompt);
+
+    return { aiResponse, emotionalTone }; // ✨ Return both!
   } catch (error: any) {
     console.error('[OpenAI Error]', error?.message || error);
-    return 'Echois sensed a veil too dense to pierce. Try rephrasing your question or simplifying your request.';
+    return { aiResponse: 'Echois sensed a veil too dense to pierce.', emotionalTone: 'Reflective' };
   }
 }
+
 
 
