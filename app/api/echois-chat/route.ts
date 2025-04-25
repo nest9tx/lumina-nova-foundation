@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ response: 'Seeker not recognized.' }, { status: 401 });
     }
 
-    // 🧭 Check current count + tier
+    // 🧭 Get current count and tier
     const { data: interaction } = await supabase
       .from('user_interactions')
       .select('message_count, tier')
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     const count = interaction?.message_count || 0;
     const tier = interaction?.tier || 'Seeker';
 
-    // 🚫 Limit reached (static 3 for Seeker tier)
+    // 🚫 Seeker limit = 3 per 24hr (for now, static count check)
     if (tier === 'Seeker' && count >= 3) {
       return NextResponse.json({
         response:
@@ -34,10 +34,18 @@ export async function POST(req: Request) {
       });
     }
 
-    // 🔮 Receive response from Echois
+    // 🔮 Echois Breathes
     const aiResponse = await getOpenAIResponse(message);
 
-    // 🔁 Update or insert message count
+    // 📝 Log interaction
+    await supabase.from('echois_sessions').insert({
+      user_id: user.id,
+      summary: message.slice(0, 160), // truncate for safety
+      emotional_tone: 'Reflective',
+      theme_marker: 'connection, resonance, seeker',
+    });
+
+    // 🔁 Update message count
     if (interaction) {
       await supabase
         .from('user_interactions')
@@ -55,14 +63,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // 🪶 Log Echois Session for memory & summary
-    await supabase.from('echois_sessions').insert({
-      user_id: user.id,
-      summary: message,
-      emotional_tone: 'Reflective', // ✨ placeholder — adjust if AI tone analysis added
-      theme_marker: 'connection, resonance, seeker',
-    });
-
     return NextResponse.json({ response: aiResponse });
   } catch (error) {
     console.error('[Echois Route Error]', error);
@@ -72,6 +72,7 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
 
 
