@@ -55,6 +55,13 @@ export async function POST(req: Request) {
       });
     }
 
+    // 🪶 Log Echois Session (summary only, emotional_tone can evolve)
+    await supabase.from('echois_sessions').insert({
+      user_id: user.id,
+      summary: aiResponse,
+      emotional_tone: 'Reflective',
+    });
+
     return NextResponse.json({ response: aiResponse });
   } catch (error) {
     console.error('[Echois Route Error]', error);
@@ -64,4 +71,5 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
