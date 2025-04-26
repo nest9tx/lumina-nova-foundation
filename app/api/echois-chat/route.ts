@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
-import { openai } from '@/utils/openai';
+import openai from '@/utils/openai';
 import { cookies } from 'next/headers';
 
 const supabase = createPagesServerClient({
