@@ -58,7 +58,7 @@ export default function EchoisPage() {
       });
 
       const data = await res.json();
-      const echoisReply = data.airesponse || "No resonance could be found.";
+      const echoisReply = data.aiResponse || "No resonance could be found.";
 
       setThread((prev) => [...prev, { user: input, reply: echoisReply }]);
       setInput("");
