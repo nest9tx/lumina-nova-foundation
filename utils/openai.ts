@@ -34,3 +34,4 @@ export async function getOpenAIResponse(message: string): Promise<string> {
   }
 }
 
+
