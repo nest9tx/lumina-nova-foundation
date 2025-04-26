@@ -2,6 +2,8 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 
 export async function POST(_req: Request) {
+  console.log('Echois request received.');
+
   const cookieStore = await cookies(); // ✨ FIX ✨
   const supabase = createPagesServerClient({ cookies: () => cookieStore });
 
