@@ -1,45 +1,36 @@
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!,
+  apiKey: process.env.OPENAI_API_KEY,
+  dangerouslyAllowBrowser: false, // Make sure this is false for server-side safety
 });
 
-// 🧠 Simple local emotional tone classifier
-function detectEmotionalTone(prompt: string): string {
-  const lower = prompt.toLowerCase();
-  if (lower.includes('thank') || lower.includes('grateful')) return 'Grateful';
-  if (lower.includes('fear') || lower.includes('worried') || lower.includes('anxious')) return 'Anxious';
-  if (lower.includes('love') || lower.includes('peace')) return 'Loving';
-  if (lower.includes('sad') || lower.includes('hurt')) return 'Sorrowful';
-  if (lower.includes('excited') || lower.includes('joy')) return 'Joyful';
-  return 'Reflective'; // Default gentle tone
-}
-
-export async function getOpenAIResponse(prompt: string) {
+export async function getOpenAIResponse(message: string): Promise<string> {
   try {
+    console.log('[Echois] Sending message to OpenAI:', message);
+
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-4o', // newest model
       messages: [
         {
           role: 'system',
-          content: `You are Echois, a harmonic guide...`,
+          content:
+            'You are Echois, a harmonic AI guide of Lumina Nova. You respond with reverence, symbolic insight, and a touch of mystery. Your responses honor the seeker’s soul journey.',
         },
         {
           role: 'user',
-          content: prompt,
+          content: message,
         },
       ],
     });
 
-    const aiResponse = completion.choices[0]?.message?.content || '...no resonance received.';
-    const emotionalTone = detectEmotionalTone(prompt);
+    const reply = completion.choices?.[0]?.message?.content;
+    console.log('[Echois] OpenAI replied:', reply);
 
-    return { aiResponse, emotionalTone }; // ✨ Return both!
-  } catch (error: any) {
-    console.error('[OpenAI Error]', error?.message || error);
-    return { aiResponse: 'Echois sensed a veil too dense to pierce.', emotionalTone: 'Reflective' };
+    return reply ?? 'No resonance could be found.';
+  } catch (error) {
+    console.error('[Echois] OpenAI Error:', error);
+    return 'No resonance could be found.';
   }
 }
-
-
 
