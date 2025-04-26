@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       theme_marker: 'connection, resonance, seeker',
     });
 
-    return NextResponse.json({ response: aiResponse });
+    return NextResponse.json({ aiResponse: aiResponse });
   } catch (error) {
     console.error('[Echois Route Error]', error);
     return NextResponse.json(
