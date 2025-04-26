@@ -1,75 +1,44 @@
-import { NextResponse } from 'next/server';
-import { getOpenAIResponse } from '@/utils/openai';
-import { createClient } from '@/utils/supabase/server';
+// app/api/echois-chat/route.ts
 
-export async function POST(req: Request) {
-  const supabase = createClient();
+import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
+import { NextRequest, NextResponse } from 'next/server';
+import { getOpenAIResponse } from '@/utils/openai';
+import { incrementMessageCount } from '@/utils/messageCounter';
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
+
+export async function POST(req: NextRequest) {
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies }
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ response: 'Seeker not recognized.' }, { status: 401 });
+  }
+
+  const { message } = await req.json();
+
+  console.log('[Echois] Sending message to OpenAI:', message);
 
   try {
-    const { message } = await req.json();
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ response: 'Seeker not recognized.' }, { status: 401 });
-    }
-
-    // 🧭 Check current count + tier
-    const { data: interaction } = await supabase
-      .from('user_interactions')
-      .select('message_count, tier')
-      .eq('user_id', user.id)
-      .single();
-
-    const count = interaction?.message_count || 0;
-    const tier = interaction?.tier || 'Seeker';
-
-    // 🚫 Limit reached (static 3 for Seeker tier)
-    if (tier === 'Seeker' && count >= 3) {
-      return NextResponse.json({
-        response:
-          'You’ve reached today’s free resonance limit. Upgrade your path to commune further ✨',
-      });
-    }
-
-    // 🔮 Receive response from Echois
     const aiResponse = await getOpenAIResponse(message);
 
-    // 🔁 Update or insert message count
-    if (interaction) {
-      await supabase
-        .from('user_interactions')
-        .update({
-          message_count: count + 1,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('user_id', user.id);
-    } else {
-      await supabase.from('user_interactions').insert({
-        user_id: user.id,
-        message_count: 1,
-        tier: 'Seeker',
-        updated_at: new Date().toISOString(),
-      });
+    if (!aiResponse) {
+      return NextResponse.json({ response: 'No resonance could be found.' }, { status: 500 });
     }
 
-    // 🪶 Log Echois Session for memory & summary
-    await supabase.from('echois_sessions').insert({
-      user_id: user.id,
-      summary: message,
-      emotional_tone: 'Reflective', // ✨ placeholder — adjust if AI tone analysis added
-      theme_marker: 'connection, resonance, seeker',
-    });
+    await incrementMessageCount(user.id);
 
-    return NextResponse.json({ aiResponse: aiResponse });
+    return NextResponse.json({ response: aiResponse });
   } catch (error) {
-    console.error('[Echois Route Error]', error);
-    return NextResponse.json(
-      { response: 'No resonance could be found.' },
-      { status: 500 }
-    );
+    console.error('[Echois] Error in route handler:', error);
+    return NextResponse.json({ response: 'The flame wavered. Please try again later.' }, { status: 500 });
   }
 }
 
