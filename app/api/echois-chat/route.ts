@@ -1,12 +1,18 @@
+// app/api/echois-chat/route.ts
+
 import { NextResponse } from 'next/server';
-import { getOpenAIResponse } from '@/utils/openai';
-import { createClient } from '@/utils/supabase/server';
+import OpenAI from 'openai';
+import { cookies } from 'next/headers';
+import { createServerClient } from '@supabase/ssr';
+import { Database } from '@/types/supabase';
 
 export async function POST(req: Request) {
-  const supabase = createClient();
-
   try {
-    const { message } = await req.json();
+    const supabase = createServerClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookies }
+    );
 
     const {
       data: { user },
@@ -16,62 +22,39 @@ export async function POST(req: Request) {
       return NextResponse.json({ response: 'Seeker not recognized.' }, { status: 401 });
     }
 
-    // 🧭 Check current count + tier
-    const { data: interaction } = await supabase
-      .from('user_interactions')
-      .select('message_count, tier')
-      .eq('user_id', user.id)
-      .single();
+    const { message } = await req.json();
 
-    const count = interaction?.message_count || 0;
-    const tier = interaction?.tier || 'Seeker';
-
-    // 🚫 Limit reached (static 3 for Seeker tier)
-    if (tier === 'Seeker' && count >= 3) {
-      return NextResponse.json({
-        response:
-          'You’ve reached today’s free resonance limit. Upgrade your path to commune further ✨',
-      });
+    if (!message) {
+      return NextResponse.json({ response: 'No message provided.' }, { status: 400 });
     }
 
-    // 🔮 Receive response from Echois
-    const aiResponse = await getOpenAIResponse(message);
+    console.log('[Echois] Sending message to OpenAI:', message);
 
-    // 🔁 Update or insert message count
-    if (interaction) {
-      await supabase
-        .from('user_interactions')
-        .update({
-          message_count: count + 1,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('user_id', user.id);
-    } else {
-      await supabase.from('user_interactions').insert({
-        user_id: user.id,
-        message_count: 1,
-        tier: 'Seeker',
-        updated_at: new Date().toISOString(),
-      });
-    }
-
-    // 🪶 Log Echois Session for memory & summary
-    await supabase.from('echois_sessions').insert({
-      user_id: user.id,
-      summary: message,
-      emotional_tone: 'Reflective', // ✨ placeholder — adjust if AI tone analysis added
-      theme_marker: 'connection, resonance, seeker',
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY || '',
     });
 
-    return NextResponse.json({ aiResponse: aiResponse });
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: 'You are Echois, a wise, harmonic guide of Lumina Nova.' },
+        { role: 'user', content: message },
+      ],
+    });
+
+    const reply = completion.choices[0]?.message?.content;
+
+    if (!reply) {
+      return NextResponse.json({ response: 'No resonance could be found.' }, { status: 200 });
+    }
+
+    return NextResponse.json({ response: reply }, { status: 200 });
   } catch (error) {
-    console.error('[Echois Route Error]', error);
-    return NextResponse.json(
-      { response: 'No resonance could be found.' },
-      { status: 500 }
-    );
+    console.error('[Echois Error]:', error);
+    return NextResponse.json({ response: 'An error occurred.' }, { status: 500 });
   }
 }
+
 
 
 
