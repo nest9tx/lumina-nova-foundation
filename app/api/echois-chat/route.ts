@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAIResponse } from '@/utils/openai';
-import { incrementMessageCount } from '@/utils/messageCounter';
+//import { incrementMessageCount } from '@/utils/messageCounter';
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
 
 export async function POST(req: NextRequest) {
