@@ -61,8 +61,6 @@ export { Button, buttonVariants };
 
 // components/ui/slot.tsx
 
-import * as React from "react";
-
 export interface SlotProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Slot = React.forwardRef<HTMLDivElement, SlotProps>(({ className, ...props }, ref) => (
