@@ -9,12 +9,15 @@ import { useState } from 'react';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [client] = useState(() => supabase);
 
+  // ✧ Toggle this flag to true when you're ready to reveal the nav again
+  const showNav = false;
+
   return (
     <html lang="en">
       <body>
         <ChakraProvider>
           <SessionContextProvider supabaseClient={client}>
-            <Navbar />
+            {showNav && <Navbar />}
             {children}
           </SessionContextProvider>
         </ChakraProvider>

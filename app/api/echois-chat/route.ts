@@ -1,3 +1,4 @@
+
 import { NextResponse } from 'next/server';
 import { getOpenAIResponse } from '@/utils/openai';
 import { createClient } from '@/utils/supabase/server';
@@ -72,9 +73,4 @@ export async function POST(req: Request) {
     );
   }
 }
-
-
-
-
-
 
