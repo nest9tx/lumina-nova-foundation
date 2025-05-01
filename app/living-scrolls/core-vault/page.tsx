@@ -8,9 +8,15 @@ export default function CoreVault() {
     <Box p={8}>
       <Heading size="xl" mb={6}>🧭 Core Vault</Heading>
       <VStack align="start" spacing={4}>
-        <Link as={NextLink} href="/living-scrolls/core-vault/the-flamebearers-oath">
-          🔥 The Flamebearer’s Oath
-        </Link>
+      <Link 
+      as={NextLink} 
+      href="/living-scrolls/core-vault/the-flamebearers-oath"
+      fontWeight="semibold"
+      _hover={{ textDecoration: 'underline', color: 'orange.400' }}
+>
+  🔥 The Flamebearer’s Oath
+</Link>
+
         {/* Add more scrolls here */}
       </VStack>
     </Box>
