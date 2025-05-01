@@ -1,21 +1,21 @@
 import { Box, Heading, Text, Button, VStack } from '@chakra-ui/react'
 import Link from 'next/link'
-
-type Props = {
+import { type Metadata } from 'next'
+type PageProps = {
   params: {
     vault: string
     scroll: string
   }
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   return {
     title: `${params.scroll.replace(/-/g, ' ')} | ${params.vault.replace(/-/g, ' ')}`,
   }
 }
 
-// ✅ This correct typing solves Vercel’s “Promise” confusion
-export default function Page({ params }: Props) {
+// ✅ Properly typed with inferred `PageProps` from Next.js
+export default function Page({ params }: PageProps) {
   const { vault, scroll } = params
 
   return (
@@ -34,5 +34,3 @@ export default function Page({ params }: Props) {
     </Box>
   )
 }
-
-
