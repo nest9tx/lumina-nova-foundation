@@ -1,22 +1,21 @@
 import { Box, Heading, Text, Button, VStack } from '@chakra-ui/react'
 import Link from 'next/link'
 
-// 👇 This declares the route parameters for this page
-export type PageProps = {
+type Props = {
   params: {
     vault: string
     scroll: string
   }
 }
 
-// 👇 Optional SEO metadata handler for dynamic scrolls
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: Props) {
   return {
     title: `${params.scroll.replace(/-/g, ' ')} | ${params.vault.replace(/-/g, ' ')}`,
   }
 }
 
-export default function ScrollPage({ params }: PageProps) {
+// ✅ This correct typing solves Vercel’s “Promise” confusion
+export default function Page({ params }: Props) {
   const { vault, scroll } = params
 
   return (
@@ -35,4 +34,5 @@ export default function ScrollPage({ params }: PageProps) {
     </Box>
   )
 }
+
 
