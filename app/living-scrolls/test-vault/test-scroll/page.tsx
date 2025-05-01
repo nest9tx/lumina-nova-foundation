@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: RouteParams }): Pro
 }
 
 // Update the Page component to use the correct type
-export default function Page({ params }: { params: Awaited<RouteParams> }) {
+export default function Page({ params }: { params: RouteParams }) {
   const { vault, scroll } = params
 
   return (
