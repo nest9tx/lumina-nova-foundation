@@ -1,24 +1,17 @@
-import { notFound } from 'next/navigation';
-import { canAccessTier } from '@/utils/tierAccess';
-import { loadScroll } from '@/lib/loadScroll';
+'use client'
 
-export default async function ScrollPage({ params }: { params: { vault: string; scroll: string } }) {
-  const { vault, scroll } = params;
+import { Box, Heading } from '@chakra-ui/react'
 
-  const scrollData = loadScroll(vault, scroll);
-  if (!scrollData) return notFound();
-
-  const userTier = 'seeker'; // TEMP: Replace with getUserTier() soon
-  const requiredTier = scrollData.frontmatter.tier || 'seeker';
-  const accessGranted = canAccessTier(userTier, requiredTier);
-
-  if (!accessGranted) return notFound();
-
+export default function Page({
+  params,
+}: {
+  params: { vault: string; scroll: string }
+}) {
   return (
-    <div className="prose mx-auto">
-      <h1>{scrollData.frontmatter.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: scrollData.contentHtml }} />
-    </div>
-  );
+    <Box p={8}>
+      <Heading size="xl">Scroll: {params.scroll}</Heading>
+    </Box>
+  )
 }
+
 
