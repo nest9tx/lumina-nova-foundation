@@ -9,13 +9,13 @@ type PageProps = {
   }
 }
 
-export async function generateMetadata({ params }: { params: PageProps['params'] }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { vault: string; scroll: string } }): Promise<Metadata> {
   return {
     title: `${params.scroll.replace(/-/g, ' ')} | ${params.vault.replace(/-/g, ' ')}`,
   }
 }
 
-export default function Page({ params }: PageProps) {
+export default function Page({ params }: { params: { vault: string; scroll: string } }) {
   const { vault, scroll } = params
 
   return (
