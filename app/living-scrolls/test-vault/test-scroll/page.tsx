@@ -2,12 +2,6 @@ import { Box, Heading, Text, Button, VStack } from '@chakra-ui/react'
 import Link from 'next/link'
 import { type Metadata } from 'next'
 
-type PageProps = {
-  params: {
-    vault: string
-    scroll: string
-  }
-}
 
 export async function generateMetadata({ params }: { params: { vault: string; scroll: string } }): Promise<Metadata> {
   return {
