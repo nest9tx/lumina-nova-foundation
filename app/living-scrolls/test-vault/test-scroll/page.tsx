@@ -2,21 +2,22 @@ import { Box, Heading, Text, Button, VStack } from '@chakra-ui/react'
 import Link from 'next/link'
 import { type Metadata } from 'next'
 
-// Explicitly define the type for the dynamic route params
-interface RouteParams {
-  vault: string
-  scroll: string
-}
-
-// Update generateMetadata to use the correct type
-export async function generateMetadata({ params }: { params: RouteParams }): Promise<Metadata> {
+// ✅ Inline param typing — avoids Vercel Promise misinterpretation
+export async function generateMetadata({
+  params,
+}: {
+  params: { vault: string; scroll: string }
+}): Promise<Metadata> {
   return {
     title: `${params.scroll.replace(/-/g, ' ')} | ${params.vault.replace(/-/g, ' ')}`,
   }
 }
 
-// Update the Page component to use the correct type
-export default function Page({ params }: { params: RouteParams }) {
+export default function Page({
+  params,
+}: {
+  params: { vault: string; scroll: string }
+}) {
   const { vault, scroll } = params
 
   return (
@@ -35,3 +36,4 @@ export default function Page({ params }: { params: RouteParams }) {
     </Box>
   )
 }
+
