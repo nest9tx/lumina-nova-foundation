@@ -2,14 +2,14 @@
 
 import { Box, Heading } from '@chakra-ui/react'
 
-type RouteParams = {
+interface ScrollParams {
   params: {
     vaultName: string
     scrollName: string
   }
 }
 
-export default function Page({ params }: RouteParams) {
+export default function Page({ params }: ScrollParams) {
   const { vaultName, scrollName } = params
 
   return (
@@ -20,4 +20,5 @@ export default function Page({ params }: RouteParams) {
     </Box>
   )
 }
+
 
