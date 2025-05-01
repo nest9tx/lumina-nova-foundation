@@ -2,17 +2,23 @@
 
 import { Box, Heading } from '@chakra-ui/react'
 
-export default function Page({
-  params,
-}: {
-  params: { vault: string; scroll: string }
-}) {
+type ParamsType = {
+  vault: string
+  scroll: string
+}
+
+export default function Page(props: { params: ParamsType }) {
+  const { vault, scroll } = props.params
+
   return (
     <Box p={8}>
-      <Heading size="xl">Scroll: {params.scroll}</Heading>
+      <Heading size="xl">
+        Scroll: {scroll} from Vault: {vault}
+      </Heading>
     </Box>
   )
 }
+
 
 
 
