@@ -1,6 +1,7 @@
 import { Box, Heading, Text, Button, VStack } from '@chakra-ui/react'
 import Link from 'next/link'
 import { type Metadata } from 'next'
+
 type PageProps = {
   params: {
     vault: string
@@ -8,13 +9,12 @@ type PageProps = {
   }
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: PageProps['params'] }): Promise<Metadata> {
   return {
     title: `${params.scroll.replace(/-/g, ' ')} | ${params.vault.replace(/-/g, ' ')}`,
   }
 }
 
-// ✅ Properly typed with inferred `PageProps` from Next.js
 export default function Page({ params }: PageProps) {
   const { vault, scroll } = params
 
