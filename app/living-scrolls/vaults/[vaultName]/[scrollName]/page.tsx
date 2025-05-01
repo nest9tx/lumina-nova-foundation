@@ -2,15 +2,8 @@
 
 import { Box, Heading } from '@chakra-ui/react'
 
-interface LoaderProps {
-  routeParams: {
-    vaultName: string
-    scrollName: string
-  }
-}
-
-export default function Page({ routeParams }: LoaderProps) {
-  const { vaultName, scrollName } = routeParams
+export default function Page({ params }: { params: { vaultName: string; scrollName: string } }) {
+  const { vaultName, scrollName } = params
 
   return (
     <Box p={8}>
