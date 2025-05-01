@@ -1,23 +1,23 @@
-// src/app/not-found.tsx
+'use client'
 
-import Link from 'next/link';
+import { Box, Heading, Text, VStack, Button } from '@chakra-ui/react'
+import NextLink from 'next/link'
 
 export default function NotFound() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center text-center px-6 py-24 space-y-6">
-      <h1 className="text-5xl font-bold text-purple-600 dark:text-purple-400">
-        This path is not yet revealed.
-      </h1>
-      <p className="text-lg text-zinc-600 dark:text-zinc-300 max-w-xl">
-        The scroll you seek has not yet taken form, or you have arrived before its time.
-        Trust the unfolding — and return to what is known.
-      </p>
-      <Link
-        href="/scrolls"
-        className="mt-4 inline-block bg-pink-500 hover:bg-pink-600 text-white font-semibold px-6 py-3 rounded-xl transition-all"
-      >
-        Return to Scrolls
-      </Link>
-    </main>
-  );
+    <Box minH="100vh" display="flex" justifyContent="center" alignItems="center" bgGradient="linear(to-b, #fff7ec, #fdf3d1)" p={8}>
+      <Box maxW="lg" p={10} bg="white" border="1px solid #f4dcc2" rounded="2xl" shadow="xl">
+        <VStack spacing={6} align="center">
+          <Heading size="lg">🌀 This path is not yet revealed.</Heading>
+          <Text fontSize="md" textAlign="center">
+            The scroll you seek has not yet taken form, or you have arrived before its time.
+            Trust the unfolding — and return to what is known.
+          </Text>
+          <Button as={NextLink} href="/living-scrolls" colorScheme="blue" variant="outline">
+            Return to Living Scrolls
+          </Button>
+        </VStack>
+      </Box>
+    </Box>
+  )
 }
