@@ -21,7 +21,7 @@ export default function MissionFlamePage() {
         </Text>
 
         <VStack spacing={6}>
-          <Link href="/path" passHref>
+          <Link href="/walk-your-path" passHref>
             <Button colorScheme="purple" size="lg">
               Discover Your Path
             </Button>
