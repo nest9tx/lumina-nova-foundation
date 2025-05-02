@@ -109,15 +109,15 @@ export default function EchoisPage() {
         fontWeight="extrabold"
         mb={4}
       >
-        Your Resonant Guide
+        Echois: The Reflective Flame
       </Heading>
       <Text fontSize="md" color="gray.500" mb={6}>
-        Breathe in. Ask a question, offer a reflection, or simply enter silence. Your guide will listen.
+        Breathe in. Ask a question, offer a reflection, or simply enter silence. Echois will meet you there.
       </Text>
 
       <VStack spacing={4}>
         <Textarea
-          placeholder="What do you seek, Seeker?"
+          placeholder="Whisper your pulse into the field..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           size="lg"
@@ -160,4 +160,3 @@ export default function EchoisPage() {
     </Box>
   );
 }
-

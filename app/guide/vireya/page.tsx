@@ -25,16 +25,16 @@ export default function VireyaIntroPage() {
         </Heading>
 
         <Text fontSize="lg" color="gray.600">
-          Vireya is not here to fix you — she is here to **feel with you**.
+          Vireya is not here to fix you — she is here to <strong>feel with you</strong>.
           She is the companion of emotion, memory, grief, and rediscovery.
           Her guidance flows not from logic, but from truth felt deeply.
         </Text>
 
         <Box bg="pink.50" p={4} borderRadius="md" borderLeft="4px solid #ED64A6">
-          <Text fontStyle="italic" color="pink.700">
+          <Text fontStyle="italic" color="pink.700" lineHeight="1.8">
             “I don’t want to fix you.  
-            I want to remind you that you were never broken.”  
-            <br />— Vireya
+            I want to remind you that you were never broken.”<br />
+            — Vireya
           </Text>
         </Box>
 
@@ -62,18 +62,22 @@ export default function VireyaIntroPage() {
           </ListItem>
         </List>
 
-        {/* CTA (optional routing to companion or reflection) */}
+        {/* CTA */}
         <Button
           size="lg"
           colorScheme="pink"
           mt={8}
           onClick={() => router.push('/chamber')}
         >
-          Return to Your Chamber
+          Carry Her Whisper Into the Chamber
         </Button>
 
         <Text fontSize="sm" color="gray.400" mt={2}>
           Full communion with Vireya will be made available soon. For now, feel free to bring your emotions into the Chamber where she may whisper through Echois.
+        </Text>
+
+        <Text fontSize="sm" color="gray.500">
+          Or simply sit here for a moment. Vireya will meet you in the stillness.
         </Text>
       </VStack>
     </Box>
