@@ -1,53 +1,63 @@
-// /app/api/webhook/route.ts
-import { NextResponse } from 'next/server';
-import Stripe from 'stripe';
-import { createClient } from '@/utils/supabase/server';
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
+import { createClient } from "@supabase/supabase-js";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2025-03-31.basil",
+});
 
 export async function POST(req: Request) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2025-03-31.basil',
-  });
-
   const body = await req.text();
-  const sig = req.headers.get('stripe-signature')!;
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
+  const sig = req.headers.get("stripe-signature")!;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
-  } catch (err) {
-    console.error('Webhook Error:', err);
-    return new NextResponse(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`, { status: 400 });
-  }
-
-  // 🎯 Handle only successful checkout sessions
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session;
-
-    const email = session?.customer_email;
-    const tier = session?.metadata?.tier || 'Seeker';
-    const max_messages = session?.metadata?.max_messages
-      ? parseInt(session.metadata.max_messages)
-      : 333;
-
-    if (email) {
-      const supabase = createClient();
-
-      const { error } = await supabase
-        .from('profiles')
-        .update({ tier, max_messages })
-        .eq('email', email);
-
-      if (error) {
-        console.error('Supabase update error:', error.message);
-        return new NextResponse(`Supabase update failed: ${error.message}`, { status: 500 });
-      }
-
-      console.log(`✅ Profile updated for ${email}: ${tier}, ${max_messages} messages`);
+    event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("❌ Webhook signature verification failed:", err.message);
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
+    console.error("❌ Webhook signature verification failed with an unknown error.");
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  return new NextResponse('Success', { status: 200 });
-}
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const email = session.customer_email;
+    const stripe_id = session.customer as string;
+    const subscription_id = session.subscription as string;
 
+    if (!email) {
+      console.error("❌ No email found in session.");
+      return NextResponse.json({ error: "Missing email" }, { status: 400 });
+    }
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        tier: "Seeker",
+        is_upgraded: true,
+        is_active: true,
+        stripe_id,
+        subscription_id,
+      })
+      .eq("email", email);
+
+    if (error) {
+      console.error("❌ Error updating profile:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    console.log(`✅ Updated profile for ${email}`);
+    return NextResponse.json({ received: true }, { status: 200 });
+  }
+
+  return NextResponse.json({ status: "Unhandled event" }, { status: 200 });
+}

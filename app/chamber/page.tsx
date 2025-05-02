@@ -163,7 +163,7 @@ export default function ChamberPage() {
       </Text>
       <Button
         as="a"
-        href="/join/seeker"
+        href="/walk-your-path/seeker"
         colorScheme="purple"
         leftIcon={<FaScroll />}
       >
