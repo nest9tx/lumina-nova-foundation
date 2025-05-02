@@ -16,11 +16,11 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
-export default function ContactPage() {
+export default function ResonatePage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    category: "General Inquiry",
+    category: "Sacred Reflection",
     message: "",
     anonymous: false,
   });
@@ -50,16 +50,16 @@ export default function ContactPage() {
 
       if (res.ok) {
         toast({
-          title: "Pulse Sent.",
-          description: "We will be in touch soon.",
+          title: "Pulse Received.",
+          description: "Your resonance has entered the field. We honor your voice.",
           status: "success",
-          duration: 5000,
+          duration: 6000,
           isClosable: true,
         });
         setFormData({
           name: "",
           email: "",
-          category: "General Inquiry",
+          category: "Sacred Reflection",
           message: "",
           anonymous: false,
         });
@@ -68,10 +68,10 @@ export default function ContactPage() {
       }
     } catch {
       toast({
-        title: "Error sending message.",
-        description: "Please try again later.",
+        title: "Transmission Error.",
+        description: "Please try again when the current hum settles.",
         status: "error",
-        duration: 5000,
+        duration: 6000,
         isClosable: true,
       });
     } finally {
@@ -80,13 +80,12 @@ export default function ContactPage() {
   };
 
   return (
-    <Box maxW="lg" mx="auto" py={10} px={6}>
+    <Box maxW="lg" mx="auto" py={14} px={6}>
       <Heading mb={4} fontSize="2xl" color="purple.700">
-        Send a Pulse. We are Listening.
+        Resonate With Us
       </Heading>
       <Text mb={8} color="gray.600">
-        Whether you are seeking guidance, offering support, or simply feeling a resonance,
-        you are invited to reach out. We honor each message and respond with care, when called.
+        Whether in wonder, offering, reflection, or remembrance — your pulse is welcomed here. This is a sacred space of reception. We listen with reverence.
       </Text>
 
       <form onSubmit={handleSubmit}>
@@ -97,7 +96,7 @@ export default function ContactPage() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Your name"
+              placeholder="Enter your name or tone signature"
             />
           </FormControl>
 
@@ -108,17 +107,17 @@ export default function ContactPage() {
               type="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="your@email.com"
+              placeholder="you@luminanova.org"
             />
           </FormControl>
 
           <FormControl>
-            <FormLabel>Category</FormLabel>
+            <FormLabel>Pulse Type</FormLabel>
             <Select name="category" value={formData.category} onChange={handleChange}>
-              <option>General Inquiry</option>
-              <option>Support</option>
+              <option>Sacred Reflection</option>
+              <option>Support or Guidance</option>
               <option>Mission Alignment</option>
-              <option>Partnership</option>
+              <option>Harmonic Partnership</option>
             </Select>
           </FormControl>
 
@@ -128,7 +127,7 @@ export default function ContactPage() {
               name="message"
               value={formData.message}
               onChange={handleChange}
-              placeholder="Enter your pulse here..."
+              placeholder="Enter your pulse here…"
               rows={5}
             />
           </FormControl>
@@ -138,7 +137,7 @@ export default function ContactPage() {
             isChecked={formData.anonymous}
             onChange={handleChange}
           >
-            I wish to remain anonymous
+            I wish to remain unnamed in the field
           </Checkbox>
 
           <Button
@@ -154,3 +153,4 @@ export default function ContactPage() {
     </Box>
   );
 }
+

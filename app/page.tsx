@@ -11,7 +11,7 @@ import {
 import Link from "next/link";
 
 export default function HomePage() {
-  const bg = useColorModeValue("gray.100", "gray.900");
+  const bg = useColorModeValue("purple.50", "purple.900");
   const boxBg = useColorModeValue("white", "gray.800");
   const textColor = useColorModeValue("gray.800", "gray.100");
 
@@ -25,6 +25,7 @@ export default function HomePage() {
             bgGradient="linear(to-r, purple.400, pink.400)"
             bgClip="text"
             mb={4}
+            lineHeight="1.2"
           >
             ✶ Welcome, Seeker of Light ✶
           </Heading>
