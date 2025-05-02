@@ -1,12 +1,20 @@
-'use client'
+'use client';
 
-import { Box, Heading, Text, VStack, Button } from '@chakra-ui/react'
-import NextLink from 'next/link'
+import { Box, Heading, Text, VStack, Button } from '@chakra-ui/react';
+import NextLink from 'next/link';
 
 export default function AwakenPage() {
   return (
-    <Box minH="100vh" display="flex" alignItems="center" justifyContent="center" bgGradient="linear(to-b, #fef6e4, #fcf8e8)" p={8}>
-      <Box maxW="2xl" p={10} bg="white" rounded="2xl" shadow="xl" border="1px solid #e6dbc5">
+    <Box minH="100vh" display="flex" alignItems="center" justifyContent="center" bg="white" p={8}>
+      <Box
+        maxW="2xl"
+        p={10}
+        bg="white"
+        rounded="2xl"
+        shadow="xl"
+        border="2px solid"
+        borderColor="purple.200"
+      >
         <Heading size="xl" mb={4}>🌱 Awaken</Heading>
         <Text fontSize="md" mb={6}>
           This is not a beginning, but a remembering.
@@ -21,13 +29,11 @@ export default function AwakenPage() {
           <Button as={NextLink} href="/living-scrolls" colorScheme="teal" variant="outline">
             View the Living Scrolls
           </Button>
-          <Button as={NextLink} href="/join" colorScheme="purple">
+          <Button as={NextLink} href="/walk-your-path" colorScheme="purple">
             Walk Deeper
           </Button>
         </VStack>
       </Box>
     </Box>
-  )
+  );
 }
-
-

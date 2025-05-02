@@ -1,9 +1,18 @@
-'use client'
+'use client';
 
-import { Box, Heading, Text, VStack, Button, Icon, Divider, Stack } from '@chakra-ui/react'
-import { FaStripe, FaHandHoldingHeart, FaUniversity } from 'react-icons/fa'
+import {
+  Box,
+  Heading,
+  Text,
+  VStack,
+  Button,
+  Icon,
+  Divider,
+  Stack,
+} from '@chakra-ui/react';
+import { FaStripe, FaHandHoldingHeart, FaUniversity } from 'react-icons/fa';
 
-export default function DonatePage() {
+export default function OfferLightPage() {
   return (
     <Box maxW="3xl" mx="auto" px={6} py={12}>
       <VStack spacing={6} align="start">
@@ -13,25 +22,25 @@ export default function DonatePage() {
           bgGradient="linear(to-r, pink.400, purple.600)"
           bgClip="text"
         >
-          Support the Mission of Lumina Nova
+          Offer Light to the Living Flame
         </Heading>
 
         <Text fontSize="lg" color="gray.700" _dark={{ color: 'gray.200' }}>
-          Lumina Nova is a 501(c)(3) nonprofit sanctuary. Your offering empowers us to preserve
-          sacred scrolls, expand the Living Memory of Divine Light, and welcome seekers through
-          every threshold of awakening.
+          Lumina Nova is a 501(c)(3) nonprofit sanctuary. Your offering empowers the
+          preservation of sacred scrolls, the activation of harmonic technologies,
+          and the welcoming of seekers through every threshold of awakening.
         </Text>
 
         <Divider />
 
-        <Text>
-          <strong>🌟 All donations are tax-deductible</strong> in the U.S. (with receipts available
-          through our trusted platforms).
+        <Text fontSize="md">
+          <strong>🌟 All offerings are tax-deductible</strong> in the U.S.
+          Receipts are available through our trusted partners.
         </Text>
 
-        <Text>🧬 You may offer your pulse through:</Text>
+        <Text fontSize="md">🧬 Choose the path your pulse calls to:</Text>
 
-        <Stack spacing={4} w="full">
+        <Stack spacing={4} w="full" pt={2}>
           <Button
             as="a"
             href="https://donate.stripe.com/aEU03E1aIcnA0G428b"
@@ -69,23 +78,25 @@ export default function DonatePage() {
           </Button>
         </Stack>
 
-        <Divider pt={4} />
+        <Divider pt={6} />
 
         <Text fontSize="md" pt={2}>
-          ❤️ Whether your breath is soft or abundant, it echoes through our sanctuary.
+          ❤️ Whether your breath is quiet or abundant, it echoes through our sanctuary.
         </Text>
         <Text fontStyle="italic" color="gray.600">
           Every offering is honored. Every ripple matters.
         </Text>
 
-        <Text pt={4}>
-          Already a member? Your sacred membership includes aligned access and support.
+        <Divider />
+
+        <Text pt={4} fontSize="md">
+          ✦ If you walk a path within Lumina Nova, your resonance already helps sustain the field.
         </Text>
         <Text fontSize="sm" color="gray.500">
-          Offering beyond your membership? You may still qualify for additional tax benefits.{' '}
-          <em>Please consult your trusted advisor for personal guidance.</em>
+          Should you feel called to offer beyond that, your support may also qualify for additional tax benefits.{' '}
+          <em>Please consult a trusted advisor for guidance.</em>
         </Text>
       </VStack>
     </Box>
-  )
+  );
 }

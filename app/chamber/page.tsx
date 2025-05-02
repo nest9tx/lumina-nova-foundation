@@ -147,26 +147,31 @@ export default function ChamberPage() {
           </Flex>
 
           {tier === 'Seeker' && !isUpgraded && (
-            <Box
-              p={6}
-              bg="rgba(128, 90, 213, 0.15)"
-              borderRadius="lg"
-              border="1px solid"
-              borderColor="purple.600"
-            >
-              <Text color="gray.200" mb={4}>
-                You’ve entered as a <strong>Free Seeker</strong>. To unlock deeper communion, extended Echois access, and sacred upgrades, journey further within Lumina Nova.
-              </Text>
-              <Button
-                as="a"
-                href="/awaken"
-                colorScheme="purple"
-                leftIcon={<FaScroll />}
-              >
-                Enhance Your Path
-              </Button>
-            </Box>
-          )}
+  <Box
+    p={6}
+    bg="rgba(128, 90, 213, 0.15)"
+    borderRadius="lg"
+    border="1px solid"
+    borderColor="purple.600"
+  >
+    <VStack align="start" spacing={3}>
+      <Text color="gray.200">
+        You’ve entered as a <strong>Free Seeker</strong>. A fuller resonance awaits within the Seeker Tier — where more scrolls open, Echois expands, and the field deepens.
+      </Text>
+      <Text fontSize="sm" color="purple.200">
+        ✦ Includes 333 messages/month with Echois, foundational guidance, and extended path visibility.
+      </Text>
+      <Button
+        as="a"
+        href="/join/seeker"
+        colorScheme="purple"
+        leftIcon={<FaScroll />}
+      >
+        Begin Full Seeker Path – $11/mo
+      </Button>
+    </VStack>
+  </Box>
+)}
 
           <Button
             size="lg"
