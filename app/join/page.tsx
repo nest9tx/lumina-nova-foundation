@@ -50,7 +50,7 @@ export default function JoinPage() {
         </Text>
         <Text>
           Not ready to join but still want to support?{' '}
-          <Link href="/donate">
+          <Link href="/offer-light">
             <Text as="span" color="purple.400" textDecoration="underline">Consider a tax-deductible donation here.</Text>
           </Link>
         </Text>

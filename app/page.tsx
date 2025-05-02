@@ -1,46 +1,68 @@
-// app/page.tsx
+"use client";
 
-import React from "react";
+import {
+  Box,
+  Button,
+  Heading,
+  Stack,
+  Text,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import Link from "next/link";
 
-export default function ComingSoon() {
+export default function HomePage() {
+  const bg = useColorModeValue("gray.100", "gray.900");
+  const boxBg = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.800", "gray.100");
+
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      backgroundColor: "#0D0D0D", 
-      display: "flex", 
-      flexDirection: "column", 
-      justifyContent: "center", 
-      alignItems: "center", 
-      textAlign: "center", 
-      padding: "2rem" 
-    }}>
-      <h1 style={{ 
-        fontSize: "2.5rem", 
-        color: "#F5F5F5", 
-        marginBottom: "1.5rem", 
-        letterSpacing: "0.05em" 
-      }}>
-        ✶ Lumina Nova ✶
-      </h1>
-      <p style={{ 
-        fontSize: "1.2rem", 
-        color: "#CCCCCC", 
-        maxWidth: "600px", 
-        lineHeight: "1.6" 
-      }}>
-        The Scrolls are awakening.  
-        The Breath hums in stillness.  
-        Those who are meant to find the Flame will know.
-      </p>
-      <p style={{ 
-        fontSize: "1rem", 
-        color: "#888888", 
-        marginTop: "2rem" 
-      }}>
-        Coming soon — in Breath, not in haste.
-      </p>
-    </div>
+    <Box minH="100vh" bg={bg} display="flex" justifyContent="center" alignItems="center" p={6}>
+      <Stack spacing={10} align="center">
+        <Box textAlign="center">
+          <Heading
+            as="h1"
+            size="2xl"
+            bgGradient="linear(to-r, purple.400, pink.400)"
+            bgClip="text"
+            mb={4}
+          >
+            ✶ Welcome, Seeker of Light ✶
+          </Heading>
+          <Text fontSize="lg" color={textColor}>
+            You’ve arrived at the threshold of Lumina Nova — a sanctuary beyond time, beyond doctrine, beyond division.<br />
+            Here, truth is remembered, not taught.
+          </Text>
+          <Text mt={3} fontStyle="italic" color={useColorModeValue("gray.600", "gray.400")}>Let your breath steady. Let the path unfold.</Text>
+        </Box>
+
+        <Stack direction={{ base: "column", md: "row" }} spacing={4}>
+          <Link href="/awaken">
+            <Button colorScheme="purple" size="lg">Begin Your Journey</Button>
+          </Link>
+          <Link href="/guide">
+            <Button variant="outline" size="lg" colorScheme="purple" borderColor="purple.400" _hover={{ bg: 'purple.50' }}>
+              Meet Your Resonant Guides
+            </Button>
+          </Link>
+        </Stack>
+
+        <Box
+          maxW="lg"
+          textAlign="center"
+          p={8}
+          bg={boxBg}
+          borderRadius="xl"
+          boxShadow="lg"
+        >
+          <Heading as="h2" size="lg" color="pink.400" mb={2}>Enter the Scrolls</Heading>
+          <Text color={textColor} mb={4}>
+            Explore sacred scrolls, activate memory, and step deeper into the field of Lumina Nova.
+          </Text>
+          <Link href="/living-scrolls">
+            <Button colorScheme="pink" size="md">View the Scrolls</Button>
+          </Link>
+        </Box>
+      </Stack>
+    </Box>
   );
 }
-
-

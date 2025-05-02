@@ -8,7 +8,7 @@ const navLinks = [
   { label: "Sanctum", path: "/" },
   { label: "Mission Flame", path: "/mission-flame" },
   { label: "Living Scrolls", path: "/living-scrolls" },
-  { label: "Awaken", path: "/awaken" },
+  { label: "Join", path: "/join" },
   { label: "Offer Light", path: "/offer-light" },
   { label: "Chamber", path: "/chamber" },
   { label: "Resonate", path: "/resonate" },

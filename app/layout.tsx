@@ -10,7 +10,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [client] = useState(() => supabase);
 
   // ✧ Toggle this flag to true when you're ready to reveal the nav again
-  const showNav = false;
+  const showNav = true;
 
   return (
     <html lang="en">
