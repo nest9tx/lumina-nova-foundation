@@ -1,8 +1,6 @@
-// /app/api/stripe-webhook/route.ts
-
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
+export async function POST() {
   console.log("✅ Webhook received at /api/stripe-webhook");
   return NextResponse.json({ message: "Webhook received" }, { status: 200 });
 }
