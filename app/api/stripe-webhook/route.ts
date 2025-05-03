@@ -1,79 +1,91 @@
-// app/api/stripe-webhook/route.ts
-
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-export const dynamic = 'force-dynamic';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-03-31.basil',
+// Initialize Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: '2025-04-30.basil',
 });
 
+// Initialize Supabase
 const supabase = createClient(
-  process.env.SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+type StripeSession = {
+  customer_email?: string;
+  client_reference_id?: string;
+  metadata?: {
+    tier?: string;
+  };
+};
+
 export async function POST(req: Request) {
-  console.log('[Webhook] POST hit');
+  const rawBody = await req.text();
+  const sig = (await headers()).get('stripe-signature') as string;
 
-  const headerList = await headers();
-  const sig = headerList.get('stripe-signature');
-
-  if (!sig) {
-    console.error('[Webhook] Missing stripe-signature header');
-    return new NextResponse('Missing Stripe signature', { status: 400 });
-  }
-
-  let rawBody: string;
-  try {
-    rawBody = await req.text();
-  } catch (err) {
-    console.error('[Webhook] Failed to parse raw body', err);
-    return new NextResponse('Invalid body', { status: 400 });
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!sig || !webhookSecret) {
+    console.error('[Stripe] Missing signature or webhook secret');
+    return new NextResponse('Unauthorized', { status: 401 });
   }
 
   let event: Stripe.Event;
+
   try {
-    event = stripe.webhooks.constructEvent(
-      rawBody,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    );
-  } catch (err) {
-    console.error('[Webhook] Signature verification failed:', err);
-    return new NextResponse('Invalid signature', { status: 400 });
+    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error('[Stripe] Webhook Error:', err.message);
+    } else {
+      console.error('[Stripe] Unknown error occurred');
+    }
+    return new NextResponse(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`, { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session;
-    const identifier = session.customer_email || session.client_reference_id;
+    const session = event.data.object as StripeSession;
+    const email = session.customer_email;
+    const clientRef = session.client_reference_id!;
+    const tier = session.metadata?.tier ?? 'seeker';
 
-    console.log('[Webhook] Session:', session);
-
-    if (!identifier) {
-      return new NextResponse('No identifier found', { status: 400 });
+    if (!email && !clientRef) {
+      return new NextResponse('Missing identifiers', { status: 400 });
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
-      .update({ is_upgraded: true })
-      .or(`email.eq.${identifier},id.eq.${identifier}`);
+      .update<{ tier: string }>({ tier })
+      .eq('email', email ?? '') as { data: { id: string; email: string; is_upgraded: boolean; tier: string }[] | null, error: { message: string; details?: string } | null };
 
     if (error) {
-      console.error('[Supabase] Update error:', error);
+      console.error('[Supabase] Email update failed:', error);
       return new NextResponse('Supabase update failed', { status: 500 });
     }
 
-    return new NextResponse('Session processed', { status: 200 });
+    if (!data || (Array.isArray(data) && data.length === 0)) {
+      const { data: fallback, error: fallbackError } = await supabase
+        .from('profiles')
+        .update<{ tier: string }>({ tier })
+        .eq('id', clientRef) as { data: { id: string; email: string; is_upgraded: boolean; tier: string }[] | null, error: { message: string; details?: string } | null };
+
+      if (fallbackError) {
+        console.error('[Supabase] ID fallback failed:', fallbackError);
+        return new NextResponse('Fallback update failed', { status: 500 });
+      }
+
+      if (!fallback || fallback.length === 0) {
+        console.warn('[Supabase] No matching profile found for ID fallback.');
+        return new NextResponse('Profile not found', { status: 404 });
+      }
+
+      console.log('[Supabase] Profile updated via fallback ID:', fallback);
+    } else {
+      console.log('[Supabase] Profile updated via email:', data);
+    }
   }
 
-  return new NextResponse('Event type not handled', { status: 200 });
-}
-
-export async function GET() {
-  console.log('[Webhook] GET hit');
-  return new Response('Stripe GET ok', { status: 200 });
+  return new NextResponse('Success', { status: 200 });
 }
