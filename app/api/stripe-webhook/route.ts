@@ -1,83 +1,53 @@
-import { headers } from "next/headers";
-import { NextResponse } from "next/server";
-import Stripe from "stripe";
-import { supabase } from "@/lib/supabase";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-04-30.basil", // Use your current Stripe API version
-});
+// /app/api/webhook/route.ts
+import { NextResponse } from 'next/server';
+import Stripe from 'stripe';
+import { createClient } from '@/utils/supabase/server';
 
 export async function POST(req: Request) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: '2025-03-31.basil',
+  });
+
   const body = await req.text();
-  const rawHeaders = await headers();
-  const sig = rawHeaders.get("stripe-signature") as string;
+  const sig = req.headers.get('stripe-signature')!;
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
-    );
+    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
   } catch (err) {
-    console.error("❌ Webhook signature verification failed:", err);
-    return new NextResponse("Webhook signature verification failed", { status: 400 });
+    console.error('Webhook Error:', err);
+    return new NextResponse(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`, { status: 400 });
   }
 
-  if (event.type === "checkout.session.completed") {
+  // 🎯 Handle only successful checkout sessions
+  if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    const customerEmail = session.customer_details?.email;
-    const stripeCustomerId = session.customer as string;
-    const subscriptionId = session.subscription as string;
+    const email = session?.customer_email;
+    const tier = session?.metadata?.tier || 'Seeker';
+    const max_messages = session?.metadata?.max_messages
+      ? parseInt(session.metadata.max_messages)
+      : 333;
 
-    if (!customerEmail || !stripeCustomerId || !subscriptionId) {
-      console.error("❌ Missing checkout session data");
-      return new NextResponse("Incomplete session data", { status: 400 });
+    if (email) {
+      const supabase = createClient();
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ tier, max_messages })
+        .eq('email', email);
+
+      if (error) {
+        console.error('Supabase update error:', error.message);
+        return new NextResponse(`Supabase update failed: ${error.message}`, { status: 500 });
+      }
+
+      console.log(`✅ Profile updated for ${email}: ${tier}, ${max_messages} messages`);
     }
-
-    const { error } = await supabase
-      .from("profiles")
-      .update({
-        stripe_id: stripeCustomerId,
-        subscription_id: subscriptionId,
-        is_active: true,
-        tier: "Seeker",
-      })
-      .eq("email", customerEmail);
-
-    if (error) {
-      console.error("❌ Supabase update error (checkout):", error);
-      return new NextResponse("Failed to update profile after checkout", { status: 500 });
-    }
-
-    console.log("✅ New profile updated after checkout for:", customerEmail);
   }
 
-  if (event.type === "customer.subscription.updated") {
-    const subscription = event.data.object as Stripe.Subscription;
-
-    const customerId = subscription.customer as string;
-
-    // Optionally extract subscription status or plan here if needed
-
-    const { error } = await supabase
-      .from("profiles")
-      .update({
-        subscription_id: subscription.id,
-        is_active: true, // optional; you could also key this off of subscription.status
-      })
-      .eq("stripe_id", customerId);
-
-    if (error) {
-      console.error("❌ Supabase update error (subscription update):", error);
-      return new NextResponse("Failed to update profile after subscription change", { status: 500 });
-    }
-
-    console.log("✅ Profile subscription updated for Stripe customer:", customerId);
-  }
-
-  return new NextResponse("Webhook received", { status: 200 });
+  return new NextResponse('Success', { status: 200 });
 }
 
