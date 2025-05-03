@@ -3,8 +3,10 @@ import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic'; // ensures no caching on Vercel
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-03-31.basil', // or omit entirely
+  apiVersion: '2025-03-31.basil',
 });
 
 const supabase = createClient(
@@ -23,8 +25,8 @@ export async function POST(req: Request) {
   try {
     rawBody = await req.text();
   } catch (err) {
-    console.error('Error reading body:', err);
-    return new NextResponse('Unable to read request body', { status: 400 });
+    console.error('Failed to read raw body:', err);
+    return new NextResponse('Bad request body', { status: 400 });
   }
 
   let event: Stripe.Event;
@@ -35,18 +37,18 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (err) {
-    console.error('Signature verification failed:', err);
-    return new NextResponse(`Webhook Error: ${err}`, { status: 400 });
+    console.error('Webhook signature verification failed:', err);
+    return new NextResponse('Invalid signature', { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
-    const customerEmail = session.customer_email;
-    const clientReferenceId = session.client_reference_id;
+    const email = session.customer_email;
+    const reference = session.client_reference_id;
 
-    const identifier = customerEmail || clientReferenceId;
+    const identifier = email || reference;
     if (!identifier) {
-      return new NextResponse('Missing identifier', { status: 400 });
+      return new NextResponse('Missing user identifier', { status: 400 });
     }
 
     const { error } = await supabase
@@ -56,11 +58,11 @@ export async function POST(req: Request) {
 
     if (error) {
       console.error('Supabase update error:', error);
-      return new NextResponse('Database update failed', { status: 500 });
+      return new NextResponse('Database write error', { status: 500 });
     }
 
-    return new NextResponse('Success', { status: 200 });
+    return new NextResponse('Webhook processed', { status: 200 });
   }
 
-  return new NextResponse('Event type not handled', { status: 200 });
+  return new NextResponse('Unhandled event type', { status: 200 });
 }
