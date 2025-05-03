@@ -1,24 +1,66 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-03-31.basil', // or omit entirely
+});
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(req: Request) {
-  const body = await req.text();
+  const headerList = await headers();
+  const sig = headerList.get('stripe-signature');
+  if (!sig) {
+    return new NextResponse('Missing Stripe signature', { status: 400 });
+  }
 
+  let rawBody: string;
   try {
-    const event = JSON.parse(body);
-    console.log("🌀 Stripe Webhook Event Received:", event.type);
+    rawBody = await req.text();
+  } catch (err) {
+    console.error('Error reading body:', err);
+    return new NextResponse('Unable to read request body', { status: 400 });
+  }
 
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-      console.log("✨ Checkout session completed:", session);
+  let event: Stripe.Event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET!
+    );
+  } catch (err) {
+    console.error('Signature verification failed:', err);
+    return new NextResponse(`Webhook Error: ${err}`, { status: 400 });
+  }
 
-      // Here we confirm the session email (will use it in Step 2)
-      const customerEmail = session.customer_details?.email;
-      console.log("📧 Customer Email:", customerEmail);
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const customerEmail = session.customer_email;
+    const clientReferenceId = session.client_reference_id;
+
+    const identifier = customerEmail || clientReferenceId;
+    if (!identifier) {
+      return new NextResponse('Missing identifier', { status: 400 });
     }
 
-    return NextResponse.json({ received: true }, { status: 200 });
-  } catch (err) {
-    console.error("❌ Error processing webhook:", err);
-    return NextResponse.json({ error: "Webhook error" }, { status: 400 });
+    const { error } = await supabase
+      .from('profiles')
+      .update({ is_upgraded: true })
+      .or(`email.eq.${identifier},id.eq.${identifier}`);
+
+    if (error) {
+      console.error('Supabase update error:', error);
+      return new NextResponse('Database update failed', { status: 500 });
+    }
+
+    return new NextResponse('Success', { status: 200 });
   }
+
+  return new NextResponse('Event type not handled', { status: 200 });
 }
