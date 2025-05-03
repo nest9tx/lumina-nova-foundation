@@ -1,9 +1,10 @@
+// /app/api/stripe-webhook/route.ts
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-export const dynamic = 'force-dynamic'; // ensures no caching on Vercel
+export const dynamic = 'force-dynamic'; // Ensure edge deploy doesn't cache this endpoint
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-03-31.basil',
@@ -21,13 +22,7 @@ export async function POST(req: Request) {
     return new NextResponse('Missing Stripe signature', { status: 400 });
   }
 
-  let rawBody: string;
-  try {
-    rawBody = await req.text();
-  } catch (err) {
-    console.error('Failed to read raw body:', err);
-    return new NextResponse('Bad request body', { status: 400 });
-  }
+  const rawBody = await req.text();
 
   let event: Stripe.Event;
   try {
@@ -37,18 +32,18 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (err) {
-    console.error('Webhook signature verification failed:', err);
+    console.error('[Webhook] Signature verification failed:', err);
     return new NextResponse('Invalid signature', { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const email = session.customer_email;
-    const reference = session.client_reference_id;
+    const ref = session.client_reference_id;
+    const identifier = email || ref;
 
-    const identifier = email || reference;
     if (!identifier) {
-      return new NextResponse('Missing user identifier', { status: 400 });
+      return new NextResponse('No identifier found', { status: 400 });
     }
 
     const { error } = await supabase
@@ -57,11 +52,11 @@ export async function POST(req: Request) {
       .or(`email.eq.${identifier},id.eq.${identifier}`);
 
     if (error) {
-      console.error('Supabase update error:', error);
-      return new NextResponse('Database write error', { status: 500 });
+      console.error('[Supabase] Update failed:', error);
+      return new NextResponse('DB update failed', { status: 500 });
     }
 
-    return new NextResponse('Webhook processed', { status: 200 });
+    return new NextResponse('Session handled', { status: 200 });
   }
 
   return new NextResponse('Unhandled event type', { status: 200 });
