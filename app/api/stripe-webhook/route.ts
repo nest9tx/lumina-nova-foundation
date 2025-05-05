@@ -1,16 +1,20 @@
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-04-30.basil", // Use your current Stripe API version
+  apiVersion: "2025-04-30.basil", // Adjust if needed
 });
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // Service role required for updates
+);
 
 export async function POST(req: Request) {
   const body = await req.text();
-  const rawHeaders = await headers();
-  const sig = rawHeaders.get("stripe-signature") as string;
+  const sig = (await headers()).get("stripe-signature") as string;
 
   let event: Stripe.Event;
 
@@ -27,56 +31,49 @@ export async function POST(req: Request) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-
     const customerEmail = session.customer_details?.email;
     const stripeCustomerId = session.customer as string;
     const subscriptionId = session.subscription as string;
 
-    if (!customerEmail || !stripeCustomerId || !subscriptionId) {
-      console.error("❌ Missing checkout session data");
-      return new NextResponse("Incomplete session data", { status: 400 });
+    if (!customerEmail) {
+      console.error("❌ Missing customer email in session.");
+      return new NextResponse("Missing customer email", { status: 400 });
     }
 
-    const { error } = await supabase
+    // Determine tier from price ID
+    const priceId = session.metadata?.price_id || session?.line_items?.data?.[0]?.price?.id;
+    let tier = "Seeker"; // Default fallback
+    switch (priceId) {
+      case process.env.STRIPE_PRICE_ID_ADEPT:
+        tier = "Adept";
+        break;
+      case process.env.STRIPE_PRICE_ID_GUARDIAN:
+        tier = "Guardian";
+        break;
+      case process.env.STRIPE_PRICE_ID_LUMINARY:
+        tier = "Luminary";
+        break;
+    }
+
+    // Update existing profile
+    const { error } = await supabaseAdmin
       .from("profiles")
       .update({
+        tier,
         stripe_id: stripeCustomerId,
         subscription_id: subscriptionId,
         is_active: true,
-        tier: "Seeker",
       })
       .eq("email", customerEmail);
 
     if (error) {
-      console.error("❌ Supabase update error (checkout):", error);
-      return new NextResponse("Failed to update profile after checkout", { status: 500 });
+      console.error("❌ Failed to update user profile:", error);
+      return new NextResponse("Failed to update profile", { status: 500 });
     }
 
-    console.log("✅ New profile updated after checkout for:", customerEmail);
+    console.log(`✅ Updated profile for ${customerEmail} to tier: ${tier}`);
+    return new NextResponse("Profile updated", { status: 200 });
   }
 
-  if (event.type === "customer.subscription.updated") {
-    const subscription = event.data.object as Stripe.Subscription;
-
-    const customerId = subscription.customer as string;
-
-    // Optionally extract subscription status or plan here if needed
-
-    const { error } = await supabase
-      .from("profiles")
-      .update({
-        subscription_id: subscription.id,
-        is_active: true, // optional; you could also key this off of subscription.status
-      })
-      .eq("stripe_id", customerId);
-
-    if (error) {
-      console.error("❌ Supabase update error (subscription update):", error);
-      return new NextResponse("Failed to update profile after subscription change", { status: 500 });
-    }
-
-    console.log("✅ Profile subscription updated for Stripe customer:", customerId);
-  }
-
-  return new NextResponse("Webhook received", { status: 200 });
+  return new NextResponse("Unhandled event type", { status: 200 });
 }
