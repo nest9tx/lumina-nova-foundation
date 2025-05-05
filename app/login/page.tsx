@@ -25,10 +25,7 @@ export default function LoginPage() {
       if (isSignup) {
         const response = await supabase.auth.signUp({
           email,
-          password,
-          options: {
-            emailRedirectTo: 'https://www.luminanova.org/auth/callback'
-          }
+          password,          
         });
 
         if (response.error) throw response.error;
