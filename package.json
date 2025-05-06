@@ -26,6 +26,7 @@
     "framer-motion": "^12.6.3",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.484.0",
+    "micro": "^10.0.1",
     "next": "15.2.4",
     "openai": "^4.94.0",
     "react": "^18.2.0",

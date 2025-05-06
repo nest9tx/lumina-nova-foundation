@@ -1,16 +1,7 @@
-import { NextResponse } from 'next/server';
-//import { buffer } from 'micro';
+// app/api/stripe-webhook/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { createClient } from '@supabase/supabase-js';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-04-30.basil',
-});
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { headers } from 'next/headers';
 
 export const config = {
   api: {
@@ -18,52 +9,46 @@ export const config = {
   },
 };
 
-export async function POST(req: Request) {
-  const rawBody = await req.arrayBuffer();
-  const body = Buffer.from(rawBody);
-  const sig = req.headers.get('stripe-signature') as string;
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-04-30.basil',
+});
+
+export async function POST(req: NextRequest) {
+  const sig = (await headers()).get('stripe-signature')!;
+  const rawBody = await req.text();
 
   let event;
 
   try {
     event = stripe.webhooks.constructEvent(
-      body,
+      rawBody,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (err) {
-    console.error('Webhook signature verification failed.', err);
-    return new Response(`Webhook Error: ${(err as Error).message}`, { status: 400 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    console.error('Webhook signature verification failed:', message);
+    return new NextResponse(`Webhook Error: ${message}`, { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    const customerId = session.customer as string;
-    const subscriptionId = session.subscription as string;
+    // Optional metadata use
     const metadata = session.metadata || {};
     const supabaseId = metadata.supabase_id;
     const tier = metadata.tier;
     const message_limit = parseInt(metadata.message_limit || '0', 10);
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        stripe_id: customerId,
-        subscription_id: subscriptionId,
-        is_active: true,
-        is_upgraded: true,
-        tier,
-        message_limit,
-        max_messages: message_limit,
-      })
-      .eq('id', supabaseId);
-
-    if (error) {
-      console.error('Failed to update Supabase profile:', error.message);
-      return NextResponse.json({ error: 'Supabase update failed' }, { status: 500 });
-    }
+    // TODO: Connect to Supabase and update here
+    console.log('✅ Webhook received. Ready to update Supabase with:', {
+      supabaseId,
+      tier,
+      message_limit,
+    });
   }
 
-  return NextResponse.json({ received: true });
+  return new NextResponse('Webhook received', { status: 200 });
 }
+
+
