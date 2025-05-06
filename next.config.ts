@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    serverActions: {}
-  }
-}
+  api: {
+    bodyParser: false, // Required for Stripe webhooks to verify signature
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
