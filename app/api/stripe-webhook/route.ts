@@ -1,4 +1,3 @@
-// app/api/stripe-webhook/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
@@ -16,7 +15,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(req: NextRequest) {
   const sig = (await headers()).get('stripe-signature')!;
   const rawBody = await req.text();
-
   let event;
 
   try {
@@ -25,30 +23,21 @@ export async function POST(req: NextRequest) {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (err: unknown) {
+  } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error('Webhook signature verification failed:', message);
+    console.error('❌ Webhook signature verification failed:', message);
     return new NextResponse(`Webhook Error: ${message}`, { status: 400 });
   }
 
+  console.log('✅ Stripe event type:', event.type);
+
+  // Optional: Handle the event (safely test without DB first)
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
-
-    // Optional metadata use
-    const metadata = session.metadata || {};
-    const supabaseId = metadata.supabase_id;
-    const tier = metadata.tier;
-    const message_limit = parseInt(metadata.message_limit || '0', 10);
-
-    // TODO: Connect to Supabase and update here
-    console.log('✅ Webhook received. Ready to update Supabase with:', {
-      supabaseId,
-      tier,
-      message_limit,
-    });
+    console.log('✅ Checkout session received:', session.id);
   }
 
-  return new NextResponse('Webhook received', { status: 200 });
+  return new NextResponse('Received Stripe webhook', { status: 200 });
 }
 
 
