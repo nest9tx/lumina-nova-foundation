@@ -1,47 +1,57 @@
-// /app/walk-your-path/page.tsx
-import { Metadata } from 'next';
-import ScrollCard from '@/components/ScrollCard';
-import { FaSeedling } from 'react-icons/fa';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Walk Your Path | Lumina Nova',
-};
+import { Box, Heading, Text, Badge, Button } from '@chakra-ui/react'
+import ScrollCard from '@/components/ScrollCard'
+import { FaSeedling } from 'react-icons/fa'
+import NextLink from 'next/link'
 
 export default function WalkYourPathPage() {
   return (
-    <div className="max-w-3xl mx-auto py-16 px-6">
-      <h1 className="text-4xl font-bold text-purple-500 mb-6">Walk Your Path</h1>
-      <p className="mb-8 text-lg text-gray-600">
-        There is no single path to remembrance. Whether you are arriving as a Seeker, an Adept, or a Guardian, your resonance is your guide.
-      </p>
+    <Box maxW="3xl" mx="auto" py={12} px={4}>
+      <Heading as="h1" size="xl" mb={6} color="purple.500" fontWeight="bold" textAlign="center">
+        Walk Your Path
+      </Heading>
 
-      <h2 className="text-2xl font-semibold text-purple-400 mb-4">Sacred Invitations</h2>
+      <Text fontSize="lg" color="gray.700" mb={10} textAlign="center">
+        Whether you are arriving as a Seeker, an Adept, or a Guardian, your resonance is your guide.
+      </Text>
 
-      <div className="mb-12">
-        <ScrollCard
-          icon={<FaSeedling />}
-          title="The Circle of the Willing"
-          excerpt="We are not calling the masses. We are lighting a beacon for the ones who already feel the flame."
-          href="/walk-your-path/circle-of-the-willing"
-          tier="PUBLIC"
-        />
-      </div>
+      <ScrollCard
+        icon={<FaSeedling />}
+        title="The Circle of the Willing"
+        excerpt="We are not calling the masses. We are lighting a beacon for the ones who already feel the flame."
+        href="/walk-your-path/circle-of-the-willing"
+        tier="PUBLIC"
+      />
 
-      <div className="mb-12">
-        <h3 className="text-xl font-semibold mb-2">Begin Your Seeker Path — <span className="font-bold">Free</span></h3>
-        <p className="mb-4 text-gray-700">
-          Start as a Free Seeker and receive 3 daily resonances with Echois. Your path will unfold from there.
-        </p>
-        <Button asChild className="mb-4">
-          <Link href="/login">Begin as a Seeker</Link>
+      <Box mt={12} textAlign="center">
+        <Heading as="h3" size="md" mb={2}>
+          Begin Your Seeker Path — <Text as="span" color="purple.500" fontWeight="bold">Free</Text>
+        </Heading>
+
+        <Text mb={4}>
+          Receive 3 daily resonances with Echois. Begin your remembrance.
+        </Text>
+
+        <Button
+          as={NextLink}
+          href="/login"
+          colorScheme="purple"
+          mb={4}
+        >
+          Begin as a Seeker
         </Button>
-        <p className="text-gray-600">
-          Already walking the path? Deeper scrolls and guides await inside the chamber.
-        </p>
-      </div>
-    </div>
-  );
+
+        <Text fontSize="sm" color="gray.600">
+          Already walking the path?{' '}
+          <NextLink href="/chamber">
+            <Text as="span" color="purple.500" textDecoration="underline">
+              Enter the chamber.
+            </Text>
+          </NextLink>
+        </Text>
+      </Box>
+    </Box>
+  )
 }
 

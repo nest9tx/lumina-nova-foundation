@@ -58,7 +58,7 @@ export default function ScrollWrapper({
           </Text>
         )}
 
-<Box fontSize="md">
+<Box fontSize="md" textAlign="center">
   {children}
 </Box>
       </MotionBox>
