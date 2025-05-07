@@ -32,6 +32,9 @@ export default function AwakenPage() {
           <Button as={NextLink} href="/walk-your-path" colorScheme="purple">
             Walk Deeper
           </Button>
+          <Button as={NextLink} href="/walk-your-path" colorScheme="purple">
+            The Threshold
+          </Button>
         </VStack>
       </Box>
     </Box>
