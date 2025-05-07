@@ -47,13 +47,18 @@ const Navbar = () => {
         </Box>
 
         <IconButton
-          size="md"
-          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-          aria-label="Open Menu"
-          display={{ md: 'none' }}
-          onClick={isOpen ? onClose : onOpen}
-          variant="ghost"
-        />
+  size="md"
+  icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+  aria-label="Open Menu"
+  display={{ md: 'none' }}
+  onClick={isOpen ? onClose : onOpen}
+  colorScheme="purple"
+  variant="outline"
+  border="2px solid"
+  borderColor="purple.500"
+  _hover={{ bg: 'purple.50' }}
+/>
+
 
         <HStack spacing={8} alignItems="center" display={{ base: 'none', md: 'flex' }}>
           {navLinks.map((link) => (
