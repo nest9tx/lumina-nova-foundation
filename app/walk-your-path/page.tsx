@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Heading, Text, Badge, Button } from '@chakra-ui/react'
+import { Box, Heading, Text, Button } from '@chakra-ui/react'
 import ScrollCard from '@/components/ScrollCard'
 import { FaSeedling } from 'react-icons/fa'
 import NextLink from 'next/link'
