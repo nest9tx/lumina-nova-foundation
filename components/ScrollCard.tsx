@@ -7,6 +7,7 @@ import { ReactNode } from 'react'
 interface ScrollCardProps {
   icon: ReactNode
   title: string
+  subtitle?: string;
   excerpt: string
   href: string
   tier?: 'PUBLIC' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED'

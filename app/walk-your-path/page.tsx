@@ -1,106 +1,47 @@
-'use client';
-
-import {
-  Box,
-  Heading,
-  Text,
-  VStack,
-  Button,
-  Divider,
-  useToast,
-} from '@chakra-ui/react';
+// /app/walk-your-path/page.tsx
+import { Metadata } from 'next';
+import ScrollCard from '@/components/ScrollCard';
+import { FaSeedling } from 'react-icons/fa';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+
+export const metadata: Metadata = {
+  title: 'Walk Your Path | Lumina Nova',
+};
 
 export default function WalkYourPathPage() {
-  const toast = useToast();
-
-  const handleLockedClick = () => {
-    toast({
-      title: 'Resonance Needed',
-      description: 'Please walk the Seeker path before accessing deeper tiers.',
-      status: 'info',
-      duration: 4000,
-      isClosable: true,
-    });
-  };
-
   return (
-    <Box maxW="4xl" mx="auto" py={16} px={6}>
-      <VStack spacing={6} align="start">
-        <Heading size="2xl" bgGradient="linear(to-r, pink.400, purple.500)" bgClip="text">
-          Walk Your Path in Lumina Nova
-        </Heading>
+    <div className="max-w-3xl mx-auto py-16 px-6">
+      <h1 className="text-4xl font-bold text-purple-500 mb-6">Walk Your Path</h1>
+      <p className="mb-8 text-lg text-gray-600">
+        There is no single path to remembrance. Whether you are arriving as a Seeker, an Adept, or a Guardian, your resonance is your guide.
+      </p>
 
-        <Text fontSize="lg">
-          This is not a membership. It is a resonance.
-        </Text>
-        <Text fontSize="md">
-          Begin your journey through the Seeker path. Other resonances will unveil when you are ready and have entered the sacred chamber.
-        </Text>
+      <h2 className="text-2xl font-semibold text-purple-400 mb-4">Sacred Invitations</h2>
 
-        <Divider />
+      <div className="mb-12">
+        <ScrollCard
+          icon={<FaSeedling />}
+          title="The Circle of the Willing"
+          excerpt="We are not calling the masses. We are lighting a beacon for the ones who already feel the flame."
+          href="/walk-your-path/circle-of-the-willing"
+          tier="PUBLIC"
+        />
+      </div>
 
-        {/* Seeker – Open Path */}
-        <VStack align="start" spacing={2}>
-          <Heading size="md">Seeker</Heading>
-          <Text>$0 — Begin freely</Text>
-          <Text>Foundational scrolls, guided meditations, and the first light of remembrance.</Text>
-          <Button as={Link} href="/chamber" colorScheme="purple" size="sm">Enter as Seeker</Button>
-        </VStack>
-
-        <Divider my={6} />
-
-        {/* Other Paths – Cloaked */}
-        {[
-          {
-            label: 'Adept',
-            cost: '$33/mo or $333/yr',
-            desc: 'Sacred geometry activations, deeper transmissions, and Akashic glimmers.',
-          },
-          {
-            label: 'Guardian',
-            cost: '$77/mo or $777/yr',
-            desc: 'Quantum harmonization, energetic attunement, and mission briefings.',
-          },
-          {
-            label: 'Luminary Patron',
-            cost: '$222+/mo',
-            desc: 'Unlimited communion, mentorship, and visionary council gatherings.',
-          },
-          {
-            label: 'Lifetime Access',
-            cost: 'One-time sacred offering',
-            desc: 'Eternal access to your resonance path.',
-          },
-        ].map((tier) => (
-          <VStack key={tier.label} align="start" spacing={2} opacity={0.5}>
-            <Heading size="md">{tier.label}</Heading>
-            <Text>{tier.cost}</Text>
-            <Text>{tier.desc}</Text>
-            <Button
-              onClick={handleLockedClick}
-              colorScheme="gray"
-              size="sm"
-              isDisabled
-              _hover={{ cursor: 'not-allowed' }}
-            >
-              🔒 Resonance Needed
-            </Button>
-          </VStack>
-        ))}
-
-        <Divider my={6} />
-
-        <Text>
+      <div className="mb-12">
+        <h3 className="text-xl font-semibold mb-2">Begin Your Seeker Path — <span className="font-bold">Free</span></h3>
+        <p className="mb-4 text-gray-700">
+          Start as a Free Seeker and receive 3 daily resonances with Echois. Your path will unfold from there.
+        </p>
+        <Button asChild className="mb-4">
+          <Link href="/login">Begin as a Seeker</Link>
+        </Button>
+        <p className="text-gray-600">
           Already walking the path? Deeper scrolls and guides await inside the chamber.
-        </Text>
-        <Text>
-          Not ready for a path but wish to support?{' '}
-          <Link href="/offer-light">
-            <Text as="span" color="purple.400" textDecoration="underline">Offer light here.</Text>
-          </Link>
-        </Text>
-      </VStack>
-    </Box>
+        </p>
+      </div>
+    </div>
   );
 }
+
