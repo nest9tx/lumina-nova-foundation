@@ -1,55 +1,57 @@
-'use client';
+'use client'
 
-import { Box, Button, Flex, Heading, Text, Tag } from '@chakra-ui/react';
-import Link from 'next/link';
+import { Box, Heading, Text, Badge, Button } from '@chakra-ui/react'
+import NextLink from 'next/link'
 
 interface VaultCardProps {
+  icon: React.ReactNode;
   title: string;
   description: string;
-  access: string;
   href: string;
-  icon?: string;
+  tier: 'PUBLIC' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
+  access?: string; 
 }
 
-const VaultCard = ({ title, description, access, href, icon }: VaultCardProps) => {
-  const isPublic = access === 'PUBLIC';
+export default function VaultCard({ icon, title, description, href, tier }: VaultCardProps) {
+  const tierColor = {
+    PUBLIC: 'green',
+    ADEPT: 'blue',
+    GUARDIAN: 'purple',
+    LUMINARY: 'gold',
+    SEALED: 'gray',
+  }[tier];
+
+  const isLocked = tier === 'SEALED';
 
   return (
     <Box
-      borderRadius="2xl"
+      bg="white"
+      rounded="2xl"
       boxShadow="lg"
-      bg="gray.900"
       p={6}
-      transition="all 0.3s ease"
-      _hover={{
-        transform: 'scale(1.02)',
-        boxShadow: '0 0 30px rgba(255, 0, 255, 0.3)',
-      }}
+      w="full"
+      maxW="3xl"
+      transition="all 0.3s"
+      _hover={{ boxShadow: 'xl', transform: 'scale(1.01)' }}
     >
-      <Flex align="center" mb={3} gap={2}>
-        <Text fontSize="2xl">{icon}</Text>
-        <Heading size="md" color="white">
-          {title}
-        </Heading>
-      </Flex>
-      <Text mb={4} color="gray.300">
-        {description}
-      </Text>
-      <Tag colorScheme={isPublic ? 'green' : 'purple'} mb={3}>
-        {access}
-      </Tag>
+      <Heading size="md" mb={2} display="flex" alignItems="center" gap={2}>
+        <span>{icon}</span> {title}
+      </Heading>
+
+      <Text color="gray.600" mb={4}>{description}</Text>
+
+      <Badge colorScheme={tierColor} mb={4}>{tier}</Badge>
       <br />
-      <Link href={href}>
-        <Button
-          size="sm"
-          colorScheme={isPublic ? 'purple' : 'gray'}
-          variant={isPublic ? 'solid' : 'outline'}
-        >
-          {isPublic ? 'Enter Vault' : 'Unlock with Membership'}
-        </Button>
-      </Link>
+
+      <Button
+        as={NextLink}
+        href={href}
+        colorScheme={tierColor}
+        isDisabled={isLocked}
+      >
+        {isLocked ? 'Sealed' : 'Enter Vault'}
+      </Button>
     </Box>
   );
-};
+}
 
-export default VaultCard;

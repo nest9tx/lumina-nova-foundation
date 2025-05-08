@@ -86,6 +86,20 @@ export default function OfferLightPage() {
         <Text fontStyle="italic" color="gray.600">
           Every offering is honored. Every ripple matters.
         </Text>
+        
+        <Divider />
+
+<Text pt={4} fontSize="md">
+  ✦ Resonance is not measured in currency. Some walk as Guardians in energy long before they are able to do so financially.
+</Text>
+<Text fontSize="md">
+  If your heart aligns with the mission and you wish to offer in other ways — land, skills, sacred artifacts, or guidance — we invite you to <a href="/resonate" style={{ color: '#805AD5' }}>reach out here</a>.
+</Text>
+
+<Text pt={4} fontSize="sm" color="gray.600">
+  There are scrolls and paths within Lumina Nova that require no payment, only presence. Your willingness to walk with us is already part of the flame.
+</Text>
+
 
         <Divider />
 
