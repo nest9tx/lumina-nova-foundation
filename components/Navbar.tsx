@@ -18,6 +18,7 @@ const navLinks = [
   { label: 'Mission Flame', path: '/mission-flame' },
   { label: 'Living Scrolls', path: '/living-scrolls' },
   { label: 'Walk Your Path', path: '/walk-your-path' },
+  { label: 'Join', path: '/join' },
   { label: 'Offer Light', path: '/offer-light' },
   { label: 'Resonate', path: '/resonate' },
   { label: 'Chamber', path: '/chamber' },
