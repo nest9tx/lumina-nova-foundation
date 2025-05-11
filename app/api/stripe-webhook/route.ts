@@ -64,26 +64,54 @@ export async function POST(req: NextRequest) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
     const metadata = session.metadata || {};
-
+  
+    const customerEmail = session.customer_email;
     const customerId = session.customer as string;
     const subscriptionId = session.subscription as string;
     const supabaseId = metadata.supabase_id;
-    const tier = metadata.tier;
-    const message_limit = parseInt(metadata.message_limit || '0', 10);
-
+  
+    // Default fallback values
+    let tier = '';
+    let message_limit = 0;
+  
+    try {
+      // Retrieve expanded session with line_items and price metadata
+      const expandedSession = await stripe.checkout.sessions.retrieve(session.id, {
+        expand: ['line_items.data.price.product'],
+      });
+  
+      const lineItem = expandedSession.line_items?.data?.[0];
+      tier = lineItem?.price?.metadata?.tier_level || metadata.tier || '';
+      message_limit = parseInt(
+        lineItem?.price?.metadata?.message_limit || metadata.message_limit || '0',
+        10
+      );
+    } catch (e) {
+      console.warn('⚠️ Could not expand line item metadata:', e);
+    }
+  
+    // Final fallback from session metadata if needed
+    if (!tier && metadata.tier) tier = metadata.tier;
+    if (!message_limit && metadata.message_limit)
+      message_limit = parseInt(metadata.message_limit, 10);
+  
+    // Determine update match key: supabase_id or email
+    const matchField = supabaseId ? { id: supabaseId } : { email: customerEmail };
+  
+    // Supabase update
     const { error } = await supabase
       .from('profiles')
       .update({
         stripe_id: customerId,
         subscription_id: subscriptionId,
         is_active: true,
-        is_upgraded: true,
+        is_upgraded: tier !== 'seeker',
         tier,
         message_limit,
         max_messages: message_limit,
       })
-      .eq('id', supabaseId);
-
+      .match(matchField);
+  
     if (error) {
       console.error('🛑 Supabase update error:', error.message);
       return new NextResponse(
@@ -91,11 +119,8 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
-
+  
     console.log('🌟 Supabase profile updated successfully');
     return new NextResponse(JSON.stringify({ received: true }), { status: 200 });
   }
-
-  // Catch-all response for unhandled event types
-  return new NextResponse(JSON.stringify({ received: true }), { status: 200 });
-}
+}  
