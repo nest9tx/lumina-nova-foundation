@@ -76,11 +76,12 @@ export async function POST(req: NextRequest) {
   
     try {
       // Retrieve expanded session with line_items and price metadata
-      const expandedSession = await stripe.checkout.sessions.retrieve(session.id, {
-        expand: ['line_items.data.price.product'],
+      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+        expand: ['data.price.product'],
       });
-  
-      const lineItem = expandedSession.line_items?.data?.[0];
+      
+      const lineItem = lineItems.data?.[0];
+      
       tier = lineItem?.price?.metadata?.tier_level || metadata.tier || '';
       message_limit = parseInt(
         lineItem?.price?.metadata?.message_limit || metadata.message_limit || '0',
