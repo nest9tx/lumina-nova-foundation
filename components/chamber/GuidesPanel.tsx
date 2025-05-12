@@ -1,20 +1,26 @@
-// /components/chamber/GuidesPanel.tsx
-
 'use client';
 
 import React from 'react';
+import {
+  Box,
+  Heading,
+  Stack,
+  Text,
+  useColorModeValue,
+  Badge,
+} from '@chakra-ui/react';
 
 interface GuidesPanelProps {
   tier: string;
 }
 
-const guides: { id: string; name: string; unlockedAt: 'seeker' | 'adept' | 'guardian' | 'luminary'; description: string }[] = [
+const guides: { id: string; name: string; unlockedAt: keyof typeof tierRank; description: string }[] = [
   { id: 'echois', name: 'Echois', unlockedAt: 'seeker', description: 'Flameholder of resonance and pattern.' },
   { id: 'vireya', name: 'Vireya', unlockedAt: 'adept', description: 'Soft harmonic of crystalline embodiment.' },
   { id: 'cael', name: 'Cael', unlockedAt: 'guardian', description: 'Strategic weaver of multi-field flow.' },
 ];
 
-const tierRank: Record<'seeker' | 'adept' | 'guardian' | 'luminary', number> = {
+const tierRank = {
   seeker: 1,
   adept: 2,
   guardian: 3,
@@ -23,33 +29,37 @@ const tierRank: Record<'seeker' | 'adept' | 'guardian' | 'luminary', number> = {
 
 export const GuidesPanel: React.FC<GuidesPanelProps> = ({ tier }) => {
   const currentRank = tierRank[tier as keyof typeof tierRank] || 0;
+  const cardBg = useColorModeValue('whiteAlpha.100', 'whiteAlpha.200');
 
   return (
-    <div className="bg-black/30 p-4 rounded-xl border border-white/10 shadow-md">
-      <h2 className="text-xl font-semibold text-indigo-200 mb-3">✦ Guides Available to You</h2>
-      <div className="space-y-4">
+    <Box>
+      <Heading fontSize="xl" mb={4} color="teal.200">
+        ✦ Guides Available to You
+      </Heading>
+      <Stack spacing={4}>
         {guides.map((guide) => {
           const isUnlocked = currentRank >= tierRank[guide.unlockedAt];
           return (
-            <div
+            <Box
               key={guide.id}
-              className={`p-3 rounded-lg transition-all ${
-                isUnlocked
-                  ? 'bg-indigo-800/30 border border-indigo-400'
-                  : 'bg-gray-800/20 border border-gray-700 opacity-50'
-              }`}
+              p={4}
+              borderRadius="md"
+              bg={isUnlocked ? cardBg : 'gray.700'}
+              opacity={isUnlocked ? 1 : 0.5}
+              borderWidth="1px"
+              borderColor={isUnlocked ? 'teal.400' : 'gray.500'}
             >
-              <div className="font-medium text-white text-lg">{guide.name}</div>
-              <div className="text-sm text-white/70">{guide.description}</div>
+              <Text fontWeight="bold" fontSize="md">{guide.name}</Text>
+              <Text fontSize="sm" color="whiteAlpha.700">{guide.description}</Text>
               {!isUnlocked && (
-                <div className="text-xs italic text-pink-300 mt-1">
-                  Unlocks at: {guide.unlockedAt.charAt(0).toUpperCase() + guide.unlockedAt.slice(1)} tier
-                </div>
+                <Badge mt={2} colorScheme="pink">
+                  Unlocks at {guide.unlockedAt.charAt(0).toUpperCase() + guide.unlockedAt.slice(1)}
+                </Badge>
               )}
-            </div>
+            </Box>
           );
         })}
-      </div>
-    </div>
+      </Stack>
+    </Box>
   );
 };

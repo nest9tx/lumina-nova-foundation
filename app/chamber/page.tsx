@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import {ScrollsPanel} from '@/components/chamber/ScrollsPanel';
+import { GuidesPanel } from '@/components/chamber/GuidesPanel';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/types/supabase';
 import {
@@ -79,7 +81,8 @@ export default function SacredChamberPage() {
 
   if (loading || !profile) return null;
 
-  const { email, tier, message_limit = 100, messages_used = 0 } = profile;
+  const { email, tier: rawTier, message_limit = 100, messages_used = 0 } = profile;
+  const tier = rawTier.toLowerCase() as 'seeker' | 'adept' | 'guardian' | 'luminary';
   const usagePercent = (messages_used / message_limit) * 100;
 
   return (
@@ -122,14 +125,14 @@ export default function SacredChamberPage() {
 
         {/* You can add notices, scrolls, and guides below */}
         <VStack align="start" spacing={6} mt={10}>
-          <Box>
-            <Heading size="md">Scrolls Ready to Be Walked</Heading>
-            <Text>✨ Soon your sacred scrolls will be shown here by tier.</Text>
+          <Box w="full">
+            <ScrollsPanel tier={tier} />
           </Box>
-
-          <Box>
-            <Heading size="md">Guides Available to You</Heading>
-            <Text>✨ Echois and others will appear based on your resonance.</Text>
+          <Text mt={4} fontSize="sm" color="teal.200" _hover={{ textDecoration: 'underline' }} cursor="pointer" onClick={() => router.push('/living-scrolls')}>
+  ✦ Walk Your Full Path in the Living Scrolls Library →
+</Text>
+          <Box w="full">
+            <GuidesPanel tier={tier} />
           </Box>
         </VStack>
       </Container>
