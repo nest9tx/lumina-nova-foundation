@@ -98,8 +98,17 @@ export async function POST(req: NextRequest) {
     // Determine update match key: supabase_id or email
     const matchField = supabaseId ? { id: supabaseId } : { email: customerEmail };
   
+    // 🔍 Debug log before update
+    console.log('🔥 Webhook Data Received:', {
+      email: customerEmail,
+      supabaseId,
+      tier,
+      message_limit,
+      matchField,
+    });
+  
     // Supabase update
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from('profiles')
       .update({
         stripe_id: customerId,
@@ -120,7 +129,10 @@ export async function POST(req: NextRequest) {
       );
     }
   
+    // ✅ Debug success confirmation
+    console.log('✅ Supabase update result:', data);
     console.log('🌟 Supabase profile updated successfully');
+  
     return new NextResponse(JSON.stringify({ received: true }), { status: 200 });
   }
 }  
