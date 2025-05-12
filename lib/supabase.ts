@@ -1,28 +1,26 @@
-// lib/supabase.ts
-
-import { cookies } from 'next/headers';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { Database } from '@/types/supabase'; // adjust path if needed
 
 export async function getUserProfile() {
   const supabase = createServerComponentClient<Database>({ cookies });
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) return null;
+  if (!session?.user?.id) return null;
 
-  const { data, error } = await supabase
+  const { data: profile, error } = await supabase
     .from('profiles')
     .select('*')
-    .eq('id', user.id)
+    .eq('id', session.user.id)
     .single();
 
   if (error) {
-    console.error('🛑 Supabase profile fetch error:', error.message);
+    console.error('❌ Error fetching profile:', error.message);
     return null;
   }
 
-  return data;
+  return profile;
 }

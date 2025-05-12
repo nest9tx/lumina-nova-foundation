@@ -1,32 +1,26 @@
-export type Json = string | number | boolean | null | { [key: string]: Json } | Json[];
+// /types/supabase.ts
+
+export type Json = string | number | boolean | null | Json[] | { [key: string]: Json };
 
 export interface Database {
   public: {
     Tables: {
-      user_interactions: {
+      profiles: {
         Row: {
-          id: number;
-          user_uuid: string;
+          id: string;
+          email: string;
+          tier: string;
+          message_limit: number;
           message_count: number;
-          updated_at: string;
+          is_active?: boolean;
+          is_upgraded?: boolean;
+          stripe_id?: string;
+          subscription_id?: string;
         };
-        Insert: {
-          user_uuid: string;
-          message_count?: number;
-        };
-        Update: {
-          user_uuid?: string;
-          message_count?: number;
-        };
+        Insert: Partial<Database['public']['Tables']['profiles']['Row']>;
+        Update: Partial<Database['public']['Tables']['profiles']['Row']>;
       };
-    };
-    Functions: {
-      increment_message_count: {
-        Args: { user_uuid: string };
-        Returns: void;
-      };
+      // You can add other tables here
     };
   };
 }
-
-
