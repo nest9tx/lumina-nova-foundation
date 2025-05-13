@@ -8,7 +8,7 @@ export default function OfferLightPage() {
     <Box maxW="3xl" mx="auto" py={12} px={4} textAlign="center">
       <VStack spacing={6}>
         <Heading as="h1" size="2xl" color="purple.600">
-          Offer Light to the Flame
+          Walk Your Path
         </Heading>
         <Text fontSize="lg" color="gray.600">
           Every offering to Lumina Nova supports the expansion of harmonic stewardship,
@@ -32,15 +32,7 @@ export default function OfferLightPage() {
           >
             Begin as a Seeker — Free
           </Button>
-          <Button
-            as={Link}
-            href="/walk-your-path"
-            colorScheme="gray"
-            variant="ghost"
-            size="md"
-          >
-            Explore Tier Pathways
-          </Button>
+         
         </VStack>
       </VStack>
     </Box>

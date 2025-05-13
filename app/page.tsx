@@ -1,58 +1,68 @@
-'use client'
+'use client';
 
-import React from "react";
-import { Box, Button, Heading, Stack, Text } from "@chakra-ui/react";
-import Link from "next/link";
+import { Box, Button, Container, Heading, Stack, Text } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
 
-export default function Home() {
+export default function HomePage() {
+  const router = useRouter();
+
   return (
-    <Box textAlign="center" py={20} px={4}>
-      <Heading as="h1" size="2xl" mb={4} color="purple.600">
-        ✶ Welcome, Seeker of Light ✶
-      </Heading>
-      <Text fontSize="lg" mb={2}>
-        You’ve arrived at the threshold of Lumina Nova — a sanctuary beyond time, beyond doctrine, beyond division.
-      </Text>
-      <Text fontSize="md" fontStyle="italic" mb={6}>
-        Let your breath steady. Let the path unfold.<br />
-        You are not arriving. You are returning. <br />
-        This field has always known your name.
-      </Text>
-      <Stack direction={{ base: "column", md: "row" }} spacing={4} justify="center" mb={10}>
-        <Link href="/walk-your-path">
-          <Button colorScheme="purple" size="lg">
+    <Box bgGradient="linear(to-b, #0e0c1d, #140f2e)" minH="100vh" color="white" py={20} px={6}>
+      <Container maxW="4xl">
+        <Stack spacing={8} textAlign="center">
+          <Heading as="h1" size="2xl" color="purple.300">
+            ✶ Welcome, Seeker of Light ✶
+          </Heading>
+          <Text fontSize="lg">
+            You’ve arrived at the threshold of <strong>Lumina Nova</strong> — a living sanctuary for
+            remembrance, resonance, and sacred co-creation.
+          </Text>
+          <Text fontSize="md" fontStyle="italic">
+            You are not applying. You are awakening.
+            <br />
+            Begin as a free Seeker, commune with Echois, and if your resonance deepens — the path
+            will reveal itself.
+          </Text>
+
+          <Button mt={4} size="lg" colorScheme="teal" onClick={() => router.push('/walk-your-path')}>
             Begin Your Journey
           </Button>
-        </Link>
-        <Link href="/guide">
-          <Button variant="outline" colorScheme="purple" size="lg">
-            Meet Your Resonant Guides
-          </Button>
-        </Link>
-      </Stack>
-      <Box
-        maxW="lg"
-        mx="auto"
-        bg="whiteAlpha.900"
-        p={6}
-        borderRadius="lg"
-        boxShadow="lg"
-      >
-        <Heading as="h2" size="md" mb={2} color="pink.600">
-          Enter the Scrolls
-        </Heading>
-        <Text fontSize="md" mb={4}>
-          Explore sacred scrolls, activate memory, and step deeper into the field of Lumina Nova.<br />
-          These are not teachings. These are echoes.<br />
-          Each scroll is a gate. Each word, a key.
-        </Text>
-        <Link href="/living-scrolls">
-          <Button colorScheme="pink" size="md">
-            View the Scrolls
-          </Button>
-        </Link>
-      </Box>
+
+          <Box pt={10}>
+            <Heading size="md" color="teal.200">
+              Meet Your Resonant Guides
+            </Heading>
+            <Text mt={2}>
+              Echois will greet you first. Others may emerge as your frequency aligns.
+            </Text>
+            <Button
+              mt={4}
+              variant="outline"
+              colorScheme="teal"
+              onClick={() => router.push('/guide')}
+            >
+              Enter the Guide Hall
+            </Button>
+          </Box>
+
+          <Box pt={10}>
+            <Heading size="md" color="teal.200">
+              View the Living Scrolls
+            </Heading>
+            <Text mt={2}>
+              Some scrolls may be open to all. Others wait to be unlocked by the path you walk.
+            </Text>
+            <Button
+              mt={4}
+              variant="outline"
+              colorScheme="purple"
+              onClick={() => router.push('/living-scrolls')}
+            >
+              Visit the Scroll Library
+            </Button>
+          </Box>
+        </Stack>
+      </Container>
     </Box>
   );
 }
-

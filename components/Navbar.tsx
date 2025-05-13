@@ -19,7 +19,8 @@ const navLinks = [
   { label: 'Living Scrolls', path: '/living-scrolls' },
   { label: 'Walk Your Path', path: '/walk-your-path' },
   { label: 'Offer Light', path: '/offer-light' },
-  { label: 'Join', path: '/join' },
+  //{ label: 'Join', path: '/join' },
+  { label: 'Signup', path: '/signup' },
   { label: 'Chamber', path: '/chamber' },
   { label: 'Resonate', path: '/resonate' },
 ];

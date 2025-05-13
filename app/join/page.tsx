@@ -56,8 +56,8 @@ export default function JoinPage() {
               colorScheme="teal"
               size="lg"
               onClick={() => {
-                window.location.href = process.env.NEXT_PUBLIC_STRIPE_SEEKER_MONTHLY_LINK || '#';
-              }}
+                window.location.href = process.env.NEXT_PUBLIC_STRIPE_SEEKER_CHECKOUT_URL || '#';
+              }}              
             >
               Begin Your Path
             </Button>
