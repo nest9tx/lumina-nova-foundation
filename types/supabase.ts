@@ -12,6 +12,7 @@ export interface Database {
           tier: string;
           message_limit: number;
           message_count: number;
+          full_name: string;
           is_active?: boolean;
           is_upgraded?: boolean;
           stripe_id?: string;

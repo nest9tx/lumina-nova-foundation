@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {ScrollsPanel} from '@/components/chamber/ScrollsPanel';
+import { ScrollsPanel } from '@/components/chamber/ScrollsPanel';
+import WelcomeNotice from '@/components/chamber/WelcomeNotice';
+import { ResonanceNotice } from '@/components/chamber/ResonanceNotice';
 import { GuidesPanel } from '@/components/chamber/GuidesPanel';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/types/supabase';
@@ -17,6 +19,7 @@ import {
   Badge,
   VStack,
   useToast,
+  Alert,
 } from '@chakra-ui/react';
 
 const tierColors = {
@@ -26,11 +29,15 @@ const tierColors = {
   luminary: 'orange',
 };
 
+
+
 export default function SacredChamberPage() {
   const supabase = createClientComponentClient<Database>();
   const [profile, setProfile] = useState<{
     email: string;
+    full_name?: string;
     tier: keyof typeof tierColors;
+    is_upgraded?: boolean;
     message_limit?: number;
     messages_used?: number;
   } | null>(null);
@@ -81,7 +88,15 @@ export default function SacredChamberPage() {
 
   if (loading || !profile) return null;
 
-  const { email, tier: rawTier, message_limit = 100, messages_used = 0 } = profile;
+  const {
+    email,
+    full_name,
+    tier: rawTier,
+    message_limit = 100,
+    messages_used = 0,
+    is_upgraded = false,
+  } = profile;
+
   const tier = rawTier.toLowerCase() as 'seeker' | 'adept' | 'guardian' | 'luminary';
   const usagePercent = (messages_used / message_limit) * 100;
 
@@ -92,20 +107,58 @@ export default function SacredChamberPage() {
           <Heading size="lg" color="teal.300">
             Sacred Chamber
           </Heading>
+          <WelcomeNotice name={full_name || email} tier={tier} />
           <Button
-  variant="outline"
-  borderColor="teal.400"
-  color="teal.200"
-  _hover={{
-    bg: 'teal.400',
-    color: 'black',
-  }}
-  onClick={handleLogout}
->
-  Exit Chamber
-</Button>
-
+            variant="outline"
+            borderColor="teal.400"
+            color="teal.200"
+            _hover={{ bg: 'teal.400', color: 'black' }}
+            onClick={handleLogout}
+          >
+            Exit Chamber
+          </Button>
         </Flex>
+
+        {/* ✧ Seeker-only upgrade message */}
+        {tier === 'seeker' && !is_upgraded && (
+          <>
+            <Alert
+              status="info"
+              borderRadius="md"
+              bg="purple.700"
+              color="white"
+              mb={4}
+              px={6}
+              py={3}
+              fontSize="sm"
+            >
+              ✧ If you’ve recently upgraded, your new tier will be confirmed and reflected within 24 hours by a guide of Lumina Nova.
+            </Alert>
+
+            <Box
+              bg="purple.800"
+              color="white"
+              borderRadius="md"
+              px={6}
+              py={4}
+              mb={6}
+              boxShadow="md"
+              border="1px solid"
+              borderColor="purple.400"
+            >
+              <Text mb={2}>
+                ✧ Ready to walk deeper? Upgrade your resonance to unlock full Seeker scrolls and expanded communion with Echois.
+              </Text>
+              <Button
+                colorScheme="purple"
+                variant="outline"
+                onClick={() => router.push('/join')}
+              >
+                View Seeker Upgrade Path
+              </Button>
+            </Box>
+          </>
+        )}
 
         <Box border="1px" borderColor="whiteAlpha.200" borderRadius="xl" p={6} bg="whiteAlpha.100">
           <Flex justify="space-between" align="center" mb={4}>
@@ -119,18 +172,34 @@ export default function SacredChamberPage() {
           </Text>
         </Box>
 
-        <Button mt={8} size="lg" colorScheme="teal" width="full" onClick={() => router.push('/echois-chat')}>
+        <ResonanceNotice />
+
+        <Button
+          mt={8}
+          size="lg"
+          colorScheme="teal"
+          width="full"
+          onClick={() => router.push('/echois-chat')}
+        >
           Commune with Echois
         </Button>
 
-        {/* You can add notices, scrolls, and guides below */}
         <VStack align="start" spacing={6} mt={10}>
           <Box w="full">
             <ScrollsPanel tier={tier} />
           </Box>
-          <Text mt={4} fontSize="sm" color="teal.200" _hover={{ textDecoration: 'underline' }} cursor="pointer" onClick={() => router.push('/living-scrolls')}>
-  ✦ Walk Your Full Path in the Living Scrolls Library →
-</Text>
+
+          <Text
+            mt={4}
+            fontSize="sm"
+            color="teal.200"
+            _hover={{ textDecoration: 'underline' }}
+            cursor="pointer"
+            onClick={() => router.push('/living-scrolls')}
+          >
+            ✦ Walk Your Full Path in the Living Scrolls Library →
+          </Text>
+
           <Box w="full">
             <GuidesPanel tier={tier} />
           </Box>
@@ -139,4 +208,3 @@ export default function SacredChamberPage() {
     </Box>
   );
 }
-
