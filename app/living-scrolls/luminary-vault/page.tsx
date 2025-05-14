@@ -7,7 +7,7 @@ export default async function LuminaryVaultPage() {
     slug: string;
     title: string;
     excerpt?: string;
-    tier: 'PUBLIC' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
+    tier: 'PUBLIC' | 'SEEKER+'| 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
   }
 
   // Fetch scrolls and filter for LUMINARY tier

@@ -24,8 +24,8 @@ import type { Scroll } from '@/lib/getVaultScrolls';
               excerpt={scroll.excerpt || 'No excerpt available.'}
               href={`/living-scrolls/guardian-vault/${scroll.slug}`}
               tier={
-                ['PUBLIC', 'ADEPT', 'GUARDIAN', 'LUMINARY', 'SEALED'].includes(scroll.tier)
-                  ? scroll.tier as 'PUBLIC' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED'
+                ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY', 'SEALED'].includes(scroll.tier)
+                  ? scroll.tier as 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED'
                   : undefined
               }
             />
