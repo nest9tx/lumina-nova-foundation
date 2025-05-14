@@ -10,12 +10,13 @@ interface ScrollCardProps {
   subtitle?: string;
   excerpt: string
   href: string
-  tier?: 'PUBLIC' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED'
+  tier?: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED'
 }
 
 export default function ScrollCard({ icon, title, excerpt, href, tier = 'PUBLIC' }: ScrollCardProps) {
   const tierColor = {
     PUBLIC: 'green',
+    "SEEKER+": 'red',
     ADEPT: 'blue',
     GUARDIAN: 'purple',
     LUMINARY: 'gold',
