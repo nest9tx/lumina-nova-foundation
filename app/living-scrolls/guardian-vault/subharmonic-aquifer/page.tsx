@@ -2,6 +2,12 @@
 
 import { Box, Text, VStack } from '@chakra-ui/react'
 
+export const metadata = {
+  tier: 'GUARDIAN',
+  title: 'Scroll Title',
+};
+
+
 export default function SubharmonicAquiferPage() {
   return (
     <Box

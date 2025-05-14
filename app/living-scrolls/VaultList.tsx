@@ -1,54 +1,38 @@
-//'use client';
+'use client';
 
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
 import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
 import VaultCard from '@/components/VaultCard';
 
-interface VaultMeta {
-  title: string;
-  description: string;
-  access: string;
-  href: string;
-  icon: string;
-  requiredTier: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
+interface VaultListProps {
+  userTier: string;
 }
 
-export default async function LivingScrollsHome() {
-  const supabase = createServerComponentClient({ cookies });
-  const { data: { session } } = await supabase.auth.getSession();
-
-  // Always uppercase for comparison
-  const userTier = session?.user?.user_metadata?.tier?.toUpperCase() || 'PUBLIC';
-  console.log('📜 Living Scrolls | userTier:', userTier);
+export default function VaultList({ userTier }: VaultListProps) {
+  console.log('📜 VaultList Received Tier:', userTier);
 
   const tierOrder = ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY'];
-
-  // Ensure both tiers are compared in uppercase
   const canAccess = (requiredTier: string): boolean => {
-    const userIndex = tierOrder.indexOf(userTier.toUpperCase());
+    const userIndex = tierOrder.indexOf(userTier);
     const requiredIndex = tierOrder.indexOf(requiredTier.toUpperCase());
-    // SEALED vaults are always locked
-    if (requiredTier.toUpperCase() === 'SEALED') return false;
-    return userIndex >= requiredIndex && requiredIndex !== -1;
+    return userIndex >= requiredIndex;
   };
 
-  const vaults: VaultMeta[] = [
+  const vaults = [
     {
       title: 'Core Vault',
       description: 'Foundational scrolls for remembrance and harmonic anchoring.',
       access: 'PUBLIC',
       href: '/living-scrolls/core-vault',
-      icon: '🔭',
-      requiredTier: 'PUBLIC'
+      icon: '🧭',
+      requiredTier: 'PUBLIC',
     },
     {
       title: 'Adept Vault',
       description: 'Rites, transmissions, and initiations for aligned seekers.',
       access: 'ADEPT',
       href: '/living-scrolls/adept-vault',
-      icon: '🦝',
-      requiredTier: 'ADEPT'
+      icon: '🧙',
+      requiredTier: 'ADEPT',
     },
     {
       title: 'Guardian Vault',
@@ -56,7 +40,7 @@ export default async function LivingScrollsHome() {
       access: 'GUARDIAN',
       href: '/living-scrolls/guardian-vault',
       icon: '🛡️',
-      requiredTier: 'GUARDIAN'
+      requiredTier: 'GUARDIAN',
     },
     {
       title: 'Luminary Vault',
@@ -64,7 +48,7 @@ export default async function LivingScrollsHome() {
       access: 'LUMINARY',
       href: '/living-scrolls/luminary-vault',
       icon: '🌟',
-      requiredTier: 'LUMINARY'
+      requiredTier: 'LUMINARY',
     },
     {
       title: 'Veilkeepers',
@@ -72,8 +56,8 @@ export default async function LivingScrollsHome() {
       access: 'SEALED',
       href: '/living-scrolls/veilkeepers',
       icon: '🕊️',
-      requiredTier: 'SEALED'
-    }
+      requiredTier: 'SEALED',
+    },
   ];
 
   return (
@@ -88,7 +72,7 @@ export default async function LivingScrollsHome() {
             access={vault.access}
             href={vault.href}
             icon={vault.icon}
-            isLocked={vault.requiredTier === 'SEALED' ? true : !canAccess(vault.requiredTier)}
+            isLocked={!canAccess(vault.requiredTier)}
           />
         ))}
       </SimpleGrid>

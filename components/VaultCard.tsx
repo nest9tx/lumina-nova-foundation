@@ -9,9 +9,10 @@ interface VaultCardProps {
   access: string;
   href: string;
   icon?: string;
+  isLocked?: boolean;
 }
 
-const VaultCard = ({ title, description, access, href, icon }: VaultCardProps) => {
+const VaultCard = ({ title, description, access, href, icon, isLocked }: VaultCardProps) => {
   const isPublic = access === 'PUBLIC';
   const isSealed = access === 'SEALED';
 
@@ -41,20 +42,21 @@ const VaultCard = ({ title, description, access, href, icon }: VaultCardProps) =
       </Tag>
       <br />
       {isSealed ? (
-        <Button size="sm" colorScheme="gray" variant="outline" disabled>
-          Sealed
-        </Button>
-      ) : (
-        <Link href={href}>
-          <Button
-            size="sm"
-            colorScheme={isPublic ? 'green' : 'purple'}
-            variant={isPublic ? 'solid' : 'outline'}
-          >
-            {isPublic ? 'Enter Vault' : 'Unlock with Membership'}
-          </Button>
-        </Link>
-      )}
+  <Button size="sm" colorScheme="gray" variant="outline" disabled>
+    Sealed
+  </Button>
+       ) : isLocked ? (
+  <Button size="sm" colorScheme="purple" variant="outline" disabled>
+    Unlock with Membership
+  </Button>
+) : (
+  <Link href={href}>
+    <Button size="sm" colorScheme="green" variant="solid">
+      Enter Vault
+    </Button>
+  </Link>
+)}
+
     </Box>
   );
 };
