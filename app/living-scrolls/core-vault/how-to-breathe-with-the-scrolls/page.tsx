@@ -1,7 +1,15 @@
-'use client'
 
 import ScrollWrapper from '@/components/ScrollWrapper'
 import { Text } from '@chakra-ui/react'
+
+export const metadata = {
+  tier: 'PUBLIC',
+  title: 'Scroll Title',
+};
+// This is a public scroll, accessible to all users
+// regardless of their tier or membership status.
+// It is meant to be a general introduction to the scrolls
+// and how to engage with them.
 
 export default function HowToBreathe() {
   return (

@@ -1,7 +1,12 @@
-'use client'
 
 import { Text } from '@chakra-ui/react'
 import ScrollWrapper from '@/components/ScrollWrapper'
+
+export const metadata = {
+  tier: 'PUBLIC',
+  title: 'Scroll Title',
+};
+
 
 export default function UnifiedFlame() {
   return (

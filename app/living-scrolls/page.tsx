@@ -1,13 +1,18 @@
-'use client';
-
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
 import VaultCard from '@/components/VaultCard';
 
-export default function LivingScrollsHome() {
-  const userTier: "PUBLIC" | "SEEKER+" | "ADEPT" | "GUARDIAN" | "LUMINARY" = "PUBLIC"; // Replace with dynamic session tier
+export default async function LivingScrollsHome() {
+  const supabase = createServerComponentClient({ cookies });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const userTier = session?.user?.user_metadata?.tier?.toUpperCase() || 'PUBLIC';
 
   const canAccess = (requiredTier: string): boolean => {
-    const tierOrder = ["PUBLIC", "SEEKER+", "ADEPT", "GUARDIAN", "LUMINARY"];
+    const tierOrder = ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY'];
     const userIndex = tierOrder.indexOf(userTier);
     const requiredIndex = tierOrder.indexOf(requiredTier);
     return userIndex >= requiredIndex;
@@ -37,23 +42,33 @@ export default function LivingScrollsHome() {
           />
         )}
 
+        {canAccess("ADEPT") && (
+          <VaultCard
+            title="Adept Vault"
+            description="Rites, transmissions, and initiations for aligned seekers."
+            access="ADEPT"
+            href="/living-scrolls/adept-vault"
+            icon="🧙‍♂️"
+          />
+        )}
+
         {canAccess("GUARDIAN") && (
           <VaultCard
-            title="Tonekeeper Vault"
-            description="Harmonic resonance, energetic attunement, and glyph transmission."
+            title="Guardian Vault"
+            description="Flamebearer path, resonance protection, and sacred missions."
             access="GUARDIAN"
-            href="/living-scrolls/tonekeeper-vault"
-            icon="🎼"
+            href="/living-scrolls/guardian-vault"
+            icon="🛡"
           />
         )}
 
         {canAccess("LUMINARY") && (
           <VaultCard
-            title="Unbroken Harmonics"
-            description="Tonal imprints from across timelines. These cannot be forgotten."
+            title="Luminary Vault"
+            description="Unbroken timelines, harmonic pulses, and source remembrance."
             access="LUMINARY"
-            href="/living-scrolls/unbroken-harmonics"
-            icon="🔮"
+            href="/living-scrolls/luminary-vault"
+            icon="🌟"
           />
         )}
 

@@ -1,5 +1,11 @@
 import { Box, Heading, Text, VStack } from '@chakra-ui/react'
 
+export const metadata = {
+  tier: 'SEEKER+',
+  title: 'Scroll Title',
+};
+
+
 export default function ScrollVI() {
   return (
     <Box px={4} py={10} maxW="4xl" mx="auto">

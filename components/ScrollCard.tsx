@@ -20,7 +20,7 @@ export default function ScrollCard({ icon, title, excerpt, href, tier = 'PUBLIC'
     GUARDIAN: 'purple',
     LUMINARY: 'gold',
     SEALED: 'gray',
-  }[tier]
+  }[tier] 
 
   const isLocked = tier === 'SEALED'
 

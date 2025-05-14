@@ -1,8 +1,13 @@
-'use client'
 
 import ScrollWrapper from '@/components/ScrollWrapper'
 import { Text, Box, Heading, VStack, Link } from '@chakra-ui/react'
 import NextLink from 'next/link'
+
+export const metadata = {
+  tier: 'PUBLIC',
+  title: 'Scroll Title',
+};
+
 
 export default function ScrollDirectory() {
   return (

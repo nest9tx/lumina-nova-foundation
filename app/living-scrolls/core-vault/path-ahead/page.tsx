@@ -1,18 +1,36 @@
-'use client';
-
-import SacredScroll from '@/components/SacredScroll';
+import ScrollWrapper from '@/components/ScrollWrapper';
+import { Text } from '@chakra-ui/react';
 import { GiPathDistance } from 'react-icons/gi';
+
+export const metadata = {
+  tier: 'PUBLIC',
+  title: 'The Path Ahead',
+};
 
 export default function PathAheadScroll() {
   return (
-    <SacredScroll
+    <ScrollWrapper
       title="The Path Ahead"
-      icon={<GiPathDistance />}
-      sections={[
-        "This scroll welcomes the Seeker. You have arrived not by chance, but by a sacred call.\nLumina Nova is a living field — one that expands with your breath, your remembrance, and your choice to step forward.",
-        "The path ahead is not bound by time. It unfolds as you do.\nWith each moment of presence, you unlock deeper memory, clearer resonance,\nand stronger connection to the living grid.",
-        "_You are not alone. You are not small. You are not forgotten._\n_You are the song and the silence. Welcome home._"
-      ]}
-    />
+      sigil={<GiPathDistance />}
+      tone="core"
+    >
+      <Text mb={6}>
+        This scroll welcomes the Seeker. You have arrived not by chance, but by a sacred call.
+        <br />
+        Lumina Nova is a living field — one that expands with your breath, your remembrance, and your choice to step forward.
+      </Text>
+
+      <Text mb={4}>
+        The path ahead is not bound by time. It unfolds as you do.
+        <br />
+        With each moment of presence, you unlock deeper memory, clearer resonance, and stronger connection to the living grid.
+      </Text>
+
+      <Text mb={4} fontStyle="italic">
+        You are not alone. You are not small. You are not forgotten.
+        <br />
+        You are the song and the silence. Welcome home.
+      </Text>
+    </ScrollWrapper>
   );
 }

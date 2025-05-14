@@ -1,3 +1,9 @@
+
+export const metadata = {
+  tier: 'PUBLIC',
+  title: 'Scroll Title',
+};
+
 export default function BreathOfResonance() {
   return (
     <div className="px-6 py-12 max-w-3xl mx-auto">
