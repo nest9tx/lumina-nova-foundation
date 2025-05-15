@@ -31,9 +31,12 @@ export default function LoginPage() {
 
         if (response.error) throw response.error;
         if (response.data.user) {
-          await supabase.from('profiles').update({
-            first_name: firstName.trim()
-          }).eq('id', response.data.user.id);
+          await supabase.from('profiles').upsert({
+            id: response.data.user.id,
+            full_name: firstName.trim(),
+            email: email,
+            tier: 'seeker', // Only set on signup
+          });
         }        
 
         router.push('/check-email');
@@ -59,14 +62,14 @@ export default function LoginPage() {
         });
       }
     } catch (err: unknown) {
-  const error = err as { message?: string };
-  toast({
-    title: "Error",
-    description: error?.message || "Unexpected error occurred.",
-    status: "error",
-    duration: 5000,
-    isClosable: true,
-  });
+      const error = err as { message?: string };
+      toast({
+        title: "Error",
+        description: error?.message || "Unexpected error occurred.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -106,15 +109,15 @@ export default function LoginPage() {
                 color="white"
                 bg="blackAlpha.700"
               />
-  {isSignup && (
-  <Input
-    placeholder="Name for the Chamber"
-    value={firstName}
-    onChange={(e) => setFirstName(e.target.value)}
-    color="white"
-    bg="blackAlpha.700"
-  />
-)}
+              {isSignup && (
+                <Input
+                  placeholder="Name for the Chamber"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  color="white"
+                  bg="blackAlpha.700"
+                />
+              )}
 
               <Button
                 type="submit"
@@ -137,7 +140,3 @@ export default function LoginPage() {
     </Container>
   );
 }
-
-
-
-

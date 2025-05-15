@@ -30,9 +30,12 @@ export default function SignupPage() {
       if (response.error) throw response.error;
 
       if (response.data.user) {
-        await supabase.from('profiles').update({
-          first_name: firstName.trim(),
-        }).eq('id', response.data.user.id);
+        await supabase.from('profiles').upsert({
+          id: response.data.user.id,
+          full_name: firstName.trim(),
+          email: email,
+          tier: 'seeker', // Only set on signup
+        });
       }
 
       router.push('/check-email');
