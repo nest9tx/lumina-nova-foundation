@@ -248,7 +248,7 @@ export default function SacredChamberPage() {
             size="lg"
             colorScheme="teal"
             width="full"
-            onClick={() => router.push('/api/echois-chat')}
+            onClick={() => router.push('/guide/echois-chat')}
           >
             Commune with Echois
           </Button>
