@@ -106,13 +106,16 @@ export default function LoginPage() {
                 color="white"
                 bg="blackAlpha.700"
               />
-<Input
-  placeholder="Name for the Chamber"
-  value={firstName}
-  onChange={(e) => setFirstName(e.target.value)}
-  color="white"
-  bg="blackAlpha.700"
-/>
+  {isSignup && (
+  <Input
+    placeholder="Name for the Chamber"
+    value={firstName}
+    onChange={(e) => setFirstName(e.target.value)}
+    color="white"
+    bg="blackAlpha.700"
+  />
+)}
+
               <Button
                 type="submit"
                 w="full"
