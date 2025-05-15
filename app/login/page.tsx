@@ -13,7 +13,6 @@ export default function LoginPage() {
   const router = useRouter();
   const toast = useToast();
   const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
   const [password, setPassword] = useState('');
   const [isSignup, setIsSignup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,14 +29,6 @@ export default function LoginPage() {
         });
 
         if (response.error) throw response.error;
-        if (response.data.user) {
-          await supabase.from('profiles').upsert({
-            id: response.data.user.id,
-            full_name: firstName.trim(),
-            email: email,
-            tier: 'seeker', // Only set on signup
-          });
-        }        
 
         router.push('/check-email');
         toast({
@@ -109,16 +100,6 @@ export default function LoginPage() {
                 color="white"
                 bg="blackAlpha.700"
               />
-              {isSignup && (
-                <Input
-                  placeholder="Name for the Chamber"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  color="white"
-                  bg="blackAlpha.700"
-                />
-              )}
-
               <Button
                 type="submit"
                 w="full"

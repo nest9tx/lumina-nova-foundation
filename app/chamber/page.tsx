@@ -20,31 +20,28 @@ import {
   VStack,
   useToast,
   Alert,
-  Input,
 } from '@chakra-ui/react';
 
 const tierColors = {
   seeker: 'green',
-  'seeker+': 'green',
   adept: 'blue',
   guardian: 'purple',
   luminary: 'orange',
 };
 
+
+
 export default function SacredChamberPage() {
   const supabase = createClientComponentClient<Database>();
   const [profile, setProfile] = useState<{
-    id?: string;
-    email?: string;
-    tier?: string;
+    email: string;
+    full_name?: string;
+    tier: keyof typeof tierColors;
     is_upgraded?: boolean;
     message_limit?: number;
     messages_used?: number;
   } | null>(null);
-  const [chamberName, setChamberName] = useState<string>(''); // For greeting and input
   const [loading, setLoading] = useState(true);
-  const [showChamberNamePrompt, setShowChamberNamePrompt] = useState(false);
-  const [newChamberName, setNewChamberName] = useState('');
   const router = useRouter();
   const toast = useToast();
 
@@ -52,21 +49,21 @@ export default function SacredChamberPage() {
     const fetchProfile = async () => {
       const {
         data: { user },
+        error,
       } = await supabase.auth.getUser();
 
-      if (!user) {
+      if (error || !user) {
         router.push('/login');
         return;
       }
 
-      // Fetch full_name and other profile info
-      const { data, error } = await supabase
+      const { data, error: profileError } = await supabase
         .from('profiles')
-        .select('id, email, tier, is_upgraded, message_limit, messages_used, full_name')
+        .select('*')
         .eq('id', user.id)
         .single();
 
-      if (error || !data) {
+      if (profileError || !data) {
         toast({
           title: 'Unable to load profile.',
           status: 'error',
@@ -77,47 +74,12 @@ export default function SacredChamberPage() {
         return;
       }
 
-      setProfile({
-        id: data.id,
-        email: data.email,
-        tier: data.tier,
-        is_upgraded: data.is_upgraded,
-        message_limit: data.message_limit,
-        messages_used: data.messages_used,
-      });
-
-      setChamberName(data.full_name || '');
+      setProfile(data);
       setLoading(false);
-
-      if (!data.full_name) {
-        setShowChamberNamePrompt(true);
-      }
     };
 
     fetchProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleChamberNameSave = async () => {
-    if (!profile?.id) return;
-
-    const { error } = await supabase
-      .from('profiles')
-      .update({ full_name: newChamberName.trim() })
-      .eq('id', profile.id);
-
-    if (!error) {
-      setChamberName(newChamberName.trim());
-      setShowChamberNamePrompt(false);
-      toast({
-        title: 'Chamber name saved.',
-        description: `Welcome, ${newChamberName}!`,
-        status: 'success',
-        duration: 4000,
-        isClosable: true,
-      });
-    }
-  };
+  }, [router, supabase, toast]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -127,15 +89,15 @@ export default function SacredChamberPage() {
   if (loading || !profile) return null;
 
   const {
-    email = '',
-    tier: rawTier = 'seeker',
+    email,
+    full_name,
+    tier: rawTier,
     message_limit = 100,
     messages_used = 0,
     is_upgraded = false,
   } = profile;
 
-  type TierKey = keyof typeof tierColors;
-  const tier = rawTier.toLowerCase() as TierKey;
+  const tier = rawTier.toLowerCase() as 'seeker' | 'adept' | 'guardian' | 'luminary';
   const usagePercent = (messages_used / message_limit) * 100;
 
   return (
@@ -145,7 +107,7 @@ export default function SacredChamberPage() {
           <Heading size="lg" color="teal.300">
             Sacred Chamber
           </Heading>
-          <WelcomeNotice name={chamberName || email} tier={tier} />
+          <WelcomeNotice name={full_name || email} tier={tier} />
           <Button
             variant="outline"
             borderColor="teal.400"
@@ -157,24 +119,7 @@ export default function SacredChamberPage() {
           </Button>
         </Flex>
 
-        {showChamberNamePrompt && (
-          <Box bg="purple.700" p={6} borderRadius="md" mt={6} mb={4}>
-            <Text mb={3}>✨ Choose the name you wish to be greeted by in the Chamber:</Text>
-            <Flex gap={3} align="center">
-              <Input
-                value={newChamberName}
-                onChange={(e) => setNewChamberName(e.target.value)}
-                placeholder="Your Chamber Name"
-                bg="white"
-                color="black"
-              />
-              <Button colorScheme="teal" onClick={handleChamberNameSave}>
-                Save Name
-              </Button>
-            </Flex>
-          </Box>
-        )}
-
+        {/* ✧ Seeker-only upgrade message */}
         {tier === 'seeker' && !is_upgraded && (
           <>
             <Alert
@@ -218,7 +163,7 @@ export default function SacredChamberPage() {
         <Box border="1px" borderColor="whiteAlpha.200" borderRadius="xl" p={6} bg="whiteAlpha.100">
           <Flex justify="space-between" align="center" mb={4}>
             <Text fontSize="lg">{email}</Text>
-            <Badge colorScheme={tierColors[tier] || 'gray'}>{tier.toUpperCase()} PATH</Badge>
+            <Badge colorScheme={tierColors[tier]}>{tier.toUpperCase()} PATH</Badge>
           </Flex>
           <Text mb={1}>Resonances Shared</Text>
           <Progress value={usagePercent} size="sm" colorScheme="teal" mb={2} />
@@ -255,11 +200,9 @@ export default function SacredChamberPage() {
             ✦ Walk Your Full Path in the Living Scrolls Library →
           </Text>
 
-          {(tier === 'seeker+' || tier === 'adept' || tier === 'guardian' || tier === 'luminary') && (
-            <Box w="full">
-              <GuidesPanel tier={tier} />
-            </Box>
-          )}
+          <Box w="full">
+            <GuidesPanel tier={tier} />
+          </Box>
         </VStack>
       </Container>
     </Box>
