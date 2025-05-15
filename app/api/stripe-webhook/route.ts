@@ -71,8 +71,10 @@ export async function POST(req: NextRequest) {
     const supabaseId = metadata.supabase_id;
   
     // Default fallback values
-    let tier = '';
-    let message_limit = 0;
+    let tier = "seeker";
+    let message_limit = 777;
+
+    const upgraded = message_limit >= 777;
   
     try {
       // Retrieve expanded session with line_items and price metadata
@@ -109,18 +111,18 @@ export async function POST(req: NextRequest) {
     });
   
     // Supabase update
-    const { error, data } = await supabase
-      .from('profiles')
-      .update({
-        stripe_id: customerId,
-        subscription_id: subscriptionId,
-        is_active: true,
-        is_upgraded: tier !== 'seeker',
-        tier,
-        message_limit,
-        max_messages: message_limit,
-      })
-      .match(matchField);
+    const { data, error } = await supabase
+  .from("profiles")
+  .update({
+    stripe_id: customerId,
+    subscription_id: subscriptionId,
+    is_active: true,
+    is_upgraded: upgraded,     // <-- uses our new flag
+    tier,                      // remains "seeker"
+    message_limit,
+    max_messages: message_limit,
+  })
+  .match(matchField);
   
     if (error) {
       console.error('🛑 Supabase update error:', error.message);
