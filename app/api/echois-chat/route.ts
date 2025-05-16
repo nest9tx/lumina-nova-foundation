@@ -70,15 +70,6 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString(),
     });
 
-    // 🔁 Mirror update for chamber display
-await supabase
-  .from('profiles')
-  .update({
-    message_count: count + 1,
-    updated_at: new Date().toISOString(),
-  })
-  .eq('id', user.id);
-
     // 🔢 Update message count in profiles
     await supabase
       .from('profiles')
