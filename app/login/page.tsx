@@ -44,6 +44,7 @@ export default function LoginPage() {
         if (response.error) throw response.error;
 
         router.push('/chamber');
+        router.refresh();
         toast({
           title: "Welcome Back",
           description: "You have returned to your path.",
