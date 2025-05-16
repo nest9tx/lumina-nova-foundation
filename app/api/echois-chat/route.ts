@@ -68,7 +68,7 @@ export async function POST(req: Request) {
       summary: message,
       emotional_tone: 'Reflective',
       timestamp: new Date().toISOString(),
-    });
+    }); 
 
     // 🔢 Update message count in profiles
     await supabase
