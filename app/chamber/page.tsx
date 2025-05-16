@@ -39,7 +39,7 @@ export default function SacredChamberPage() {
     tier: keyof typeof tierColors;
     is_upgraded?: boolean;
     message_limit?: number;
-    messages_used?: number;
+    message_count?: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -93,12 +93,12 @@ export default function SacredChamberPage() {
     full_name,
     tier: rawTier,
     message_limit = 100,
-    messages_used = 0,
+    message_count = 0,
     is_upgraded = false,
   } = profile;
 
   const tier = rawTier.toLowerCase() as 'seeker' | 'adept' | 'guardian' | 'luminary';
-  const usagePercent = (messages_used / message_limit) * 100;
+  const usagePercent = (message_count / message_limit) * 100;
 
   return (
     <Box bgGradient="linear(to-b, #0e0c1d, #140f2e)" minH="100vh" color="white" py={10}>
@@ -168,7 +168,7 @@ export default function SacredChamberPage() {
           <Text mb={1}>Resonances Shared</Text>
           <Progress value={usagePercent} size="sm" colorScheme="teal" mb={2} />
           <Text fontSize="sm">
-            {messages_used} / {message_limit} used
+            {message_count} / {message_limit} used
           </Text>
         </Box>
 
