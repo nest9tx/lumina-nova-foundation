@@ -39,25 +39,28 @@ export default function SignupPage() {
   };
 
   const handleSignup = async () => {
-    setLoading(true);
-    const response = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (response.error) {
-      toast({ title: 'Signup failed', description: response.error.message, status: 'error' });
-      setLoading(false);
-      return;
+  setLoading(true);
+  const response = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: 'https://www.luminanova.org/guide/start'
     }
+  });
 
-    toast({
-      title: 'Signup successful',
-      description: 'Check your email to confirm your account.',
-      status: 'success',
-    });
+  if (response.error) {
+    toast({ title: 'Signup failed', description: response.error.message, status: 'error' });
     setLoading(false);
-  };
+    return;
+  }
+
+  toast({
+    title: 'Signup successful',
+    description: 'Check your email to confirm your account.',
+    status: 'success',
+  });
+  setLoading(false);
+};
 
   return (
     <Box
