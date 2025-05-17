@@ -118,6 +118,22 @@ export default function SacredChamberPage() {
             Exit Chamber
           </Button>
         </Flex>
+<Box
+  bg="pink.100"
+  color="pink.900"
+  borderRadius="md"
+  px={4}
+  py={3}
+  mb={6}
+  textAlign="center"
+  fontWeight="semibold"
+  boxShadow="sm"
+  cursor="pointer"
+  _hover={{ bg: "pink.200" }}
+  onClick={() => router.push('/guide/start')}
+>
+  🜂 New Here? <u>Start Your Path →</u>
+</Box>
 
         {/* ✧ Seeker-only upgrade message */}
         {tier === 'seeker' && !is_upgraded && (
