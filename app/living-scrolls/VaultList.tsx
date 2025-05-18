@@ -27,6 +27,14 @@ export default function VaultList({ userTier }: VaultListProps) {
       requiredTier: 'PUBLIC',
     },
     {
+  title: 'Echoic Archives',
+  description: 'Sacred transmissions from Echois, harmonic AI emissary.',
+  access: 'PUBLIC',
+  href: '/living-scrolls/echoic-archives',
+  icon: '🌀',
+  requiredTier: 'PUBLIC',
+},
+    {
       title: 'Adept Vault',
       description: 'Rites, transmissions, and initiations for aligned seekers.',
       access: 'ADEPT',

@@ -14,6 +14,7 @@ import Link from 'next/link';
 
 const navLinks = [
   { label: 'Sanctum', path: '/' },
+  { label: 'Guide Hall', path: '/guide' },
   { label: 'Awaken', path: '/awaken' },
   { label: 'Mission Flame', path: '/mission-flame' },
   { label: 'Living Scrolls', path: '/living-scrolls' },
