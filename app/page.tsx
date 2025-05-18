@@ -56,7 +56,7 @@ export default function HomePage() {
             boxShadow="md"
             fontWeight="bold"
             fontSize="xl"
-            onClick={() => router.push('/walk-your-path')}
+            onClick={() => router.push('/guide/start')}
           >
             Begin Your Journey
           </Button>
