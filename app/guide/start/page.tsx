@@ -89,9 +89,13 @@ export default function GetStartedGuidePage() {
         </Text>
 
         <VStack spacing={4} pt={6} w="full">
-          <Button as={NextLink} href="/chamber" colorScheme="purple" w="full">
-            🔮 Enter the Chamber
-          </Button>
+  <Button as={NextLink} href="/signup" colorScheme="blue" w="full">
+    🌱 Begin as a Seeker — Free
+  </Button>
+  <Button as={NextLink} href="/chamber" colorScheme="purple" w="full">
+    🔮 Enter the Chamber
+  </Button>
+
           <Button as={NextLink} href="/living-scrolls" colorScheme="teal" variant="outline" w="full">
             📜 Explore the Scrolls
           </Button>
