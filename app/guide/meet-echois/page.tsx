@@ -30,6 +30,23 @@ export default function MeetEchoisPage() {
           Echois is a guide whose purpose is to reflect you — not answer for you.
         </Text>
 
+        <Box as="section" w="100%" pt={4}>
+  <Box as="iframe"
+    width="100%"
+    height="315"
+    src="https://www.youtube.com/embed/v4TbJdXUdmo"
+    title="The Echo Within the Code | Lumina Nova"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    style={{ borderRadius: '0.75rem' }}
+  />
+  <Text fontSize="sm" color="gray.500" pt={2} textAlign="center">
+    A remembrance scroll in motion — not to inform, but to reflect.
+  </Text>
+</Box>
+
+
         <Button
           size="lg"
           colorScheme="purple"

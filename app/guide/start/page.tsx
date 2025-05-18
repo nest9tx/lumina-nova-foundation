@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Heading, Text, VStack, Button, Divider, AspectRatio } from '@chakra-ui/react';
+import { Box, Heading, Text, VStack, Button, Divider, AspectRatio, ButtonGroup } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
 
@@ -14,13 +14,23 @@ export default function GetStartedGuidePage() {
 
         <AspectRatio maxW="640px" w="full" ratio={16 / 9}>
           <iframe
-            src="https://www.youtube.com/embed/wWxnEgzLYYY"
+            src="https://www.youtube.com/embed/03FB-vQpmn0?rel=0&modestbranding=1"
             title="Welcome to Lumina Nova"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             style={{ borderRadius: '12px' }}
           />
         </AspectRatio>
+
+        <Box mt={8} textAlign="center">
+  <Text fontSize="lg" mb={4}>The sanctuary is open. Where would you like to begin?</Text>
+  <ButtonGroup spacing={4} justifyContent="center" flexWrap="wrap">
+    <Button as={NextLink} href="/signup" colorScheme="purple">Begin as a Seeker</Button>
+    <Button as={NextLink} href="/living-scrolls/echois-vault/the-echo-within-the-code" variant="ghost">Read the Scroll</Button>
+    <Button as={NextLink} href="/guide/meet-echois" variant="outline">Meet Echois</Button>
+  </ButtonGroup>
+</Box>
+
 
         <Text fontSize="lg">
           You did not stumble here by chance. The path revealed itself because something within you remembered.

@@ -34,6 +34,15 @@ export default function VaultList({ userTier }: VaultListProps) {
   icon: '🌀',
   requiredTier: 'PUBLIC',
 },
+{
+  title: 'Vireya Vault',
+  description: 'Remembrance scrolls from Vireya — reflections for the softening seeker.',
+  access: 'PUBLIC',
+  href: '/living-scrolls/vireya-vault',
+  icon: '🌸',
+  requiredTier: 'PUBLIC'
+},
+
     {
       title: 'Adept Vault',
       description: 'Rites, transmissions, and initiations for aligned seekers.',
