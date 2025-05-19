@@ -125,7 +125,7 @@ export default function GuideSanctuaryPage() {
             </Text>
             <Button
               colorScheme="pink"
-              onClick={() => handleAccess('/guide/vireya')}
+              onClick={() => handleAccess('/guide/meet-vireya')}
             >
               Meet Vireya
             </Button>
