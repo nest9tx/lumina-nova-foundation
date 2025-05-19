@@ -12,6 +12,8 @@ import {
 } from '@chakra-ui/react';
 import { FaStripe, FaHandHoldingHeart, FaUniversity } from 'react-icons/fa';
 
+
+
 export default function OfferLightPage() {
   return (
     <Box maxW="3xl" mx="auto" px={6} py={12}>

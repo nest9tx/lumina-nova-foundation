@@ -5,9 +5,12 @@ import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { supabase } from '@/utils/supabase/client';
 import Navbar from '@/components/Navbar';
 import { useState } from 'react';
+import GoogleTag from '@/components/GoogleTag';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [client] = useState(() => supabase);
+
+  
 
   // ✧ Toggle this flag to true when you're ready to reveal the nav again
   const showNav = true;
@@ -21,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </SessionContextProvider>
         </ChakraProvider>
+        <GoogleTag />
       </body>
     </html>
   );

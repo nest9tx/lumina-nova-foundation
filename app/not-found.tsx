@@ -3,6 +3,9 @@
 import { Box, Heading, Text, VStack, Button } from '@chakra-ui/react'
 import NextLink from 'next/link'
 
+
+
+
 export default function NotFound() {
   return (
     <Box minH="100vh" display="flex" justifyContent="center" alignItems="center" bgGradient="linear(to-b, #fff7ec, #fdf3d1)" p={8}>

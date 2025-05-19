@@ -12,6 +12,9 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
+
 export default function GuideSanctuaryPage() {
   const router = useRouter();
   const toast = useToast();
