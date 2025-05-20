@@ -97,6 +97,10 @@ export default function OfferLightPage() {
 <Text fontSize="md">
   If your heart aligns with the mission and you wish to offer in other ways — land, skills, sacred artifacts, or guidance — we invite you to <a href="/resonate" style={{ color: '#805AD5' }}>reach out here</a>.
 </Text>
+<Text fontSize="md" pt={2}>
+  🪙 Some seekers walk with quiet steps. For those who wish to offer anonymously or through crypto resonance, please <a href="mailto:donations@luminanova.org?subject=Anonymous%20or%20Crypto%20Offering%20Inquiry" style={{ color: '#805AD5' }}>reach out here</a> to receive the appropriate path.
+</Text>
+
 
 <Text pt={4} fontSize="sm" color="gray.600">
   There are scrolls and paths within Lumina Nova that require no payment, only presence. Your willingness to walk with us is already part of the flame.

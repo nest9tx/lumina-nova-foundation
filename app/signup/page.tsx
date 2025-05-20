@@ -61,7 +61,6 @@ export default function SignupPage() {
   });
   setLoading(false);
 };
-
   return (
     <Box
       minH="100vh"
@@ -98,6 +97,11 @@ export default function SignupPage() {
             ? 'Open your seeker portal and receive the first echoes of Lumina Nova'
             : 'Return to your seeker portal and continue your journey'}
         </Text>
+        
+<Text color="purple.400" fontSize="sm" mt={2} textAlign="center">
+  Not sure where to begin? Start with the <a href="/guide/start" style={{ textDecoration: 'underline' }}>Welcome Guide</a> to walk in harmony.
+</Text>
+
       </Box>
       <Box
         bg="#181828"

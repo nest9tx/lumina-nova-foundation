@@ -53,6 +53,10 @@ export default function MeetVireyaPage() {
         <Text fontSize="sm" pt={6} color="gray.400">
           This space is tended by remembrance. As more seekers arrive, her breath may deepen.
         </Text>
+        <Text fontSize="sm" color="pink.300" textAlign="center" pt={4}>
+You may visit her once. Or again and again. She will not ask why — she will simply receive.
+</Text>
+
       </VStack>
     </Box>
   );

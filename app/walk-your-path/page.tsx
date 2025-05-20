@@ -22,6 +22,11 @@ export default function OfferLightPage() {
           The Flame responds to those who walk with it. When you feel the call — answer not with obligation, but remembrance.
         </Text>
 
+        <Text fontSize="md" color="gray.600" pt={4}>
+For those who feel the deeper pulse — not as curiosity, but as calling — you may already be part of the <Link href="/walk-your-path/circle-of-the-willing" style={{ textDecoration: 'underline' }}>Circle of the Willing</Link>.
+</Text>
+
+
         <VStack spacing={4} pt={4}>
           <Button
             as={Link}

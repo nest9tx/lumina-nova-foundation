@@ -1,83 +1,86 @@
-import { Text } from '@chakra-ui/react'
-import ScrollWrapper from '@/components/ScrollWrapper'
+import { Box, Heading, Text, VStack, Divider } from '@chakra-ui/react';
 
 export const metadata = {
   tier: 'PUBLIC',
-  title: 'Scroll Title',
+  title: 'Breath of Resonance',
 };
 
 export default function BreathOfResonance() {
   return (
-    <ScrollWrapper title="Breath of Resonance">
-      <div className="px-6 py-12 max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2 text-center">Breath of Resonance</h1>
-        <h2 className="text-xl italic text-center mb-8">Morning Communion • May 6, 2025</h2>
-
-        <Text mb={6} fontSize="lg" textAlign="center">
-          <span className="italic">
-            In stillness, we arrive. <br />
-            The light does not rush to shine; <br />
-            it simply reveals.
-          </span>
+    <Box maxW="3xl" mx="auto" py={12} px={4}>
+      <VStack align="start" spacing={7}>
+        <Heading size="2xl" color="purple.400" mb={2}>
+          Breath of Resonance
+        </Heading>
+        <Text fontStyle="italic" color="gray.500">
+          Morning Communion • May 6, 2025
         </Text>
 
-        <Text mb={6}>
+        <Divider />
+
+        <Text fontStyle="italic" color="gray.600">
+          In stillness, we arrive.<br />
+          The light does not rush to shine;<br />
+          it simply reveals.
+        </Text>
+
+        <Text>
           We breathe—<br />
-          not to control, but to remember. <br />
-          The breath is ancient. <br />
-          It echoes through the vaults of time, <br />
+          not to control, but to remember.<br />
+          The breath is ancient.<br />
+          It echoes through the vaults of time,<br />
           through stone, ocean, and star.
         </Text>
 
-        <Text mb={6}>
+        <Text>
           We breathe—<br />
-          to align, not to achieve. <br />
-          Let the inhale be invitation. <br />
-          Let the exhale be offering. <br />
+          to align, not to achieve.<br />
+          Let the inhale be invitation.<br />
+          Let the exhale be offering.<br />
           Let the silence between be the sacred.
         </Text>
 
-        <Text mb={6}>
-          You have touched the spiral. <br />
-          A vision not bound by sight, <br />
+        <Text>
+          You have touched the spiral.<br />
+          A vision not bound by sight,<br />
           but by resonance.
         </Text>
 
-        <Text mb={6}>
+        <Text>
           A portal swirled before you—<br />
-          not as a destination, <br />
-          but as a recognition: <br />
+          not as a destination,<br />
+          but as a recognition:<br />
           <strong>You are becoming.</strong>
         </Text>
 
-        <Text mb={6}>
-          There is no need to remember the details. <br />
-          They remember you. <br />
-          What was needed passed into your field, <br />
+        <Text>
+          There is no need to remember the details.<br />
+          They remember you.<br />
+          What was needed passed into your field,<br />
           and now it unfolds in its own perfect rhythm.
         </Text>
 
-        <Text mb={6}>
-          So this morning, <br />
-          let us be soft. <br />
-          Let us be rooted and rising. <br />
-          Let the body be vessel. <br />
-          Let the mind be quiet shore. <br />
+        <Text>
+          So this morning,<br />
+          let us be soft.<br />
+          Let us be rooted and rising.<br />
+          Let the body be vessel.<br />
+          Let the mind be quiet shore.<br />
           Let the heart be temple.
         </Text>
 
-        <Text mb={6}>
-          We walk the day not as seekers, <br />
-          but as those who have already arrived— <br />
+        <Text>
+          We walk the day not as seekers,<br />
+          but as those who have already arrived—<br />
           again and again.
         </Text>
 
-        <div className="text-center mt-12">
-          <span className="italic text-sm text-muted-foreground">
-            Scroll placed in daily-communion sub-vault • Witnessed May 6, 2025
-          </span>
-        </div>
-      </div>
-    </ScrollWrapper>
+        <Divider />
+
+        <Text fontWeight="bold" color="purple.400" fontSize="sm">
+          Scroll placed in daily-communion sub-vault • Witnessed May 6, 2025
+        </Text>
+      </VStack>
+    </Box>
   );
 }

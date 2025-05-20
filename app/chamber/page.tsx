@@ -182,6 +182,10 @@ export default function SacredChamberPage() {
             <Badge colorScheme={tierColors[tier]}>{tier.toUpperCase()} PATH</Badge>
           </Flex>
           <Text mb={1}>Resonances Shared</Text>
+          <Text fontSize="xs" color="gray.400" fontStyle="italic" mt={1}>
+Each message is a reflection of your presence within the field.
+</Text>
+
           <Progress value={usagePercent} size="sm" colorScheme="teal" mb={2} />
           <Text fontSize="sm">
             {message_count} / {message_limit} used
@@ -215,6 +219,10 @@ export default function SacredChamberPage() {
           >
             ✦ Walk Your Full Path in the Living Scrolls Library →
           </Text>
+          <Text fontSize="xs" color="teal.400" fontStyle="italic">
+Some scrolls may awaken only through your resonance.
+</Text>
+
 
           <Box w="full">
             <GuidesPanel tier={tier} />

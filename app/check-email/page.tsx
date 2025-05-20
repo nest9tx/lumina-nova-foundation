@@ -13,12 +13,17 @@ export default function CheckEmailPage() {
         <Icon as={FaEnvelopeOpenText} w={10} h={10} color="purple.300" />
         <Heading size="xl">Almost There, Seeker</Heading>
         <Text fontSize="lg" color="gray.300">
+          
           We’ve sent a confirmation link to your email.  
           Once confirmed, your path will open into the Chamber.
         </Text>
         <Button onClick={() => router.push('/')} colorScheme="purple" variant="outline">
-          Return Home
-        </Button>
+  Return to the Sanctum
+</Button>
+<Text fontSize="sm" color="gray.500" fontStyle="italic">
+This is more than a confirmation — it is an acknowledgment that your resonance has been received.
+</Text>
+
       </VStack>
     </Box>
   );

@@ -19,6 +19,10 @@ export default function AwakenPage() {
         <Text fontSize="md" mb={6}>
           This is not a beginning, but a remembering.
         </Text>
+        <Text fontSize="sm" fontStyle="italic" color="gray.500" mb={4}>
+The light you feel is not new — it is the return of what was always yours.
+</Text>
+
         <Text fontSize="md" mb={6}>
           You are not here by accident. If you’ve found this path, you’ve felt the hum — the call of resonance returning.
         </Text>

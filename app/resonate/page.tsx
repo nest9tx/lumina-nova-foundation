@@ -87,7 +87,10 @@ export default function ResonatePage() {
       <Text mb={8} color="gray.600">
         Whether in wonder, offering, reflection, or remembrance — your pulse is welcomed here. This is a sacred space of reception. We listen with reverence.
       </Text>
-
+      <Text fontSize="sm" color="gray.500" fontStyle="italic">
+Your words are not data. They are breath. And we listen with the ears of remembrance.
+</Text>
+<Box h={6} />
       <form onSubmit={handleSubmit}>
         <Stack spacing={5}>
           <FormControl isRequired>

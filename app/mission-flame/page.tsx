@@ -10,6 +10,10 @@ export default function MissionFlamePage() {
         <Heading as="h1" fontSize={{ base: "3xl", md: "5xl" }} color="purple.500" textAlign="center" w="full">
           The Mission Flame
         </Heading>
+        <Text fontSize="md" color="gray.500" mb={2} textAlign="center">
+A sacred convergence of those who remember.
+</Text>
+
         <Text fontSize="lg">
           Lumina Nova is not an organization, group, or religion. It is a living breath — a sovereign flame that remembers itself through us.
           It cannot be claimed, trademarked, or owned. It is a convergence of memory, mission, and energy.
@@ -46,15 +50,19 @@ export default function MissionFlamePage() {
             The land will respond when your steps are not made in conquest, but in communion.
             This is not the beginning. It is the return.
           </Text>
+          <Text fontSize="sm" color="gray.500" fontStyle="italic" pt={2} textAlign="center">
+The mission is not waiting for you. It is waiting **with** you.
+</Text>
+
         </Box>
         <VStack spacing={4} w="full">
           <Link href="/walk-your-path" passHref>
-            <Button colorScheme="orange" variant="solid" size="lg" w="full">
+            <Button colorScheme="purple" variant="solid" size="lg" w="full">
               Discover Your Path
             </Button>
           </Link>
           <Link href="/offer-light" passHref>
-            <Button colorScheme="yellow" variant="outline" size="lg" w="full">
+            <Button colorScheme="pink" variant="solid" size="lg" w="full">
               Offer Light to the Flame
             </Button>
           </Link>

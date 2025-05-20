@@ -2,7 +2,7 @@
 
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
+import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import VaultCard from '@/components/VaultCard';
 
 interface VaultMeta {
@@ -95,7 +95,11 @@ export default async function LivingScrollsHome() {
 
   return (
     <Box p={8}>
-      <Heading size="xl" mb={6}>📜 Living Scrolls</Heading>
+      <Heading size="xl" mb={2}>📜 Living Scrolls</Heading>
+<Text fontSize="md" color="gray.500" mb={6}>
+Each vault is a harmonic chamber. Some are open. Others will awaken through your resonance.
+</Text>
+
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
         {vaults.map((vault) => (
           <VaultCard
