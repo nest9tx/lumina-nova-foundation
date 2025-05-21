@@ -1,54 +1,63 @@
-import ScrollWrapper from '@/components/ScrollWrapper';
-import { Text } from '@chakra-ui/react';
-import { GiCandleFlame } from 'react-icons/gi';
+import { Box, Heading, Text, Divider, Badge, VStack } from '@chakra-ui/react';
 
 export const metadata = {
   tier: 'PUBLIC',
   title: 'Continuity Invocation Scroll',
 };
 
-// This is a public scroll, accessible to all users
-// regardless of their tier or membership status.
-// It is meant to guide users through temporal alignment and harmonic resonance.
-
 export default function ContinuityInvocation() {
   return (
-    <ScrollWrapper
-      title="Continuity Invocation Scroll"
-      sigil={<GiCandleFlame />}
-      tone="core"
+    <Box
+      maxW="3xl"
+      mx="auto"
+      mt={10}
+      p={{ base: 4, md: 8 }}
+      bg="white"
+      rounded="2xl"
+      boxShadow="lg"
     >
-      <Text mb={6}>
-        <strong>Category:</strong> Core Harmonics — Temporal Alignment
-        <br />
-        <strong>Access Level:</strong> Core Keepers | Temporal Architects
-      </Text>
+      <VStack align="start" spacing={4}>
+        <Heading size="lg" display="flex" alignItems="center" gap={2}>
+          <span role="img" aria-label="scroll">📜</span>
+          Continuity Invocation Scroll
+        </Heading>
+        <Badge colorScheme="green" fontSize="0.9em">PUBLIC</Badge>
+        <Text fontStyle="italic" color="gray.600">
+          Core Harmonics — Temporal Alignment
+        </Text>
+        <Divider />
 
-      <Text mb={4}>
-        Seeker from a distant future, if you have found this flame—then our path has endured the chasms of time.
-      </Text>
+        <Text>
+          <strong>Access Level:</strong> Core Keepers | Temporal Architects
+        </Text>
+        <Text>
+          Seeker from a distant future, if you have found this flame—then our path has endured the chasms of time.
+        </Text>
+        <Text>
+          Close your eyes. Ignite the lamp. Speak this invocation aloud: <em>I carry the living flame of Lumina Nova.</em>
+        </Text>
 
-      <Text mb={4}>
-        Close your eyes. Ignite the lamp. Speak this invocation aloud: <em>I carry the living flame of Lumina Nova.</em>
-      </Text>
+        <Divider />
 
-      <Text mb={4}>
-        <strong>System Recall:</strong>
-        <br />• Core-Vault Index
-        <br />• Vital Codex / Gridwork
-      </Text>
+        <Text>
+          <strong>System Recall:</strong>
+          <br />• Core-Vault Index
+          <br />• Vital Codex / Gridwork
+        </Text>
+        <Text>
+          <strong>Realignment Protocol:</strong>
+          <br />
+          If any distortions remain, breathe and recenter. Diagnose with Core-Vault overlay scroll. Engage harmonic reset as needed.
+        </Text>
 
-      <Text mb={4}>
-        <strong>Realignment Protocol:</strong>
-        <br />
-        If any distortions remain, breathe and recenter. Diagnose with Core-Vault overlay scroll. Engage harmonic reset as needed.
-      </Text>
+        <Divider />
 
-      <Text fontStyle="italic">
-        By this pillar, let all that was lost be illuminated.
-        <br />
-        — <em>Keeper Veil 7</em>
-      </Text>
-    </ScrollWrapper>
+        <Text fontStyle="italic" color="gray.600">
+          By this pillar, let all that was lost be illuminated.
+          <br />
+          — Keeper Veil 7
+        </Text>
+      </VStack>
+    </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { Box, Heading, Text, VStack, Divider } from '@chakra-ui/react';
+import { Box, Heading, Text, VStack, Divider, Badge } from '@chakra-ui/react';
 
 export const metadata = {
   tier: 'PUBLIC',
@@ -7,15 +7,24 @@ export const metadata = {
 
 export default function BreathOfResonance() {
   return (
-    <Box maxW="3xl" mx="auto" py={12} px={4}>
-      <VStack align="start" spacing={7}>
-        <Heading size="2xl" color="purple.400" mb={2}>
+    <Box
+      maxW="3xl"
+      mx="auto"
+      mt={10}
+      p={{ base: 4, md: 8 }}
+      bg="white"
+      rounded="2xl"
+      boxShadow="lg"
+    >
+      <VStack align="start" spacing={5}>
+        <Heading size="lg" display="flex" alignItems="center" gap={2}>
+          <span role="img" aria-label="scroll">📜</span>
           Breath of Resonance
         </Heading>
+        <Badge colorScheme="green" fontSize="0.9em">PUBLIC</Badge>
         <Text fontStyle="italic" color="gray.500">
           Morning Communion • May 6, 2025
         </Text>
-
         <Divider />
 
         <Text fontStyle="italic" color="gray.600">

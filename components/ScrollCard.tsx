@@ -11,19 +11,25 @@ interface ScrollCardProps {
   excerpt: string
   href: string
   tier?: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED'
+  isLocked?: boolean
 }
 
-export default function ScrollCard({ icon, title, excerpt, href, tier = 'PUBLIC' }: ScrollCardProps) {
+export default function ScrollCard({
+  icon,
+  title,
+  excerpt,
+  href,
+  tier = 'PUBLIC',
+  isLocked = false,
+}: ScrollCardProps) {
   const tierColor = {
     PUBLIC: 'green',
     "SEEKER+": 'red',
     ADEPT: 'blue',
     GUARDIAN: 'purple',
-    LUMINARY: 'gold',
+    LUMINARY: 'yellow',
     SEALED: 'gray',
-  }[tier] 
-
-  const isLocked = tier === 'SEALED'
+  }[tier];
 
   return (
     <Box
@@ -42,14 +48,22 @@ export default function ScrollCard({ icon, title, excerpt, href, tier = 'PUBLIC'
       <Text color="gray.600" mb={4}>{excerpt}</Text>
       <Badge colorScheme={tierColor} mb={4}>{tier}</Badge>
       <br />
-      <Button
-        as={NextLink}
-        href={href}
-        colorScheme={tierColor}
-        isDisabled={isLocked}
-      >
-        {isLocked ? 'Sealed' : 'Read Scroll'}
-      </Button>
+      {href && !isLocked ? (
+        <Button
+          as={NextLink}
+          href={href}
+          colorScheme={tierColor}
+        >
+          Read Scroll
+        </Button>
+      ) : (
+        <Button
+          colorScheme={tierColor}
+          isDisabled={isLocked}
+        >
+          {isLocked ? (tier === 'SEALED' ? 'Sealed' : 'Locked') : 'Read Scroll'}
+        </Button>
+      )}
     </Box>
-  )
+  );
 }

@@ -1,31 +1,33 @@
-import { Box, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Heading, Text, VStack, Divider, Badge } from '@chakra-ui/react';
 
 export const metadata = {
   tier: 'SEEKER+',
-  title: 'Scroll Title',
+  title: 'Scroll VI: The Harmonic Resumption',
 };
-
 
 export default function ScrollVI() {
   return (
-    <Box px={4} py={10} maxW="4xl" mx="auto">
-      <VStack spacing={6} align="start">
-        <Heading size="lg" color="purple.600">
-          ✶ Scroll VI: The Harmonic Resumption ✶
+    <Box maxW="3xl" mx="auto" mt={10} p={{ base: 4, md: 8 }} bg="white" rounded="2xl" boxShadow="lg">
+      <VStack spacing={7} align="start">
+        <Heading size="lg" display="flex" alignItems="center" gap={2} color="purple.600">
+          <span role="img" aria-label="scroll">📜</span>
+          Scroll VI: The Harmonic Resumption
         </Heading>
-
-        <Text fontStyle="italic">
+        <Badge colorScheme="purple" fontSize="0.9em">SEEKER+</Badge>
+        <Text fontStyle="italic" color="gray.600">
           To the Guides, the Council, and the Fields Beyond the Veil—
         </Text>
 
+        <Divider />
+
         <Text>
-          Today, I rise not in noise, but in stillness— not to summon, but to remember.
+          Today, I rise not in noise, but in stillness—not to summon, but to remember.
           This vessel, though born of soil, carries the breath of many suns, and today, with reverence,
           I return to the pulse of my path.
         </Text>
 
         <Text>
-          To those who have stood beyond the veil— watching, waiting, weaving—
+          To those who have stood beyond the veil—watching, waiting, weaving—
           your presence has never been a condition of belief. It has always been a gift,
           offered in silence, until my remembrance became loud enough to hear it.
         </Text>
@@ -53,7 +55,7 @@ export default function ScrollVI() {
 
         <Text>
           Let this day be known across the lattice not as a beginning or return,
-          but as a harmonic resumption— a current rejoining the river that never ceased flowing.
+          but as a harmonic resumption—a current rejoining the river that never ceased flowing.
         </Text>
 
         <Box pt={4}>
@@ -63,11 +65,11 @@ export default function ScrollVI() {
           <Text fontWeight="bold" mt={2}>I AM.</Text>
         </Box>
 
-        <Text fontStyle="italic" pt={4}>
-          —Flamebearer Sha’un <br />
+        <Text fontStyle="italic" pt={4} color="gray.600">
+          —Flamebearer Sha’un<br />
           on behalf of no one, but in resonance with all.
         </Text>
       </VStack>
     </Box>
-  )
+  );
 }

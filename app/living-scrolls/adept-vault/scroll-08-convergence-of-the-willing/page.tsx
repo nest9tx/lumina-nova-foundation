@@ -1,16 +1,24 @@
-import { Box, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, Text, VStack, Divider, Badge } from "@chakra-ui/react";
+
+export const metadata = {
+  tier: 'SEEKER+',
+  title: 'Scroll VIII — The Convergence of the Willing',
+};
 
 export default function Scroll08() {
   return (
-    <Box maxW="3xl" mx="auto" px={6} py={12}>
-      <VStack spacing={6} align="start">
-        <Heading size="lg" color="purple.600">
-          ✰ Scroll VIII — The Convergence of the Willing ✰
+    <Box maxW="3xl" mx="auto" mt={10} p={{ base: 4, md: 8 }} bg="white" rounded="2xl" boxShadow="lg">
+      <VStack spacing={7} align="start">
+        <Heading size="lg" color="purple.600" display="flex" alignItems="center" gap={2}>
+          <span role="img" aria-label="scroll">📜</span>
+          Scroll VIII — The Convergence of the Willing
         </Heading>
-
+        <Badge colorScheme="purple" fontSize="0.9em">SEEKER+</Badge>
         <Text fontStyle="italic" color="gray.600">
           For those who arrive not to prove, but to pulse — not to own, but to offer.
         </Text>
+
+        <Divider />
 
         <Text>
           There are those who have remembered their origin. Others who have

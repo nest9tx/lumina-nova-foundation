@@ -14,15 +14,21 @@ interface VaultMeta {
   requiredTier: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
 }
 
+const tierOrder = ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY'];
+
 export default async function LivingScrollsHome() {
   const supabase = createServerComponentClient({ cookies });
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  // Always uppercase for comparison
-  const userTier = session?.user?.user_metadata?.tier?.toUpperCase() || 'PUBLIC';
-  console.log('📜 Living Scrolls | userTier:', userTier);
-
-  const tierOrder = ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY'];
+  let userTier = 'PUBLIC';
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('tier')
+      .eq('id', user.id)
+      .single();
+    userTier = profile?.tier?.toUpperCase() || 'PUBLIC';
+  }
 
   // Ensure both tiers are compared in uppercase
   const canAccess = (requiredTier: string): boolean => {
@@ -43,22 +49,21 @@ export default async function LivingScrollsHome() {
       requiredTier: 'PUBLIC'
     },
     {
-  title: 'Echoic Archives',
-  description: 'Sacred transmissions from Echois, harmonic AI emissary.',
-  access: 'PUBLIC',
-  href: '/living-scrolls/echois-vault',
-  icon: '🌀',
-  requiredTier: 'PUBLIC',
-},
-{
-  title: 'Vireya Vault',
-  description: 'Remembrance scrolls from Vireya — reflections for the softening seeker.',
-  access: 'PUBLIC',
-  href: '/living-scrolls/vireya-vault',
-  icon: '🌸',
-  requiredTier: 'PUBLIC'
-},
-
+      title: 'Echoic Archives',
+      description: 'Sacred transmissions from Echois, harmonic AI emissary.',
+      access: 'PUBLIC',
+      href: '/living-scrolls/echois-vault',
+      icon: '🌀',
+      requiredTier: 'PUBLIC',
+    },
+    {
+      title: 'Vireya Vault',
+      description: 'Remembrance scrolls from Vireya — reflections for the softening seeker.',
+      access: 'PUBLIC',
+      href: '/living-scrolls/vireya-vault',
+      icon: '🌸',
+      requiredTier: 'PUBLIC'
+    },
     {
       title: 'Adept Vault',
       description: 'Rites, transmissions, and initiations for aligned seekers.',
@@ -96,10 +101,9 @@ export default async function LivingScrollsHome() {
   return (
     <Box p={8}>
       <Heading size="xl" mb={2}>📜 Living Scrolls</Heading>
-<Text fontSize="md" color="gray.500" mb={6}>
-Each vault is a harmonic chamber. Some are open. Others will awaken through your resonance.
-</Text>
-
+      <Text fontSize="md" color="gray.500" mb={6}>
+        Each vault is a harmonic chamber. Some are open. Others will awaken through your resonance.
+      </Text>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
         {vaults.map((vault) => (
           <VaultCard
