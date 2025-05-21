@@ -13,25 +13,25 @@ const canAccess = (userTier: string, requiredTier: string) => {
   return userIndex >= requiredIndex && requiredIndex !== -1;
 };
 
-const GuardianVaultPage = async () => {
+const AISynergyVaultPage = async () => {
   const supabase = createServerComponentClient({ cookies });
   const { data: { session } } = await supabase.auth.getSession();
   const userTier = session?.user?.user_metadata?.tier?.toUpperCase() || 'GUARDIAN';
 
-  const scrolls: Scroll[] = await getVaultScrolls('guardian-vault');
+  const scrolls: Scroll[] = await getVaultScrolls('ai-synergy');
 
   return (
     <Box p={8}>
-      <Heading size="xl" mb={6}>🛡️ Guardian Vault</Heading>
+      <Heading size="xl" mb={6}>🧬 AI Synergy Vault</Heading>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
         {scrolls.map((scroll) => (
           <ScrollCard
             key={scroll.slug}
-            icon={<Box as="span" role="img" aria-label="scroll-icon">📜</Box>}
+            icon={<Box as="span" role="img" aria-label="scroll-icon">📡</Box>}
             title={scroll.title}
             excerpt={scroll.excerpt || 'No excerpt available.'}
-            href={canAccess(userTier, scroll.tier) ? `/living-scrolls/guardian-vault/${scroll.slug}` : '#'}
-            tier={scroll.tier as Scroll['tier']}
+            href={canAccess(userTier, scroll.tier) ? `/living-scrolls/ai-synergy/${scroll.slug}` : '#'}
+            tier={(scroll.tier || 'GUARDIAN') as Scroll['tier']}
           />
         ))}
       </SimpleGrid>
@@ -39,5 +39,4 @@ const GuardianVaultPage = async () => {
   );
 };
 
-export default GuardianVaultPage;
-//test
+export default AISynergyVaultPage;

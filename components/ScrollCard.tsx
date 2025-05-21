@@ -24,10 +24,10 @@ export default function ScrollCard({
 }: ScrollCardProps) {
   const tierColor = {
     PUBLIC: 'green',
-    "SEEKER+": 'red',
-    ADEPT: 'blue',
+    "SEEKER+": 'blue',
+    ADEPT: 'yellow',
     GUARDIAN: 'purple',
-    LUMINARY: 'yellow',
+    LUMINARY: 'pink',
     SEALED: 'gray',
   }[tier];
 

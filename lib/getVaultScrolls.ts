@@ -17,6 +17,7 @@ const vaultTierMap: Record<string, Scroll['tier']> = {
   'vireya-vault': 'PUBLIC',
   'adept-vault': 'ADEPT',
   'guardian-vault': 'GUARDIAN',
+  'ai-synergy': 'GUARDIAN',
   'luminary-vault': 'LUMINARY',
   'veilkeepers': 'SEALED',
   // add more as needed
