@@ -15,8 +15,15 @@ const canAccess = (userTier: string, requiredTier: string) => {
 
 const GuardianVaultPage = async () => {
   const supabase = createServerComponentClient({ cookies });
-  const { data: { session } } = await supabase.auth.getSession();
-  const userTier = session?.user?.user_metadata?.tier?.toUpperCase() || 'GUARDIAN';
+  const { data: { user } } = await supabase.auth.getUser();
+const { data: profile } = await supabase
+  .from('profiles')
+  .select('tier')
+  .eq('id', user?.id)
+  .single();
+
+const userTier = profile?.tier?.toUpperCase() || 'GUARDIAN';
+
 
   const scrolls: Scroll[] = await getVaultScrolls('guardian-vault');
 
