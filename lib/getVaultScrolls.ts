@@ -2,45 +2,43 @@ import fs from 'fs';
 import path from 'path';
 
 export type Scroll = {
-  title: string;
   slug: string;
+  title: string;
   excerpt?: string;
-  tier: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY';
+  tier: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
 };
 
 export async function getVaultScrolls(vault: string): Promise<Scroll[]> {
-  const scrollsDir = path.join(process.cwd(), 'app', 'living-scrolls', vault);
-  const scrolls: Scroll[] = [];
+  const scrollPath = path.join(process.cwd(), 'app', 'living-scrolls', vault);
+  const entries = fs.readdirSync(scrollPath, { withFileTypes: true });
 
-  if (!fs.existsSync(scrollsDir)) return scrolls;
+  // Define explicit vault → tier mappings
+  const vaultTierMap: Record<string, Scroll['tier']> = {
+    'core-vault': 'PUBLIC',
+    'vireya-vault': 'PUBLIC',
+    'echois-vault': 'PUBLIC',
+    'adept-vault': 'ADEPT',
+    'guardian-vault': 'GUARDIAN',
+    'luminary-vault': 'LUMINARY',
+    'ai-synergy': 'GUARDIAN', // Or ADEPT if resonance shifts
+  };
 
-  const entries = fs.readdirSync(scrollsDir, { withFileTypes: true });
+  const tierFromVault = vaultTierMap[vault] || 'SEALED'; // Default to SEALED if unknown
 
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      const scrollFolder = path.join(scrollsDir, entry.name);
-      const pageFile = path.join(scrollFolder, 'page.tsx');
+  const scrolls: Scroll[] = entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => {
+      const fallbackTitle = entry.name.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      const title = fallbackTitle;
+      const excerpt = '';
 
-      if (fs.existsSync(pageFile)) {
-        try {
-          const scrollModule = await import(
-            `../app/living-scrolls/${vault}/${entry.name}/page`
-          );
-
-          const metadata = scrollModule.metadata || {};
-
-          scrolls.push({
-            title: metadata.title || entry.name,
-            slug: metadata.slug || entry.name,
-            excerpt: metadata.excerpt || '',
-            tier: metadata.tier?.toUpperCase() || 'PUBLIC',
-          });
-        } catch (err) {
-          console.warn(`⚠️ Could not load metadata for ${entry.name}:`, err);
-        }
-      }
-    }
-  }
+      return {
+        slug: entry.name,
+        title,
+        excerpt,
+        tier: tierFromVault,
+      };
+    });
 
   return scrolls;
 }
