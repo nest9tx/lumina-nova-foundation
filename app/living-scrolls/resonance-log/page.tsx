@@ -2,7 +2,7 @@ import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
 import ScrollCard from '@/components/ScrollCard';
 import { getVaultScrolls } from '@/lib/getVaultScrolls';
 
-export default async function AdeptVaultPage() {
+export default async function ResonanceLogVaultPage() {
   interface Scroll {
     slug: string;
     title: string;
@@ -10,22 +10,22 @@ export default async function AdeptVaultPage() {
     tier: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
   }
 
-  // Fetch scrolls and filter for ADEPT tier
-  const scrolls: Scroll[] = (await getVaultScrolls('adept-vault')).filter(
-    (scroll: Scroll) => scroll.tier === 'ADEPT'
+  // Only show PUBLIC scrolls
+  const scrolls: Scroll[] = (await getVaultScrolls('resonance-log')).filter(
+    (scroll) => scroll.tier === 'PUBLIC'
   );
 
   return (
     <Box p={8}>
-      <Heading size="xl" mb={6}>🔷 Adept Vault</Heading>
+      <Heading size="xl" mb={6}>🌀 Resonance Log</Heading>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
         {scrolls.map((scroll) => (
           <ScrollCard
             key={scroll.slug}
             icon={<Box as="span" role="img" aria-label="scroll-icon">📜</Box>}
             title={scroll.title}
-            excerpt={scroll.excerpt || 'A sacred scroll awaits.'}
-            href={`/living-scrolls/adept-vault/${scroll.slug}`}
+            excerpt={scroll.excerpt || 'A saced scroll awaits.'}
+            href={`/living-scrolls/resonance-log/${scroll.slug}`}
             tier={scroll.tier}
           />
         ))}

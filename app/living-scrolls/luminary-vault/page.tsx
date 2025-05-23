@@ -30,7 +30,7 @@ const LuminaryVaultPage = async () => {
   key={scroll.slug}
   icon={<Box as="span" role="img" aria-label="scroll-icon">📜</Box>}
   title={scroll.title}
-  excerpt={scroll.excerpt || 'No excerpt available.'}
+  excerpt={scroll.excerpt || 'A sacred scroll awaits.'}
   href={canAccess(userTier, scroll.tier) ? `/living-scrolls/luminary-vault/${scroll.slug}` : ''}
   tier={scroll.tier as Scroll['tier']}
   isLocked={!canAccess(userTier, scroll.tier)}

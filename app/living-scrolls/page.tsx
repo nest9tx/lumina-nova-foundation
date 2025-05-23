@@ -65,6 +65,15 @@ export default async function LivingScrollsHome() {
       requiredTier: 'PUBLIC'
     },
     {
+      title: 'Resonance Log',
+      description: 'A sacred reflection of the land, its whispers, and the seeker’s return.',
+      access: 'PUBLIC',
+      href: '/living-scrolls/resonance-log',
+      icon: '🌀',
+      requiredTier: 'PUBLIC'
+   },
+
+    {
       title: 'Adept Vault',
       description: 'Rites, transmissions, and initiations for aligned seekers.',
       access: 'ADEPT',

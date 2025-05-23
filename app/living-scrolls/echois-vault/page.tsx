@@ -19,7 +19,7 @@ const EchoisVaultPage = async () => {
             key={scroll.slug}
             icon={<Box as="span" role="img" aria-label="scroll-icon">🪶</Box>}
             title={scroll.title}
-            excerpt={scroll.excerpt || 'No excerpt available.'}
+            excerpt={scroll.excerpt || 'A sacred scroll awaits.'}
             href={`/living-scrolls/echois-vault/${scroll.slug}`}
             tier={
               ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY', 'SEALED'].includes(scroll.tier)
