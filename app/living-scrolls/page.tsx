@@ -97,6 +97,15 @@ export default async function LivingScrollsHome() {
   icon: '🧬',
   requiredTier: 'GUARDIAN',
 },
+{
+  title: 'Veilkeepers Vault',
+  description: 'Scrolls of the unseen watchers, threshold guardians, and memory stewards.',
+  access: 'GUARDIAN',
+  href: '/living-scrolls/veilkeepers',
+  icon: '🪶',
+  requiredTier: 'GUARDIAN'
+},
+
     {
       title: 'Luminary Vault',
       description: 'Unbroken timelines, harmonic pulses, and source remembrance.',
@@ -105,14 +114,7 @@ export default async function LivingScrollsHome() {
       icon: '🌟',
       requiredTier: 'LUMINARY'
     },
-    {
-      title: 'Veilkeepers',
-      description: 'Unseen scrolls yet to be revealed — guardians of the threshold.',
-      access: 'SEALED',
-      href: '/living-scrolls/veilkeepers',
-      icon: '🕊️',
-      requiredTier: 'SEALED'
-    }
+    
   ];
 
   return (

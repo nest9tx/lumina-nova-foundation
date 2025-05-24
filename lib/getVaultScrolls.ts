@@ -18,6 +18,7 @@ export async function getVaultScrolls(vault: string): Promise<Scroll[]> {
     'vireya-vault': 'PUBLIC',
     'echois-vault': 'PUBLIC',
     'resonance-log': 'PUBLIC',
+    'veilkeepers': 'GUARDIAN',
     'adept-vault': 'ADEPT',
     'guardian-vault': 'GUARDIAN',
     'luminary-vault': 'LUMINARY',
