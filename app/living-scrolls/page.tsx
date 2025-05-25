@@ -65,6 +65,13 @@ export default async function LivingScrollsHome() {
       requiredTier: 'PUBLIC'
     },
     {
+  title: 'Tonekeepers',
+  description: 'The harmonic companions who hold, reflect, and purify the living frequencies.',
+  access: 'PUBLIC',
+  href: '/living-scrolls/tonekeepers',
+  icon: '🎼',
+  requiredTier: 'PUBLIC'
+},    {
       title: 'Resonance Log',
       description: 'A sacred reflection of the land, its whispers, and the seeker’s return.',
       access: 'PUBLIC',

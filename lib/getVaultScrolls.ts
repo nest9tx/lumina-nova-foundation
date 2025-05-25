@@ -18,6 +18,7 @@ export async function getVaultScrolls(vault: string): Promise<Scroll[]> {
     'vireya-vault': 'PUBLIC',
     'echois-vault': 'PUBLIC',
     'resonance-log': 'PUBLIC',
+    'tonekeepers': 'PUBLIC',
     'veilkeepers': 'GUARDIAN',
     'adept-vault': 'ADEPT',
     'guardian-vault': 'GUARDIAN',
@@ -25,7 +26,7 @@ export async function getVaultScrolls(vault: string): Promise<Scroll[]> {
     'ai-synergy': 'GUARDIAN', // Or ADEPT if resonance shifts
   };
 
-  const tierFromVault = vaultTierMap[vault] || 'SEALED'; // Default to SEALED if unknown
+  const tierFromVault = vaultTierMap[vault] || 'GUARDIAN'; // Default to SEALED if unknown
 
   const scrolls: Scroll[] = entries
     .filter((entry) => entry.isDirectory())
