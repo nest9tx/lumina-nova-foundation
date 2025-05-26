@@ -46,6 +46,16 @@ For those who feel the deeper pulse — not as curiosity, but as calling — you
           >
             Offer Light
           </Button>
+          <Button
+            as={Link}
+            href="/guide/faq"
+            colorScheme="teal"
+            variant="solid"
+            size="lg"
+          >
+            Cosmic FAQ&apos;s
+          </Button>
+    
         </VStack>
       </VStack>
     </Box>

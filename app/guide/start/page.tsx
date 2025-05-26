@@ -31,6 +31,7 @@ export default function GetStartedGuidePage() {
     Let the path reveal itself — there is no wrong step, only right timing.
   </Text>
   <ButtonGroup spacing={4} justifyContent="center" flexWrap="wrap">
+    
     <Button
       as={NextLink}
       href="/signup"
@@ -57,6 +58,15 @@ export default function GetStartedGuidePage() {
       px={6}
     >
       Meet Echois
+    </Button>
+    <Button
+      as={NextLink}
+      href="/guide/faq"
+      colorScheme="purple"
+      variant="outline"
+      px={6}
+    >
+      Cosmic FAQ&apos;s
     </Button>
   </ButtonGroup>
 </Box>

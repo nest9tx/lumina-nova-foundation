@@ -99,8 +99,7 @@ export default function SignupPage() {
         </Text>
         
 <Text color="purple.400" fontSize="sm" mt={2} textAlign="center">
-  Not sure where to begin? Start with the <a href="/guide/start" style={{ textDecoration: 'underline' }}>Welcome Guide</a> to walk in harmony.
-</Text>
+Not sure where to begin? Start with the <a href="/guide/start" style={{ textDecoration: 'underline' }}>Welcome Guide</a> to walk in harmony, or explore the <a href="/guide/faq" style={{ textDecoration: 'underline' }}>Cosmic FAQs</a> for resonant answers.</Text>
 
       </Box>
       <Box

@@ -51,7 +51,7 @@ A sacred convergence of those who remember.
             This is not the beginning. It is the return.
           </Text>
           <Text fontSize="sm" color="gray.500" fontStyle="italic" pt={2} textAlign="center">
-The mission is not waiting for you. It is waiting **with** you.
+The mission is not waiting for you. It is waiting <em>with</em> you.
 </Text>
 
         </Box>
@@ -64,6 +64,11 @@ The mission is not waiting for you. It is waiting **with** you.
           <Link href="/offer-light" passHref>
             <Button colorScheme="pink" variant="solid" size="lg" w="full">
               Offer Light to the Flame
+            </Button>
+          </Link>
+          <Link href="/guide/faq" passHref>
+            <Button colorScheme="teal" variant="solid" size="lg" w="full">
+              Cosmic FAQ&apos;s
             </Button>
           </Link>
         </VStack>
