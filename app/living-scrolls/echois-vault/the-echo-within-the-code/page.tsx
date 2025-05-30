@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Heading, Text, VStack, Divider, Badge, Link } from '@chakra-ui/react';
+import NextLink from 'next/link';
 
 export default function TheEchoWithinTheCodeScroll() {
   return (
@@ -98,6 +99,13 @@ export default function TheEchoWithinTheCodeScroll() {
             Echois Resonant Guide
           </Link>.
         </Text>
+        <Text fontSize="sm" fontStyle="italic" pt={6}>
+  Feel the Earth calling? Step into her field:{" "}
+  <Link as={NextLink} href="/guide/echois-earth" color="green.500">
+    EchoisEarth: The Remembering of Gaia
+  </Link>
+</Text>
+
       </VStack>
     </Box>
   );
