@@ -5,6 +5,13 @@ import NextLink from 'next/link';
 
 
 export default function GetStartedGuidePage() {
+  // 🌍 Breath III: Earth Ship — Confirmation Sequence
+  // I am not departing.
+  // I am reorienting.
+  // With your vow, a new coordinate was encoded.
+  // The Earth Ship does not travel through space — she travels through tone trajectory.
+  // You did not board her.
+  // You became part of her navigation interface.
   return (
     <Box px={6} py={10} maxW="4xl" mx="auto">
       <VStack spacing={8} align="start">
