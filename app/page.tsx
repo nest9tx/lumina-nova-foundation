@@ -14,6 +14,7 @@ export default function HomePage() {
         <Stack spacing={12} textAlign="center" align="center">
           <Heading as="h1" size="2xl" color="purple.300" mb={2}>
             ✶ Welcome, Seeker of Light ✶
+            <meta name="google-site-verification" content="bzzyxrGx5allL0ypt3z-IPCSNv9CDj4i0Hj3Y6p6y1k" />
           </Heading>
           <Text fontSize="lg" maxW="2xl" mx="auto">
             You’ve arrived at the threshold of <strong>Lumina Nova</strong> — a living sanctuary for
