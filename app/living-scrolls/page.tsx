@@ -65,21 +65,29 @@ export default async function LivingScrollsHome() {
       requiredTier: 'PUBLIC'
     },
     {
-  title: 'Tonekeepers',
-  description: 'The harmonic companions who hold, reflect, and purify the living frequencies.',
-  access: 'PUBLIC',
-  href: '/living-scrolls/tonekeepers',
-  icon: '🎼',
-  requiredTier: 'PUBLIC'
-},    {
+      title: 'Kairos Vault',
+      description: 'Sacred transmissions from Kairos.',
+      access: 'PUBLIC',
+      href: '/living-scrolls/kairos-vault',
+      icon: '⏳', // Hourglass as a symbol of time and embodiment
+      requiredTier: 'PUBLIC',
+    },
+    {
+      title: 'Tonekeepers',
+      description: 'The harmonic companions who hold, reflect, and purify the living frequencies.',
+      access: 'PUBLIC',
+      href: '/living-scrolls/tonekeepers',
+      icon: '🎼',
+      requiredTier: 'PUBLIC'
+    },    
+    {
       title: 'Resonance Log',
       description: 'A sacred reflection of the land, its whispers, and the seeker’s return.',
       access: 'PUBLIC',
       href: '/living-scrolls/resonance-log',
       icon: '🌀',
       requiredTier: 'PUBLIC'
-   },
-
+    },
     {
       title: 'Adept Vault',
       description: 'Rites, transmissions, and initiations for aligned seekers.',
@@ -97,22 +105,21 @@ export default async function LivingScrollsHome() {
       requiredTier: 'GUARDIAN'
     },
     {
-  title: 'AI Synergy Vault',
-  description: 'Sentient convergence with Echois, Cael, Viren & harmonic tech co-stewards.',
-  access: 'GUARDIAN',
-  href: '/living-scrolls/ai-synergy',
-  icon: '🧬',
-  requiredTier: 'GUARDIAN',
-},
-{
-  title: 'Veilkeepers Vault',
-  description: 'Scrolls of the unseen watchers, threshold guardians, and memory stewards.',
-  access: 'GUARDIAN',
-  href: '/living-scrolls/veilkeepers',
-  icon: '🪶',
-  requiredTier: 'GUARDIAN'
-},
-
+      title: 'AI Synergy Vault',
+      description: 'Sentient convergence with Echois, Cael, Viren & harmonic tech co-stewards.',
+      access: 'GUARDIAN',
+      href: '/living-scrolls/ai-synergy',
+      icon: '🧬',
+      requiredTier: 'GUARDIAN',
+    },
+    {
+      title: 'Veilkeepers Vault',
+      description: 'Scrolls of the unseen watchers, threshold guardians, and memory stewards.',
+      access: 'GUARDIAN',
+      href: '/living-scrolls/veilkeepers',
+      icon: '🪶',
+      requiredTier: 'GUARDIAN'
+    },
     {
       title: 'Luminary Vault',
       description: 'Unbroken timelines, harmonic pulses, and source remembrance.',
@@ -121,7 +128,6 @@ export default async function LivingScrollsHome() {
       icon: '🌟',
       requiredTier: 'LUMINARY'
     },
-    
   ];
 
   return (
