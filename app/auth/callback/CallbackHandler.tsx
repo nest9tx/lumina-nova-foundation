@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '../../../utils/supabase/client';
 import { Box, Spinner, Text, VStack, Alert, AlertIcon, Button } from '@chakra-ui/react';
 
 export default function AuthCallbackHandler() {
@@ -69,8 +69,13 @@ export default function AuthCallbackHandler() {
             .eq('id', data.user.id);
         }
 
-        // Successful authentication - redirect to chamber
-        router.replace('/chamber');
+        // Refresh the session to ensure it's properly established
+        await supabase.auth.refreshSession();
+        
+        // Give a moment for session to be established before redirect
+        setTimeout(() => {
+          router.replace('/chamber');
+        }, 1000);
       } catch (error) {
         console.error('Callback handler error:', error);
         setError('An unexpected error occurred during authentication');

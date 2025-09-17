@@ -57,8 +57,13 @@ export default function SignupPage() {
         title: 'Welcome back, Seeker',
         description: 'You have successfully entered the Chamber.',
         status: 'success',
+        duration: 2000,
       });
-      router.push('/chamber');
+      
+      // Give a moment for the session to be established before redirecting
+      setTimeout(() => {
+        router.push('/chamber');
+      }, 1000);
     }
   };
 
