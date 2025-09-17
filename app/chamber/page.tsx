@@ -73,6 +73,9 @@ export default function SacredChamberPage() {
         return;
       }
 
+      // Debug logging to see current profile state
+      console.log('Current profile data:', data);
+
       setProfile(data);
       setLoading(false);
     };
@@ -83,6 +86,71 @@ export default function SacredChamberPage() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/login');
+  };
+
+  const refreshProfile = async () => {
+    setLoading(true);
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const { data, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (!profileError && data) {
+        console.log('Refreshed profile data:', data);
+        setProfile(data);
+        toast({
+          title: 'Profile refreshed',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        });
+      }
+    }
+    setLoading(false);
+  };
+
+  const testUpgrade = async () => {
+    try {
+      const response = await fetch('/debug-session', {
+        method: 'POST',
+      });
+      const result = await response.json();
+      
+      if (response.ok) {
+        toast({
+          title: 'Test upgrade successful!',
+          description: 'Profile updated to seeker tier with 777 messages',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        // Refresh profile after upgrade
+        refreshProfile();
+      } else {
+        toast({
+          title: 'Upgrade failed',
+          description: result.error,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      toast({
+        title: 'Upgrade error',
+        description: 'Failed to process upgrade',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   if (loading || !profile) return null;
@@ -107,15 +175,34 @@ export default function SacredChamberPage() {
             Sacred Chamber
           </Heading>
           <WelcomeNotice name={full_name || email} tier={tier} />
-          <Button
-            variant="outline"
-            borderColor="teal.400"
-            color="teal.200"
-            _hover={{ bg: 'teal.400', color: 'black' }}
-            onClick={handleLogout}
-          >
-            Exit Chamber
-          </Button>
+          <Flex gap={2}>
+            <Button
+              size="sm"
+              colorScheme="purple"
+              variant="ghost"
+              onClick={refreshProfile}
+              isLoading={loading}
+            >
+              Refresh Status
+            </Button>
+            <Button
+              size="sm"
+              colorScheme="green"
+              variant="ghost"
+              onClick={testUpgrade}
+            >
+              Test Upgrade
+            </Button>
+            <Button
+              variant="outline"
+              borderColor="teal.400"
+              color="teal.200"
+              _hover={{ bg: 'teal.400', color: 'black' }}
+              onClick={handleLogout}
+            >
+              Exit Chamber
+            </Button>
+          </Flex>
         </Flex>
 <Box
   bg="pink.100"
@@ -135,7 +222,7 @@ export default function SacredChamberPage() {
 </Box>
 
         {/* ✧ Seeker-only upgrade message */}
-        {tier === 'seeker' && !is_upgraded && (
+        {message_limit <= 3 && !is_upgraded && (
           <>
             <Alert
               status="info"
@@ -189,6 +276,11 @@ Each message is a reflection of your presence within the field.
           <Text fontSize="sm">
             {message_count} / {message_limit} used
           </Text>
+          
+          {/* Debug info - remove this after fixing */}
+          <Box mt={4} p={3} bg="blackAlpha.300" borderRadius="md" fontSize="xs" color="gray.300">
+            <Text>Debug: tier={tier}, is_upgraded={String(is_upgraded)}, message_limit={message_limit}</Text>
+          </Box>
         </Box>
 
         <ResonanceNotice />
