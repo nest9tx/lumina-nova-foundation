@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ScrollsPanel } from '@/components/chamber/ScrollsPanel';
-import WelcomeNotice from '@/components/chamber/WelcomeNotice';
-import { ResonanceNotice } from '@/components/chamber/ResonanceNotice';
-import { GuidesPanel } from '@/components/chamber/GuidesPanel';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types/supabase';
+import { ScrollsPanel } from '../../components/chamber/ScrollsPanel';
+import WelcomeNotice from '../../components/chamber/WelcomeNotice';
+import { ResonanceNotice } from '../../components/chamber/ResonanceNotice';
+import { GuidesPanel } from '../../components/chamber/GuidesPanel';
+import { createClient } from '../../utils/supabase/client';
 import {
   Box,
   Button,
@@ -32,7 +31,7 @@ const tierColors = {
 
 
 export default function SacredChamberPage() {
-  const supabase = createClientComponentClient<Database>();
+  const supabase = createClient();
   const [profile, setProfile] = useState<{
     email: string;
     full_name?: string;

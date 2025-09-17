@@ -2,7 +2,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
+  const response = NextResponse.next({
     request: {
       headers: request.headers,
     },
@@ -26,16 +26,37 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { session } } = await supabase.auth.getSession()
+  try {
+    // Try to get session from server
+    const { data: { session }, error } = await supabase.auth.getSession()
+    
+    // Debug logging
+    console.log('Middleware - Path:', request.nextUrl.pathname)
+    console.log('Middleware - Session exists:', !!session)
+    if (error) {
+      console.log('Middleware - Session error:', error.message)
+    }
+    if (session) {
+      console.log('Middleware - User ID:', session.user?.id)
+    }
+    
+    // If accessing chamber without session, redirect to login
+    if (!session && request.nextUrl.pathname.startsWith('/chamber')) {
+      console.log('Middleware - No session found, redirecting to login')
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
 
-  // If accessing chamber without session, redirect to signup
-  if (!session && request.nextUrl.pathname.startsWith('/chamber')) {
-    return NextResponse.redirect(new URL('/signup', request.url))
+  } catch (error) {
+    console.error('Middleware - Error checking session:', error)
+    // On error, redirect to login for protected routes
+    if (request.nextUrl.pathname.startsWith('/chamber')) {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
   }
 
   return response
 }
 
 export const config = {
-  matcher: ['/chamber/:path*']
+  matcher: ['/chamber/:path*'],
 }
