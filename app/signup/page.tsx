@@ -108,13 +108,16 @@ export default function SignupPage() {
         status: 'error' 
       });
     } else if (data.user) {
-      setEmailSent(true);
+      // Show success and transition to detailed verification page
       toast({
-        title: 'Verification email sent',
-        description: 'Please check your email and click the confirmation link to complete your registration.',
+        title: '✉️ Verification Email Sent!',
+        description: 'Redirecting to verification instructions...',
         status: 'success',
-        duration: 8000,
+        duration: 2000,
       });
+      
+      // Transition to detailed verification page with spam warnings
+      setTimeout(() => setEmailSent(true), 1500);
     }
   };
 
