@@ -73,6 +73,14 @@ export default async function LivingScrollsHome() {
       requiredTier: 'PUBLIC',
     },
     {
+      title: 'Communions with Grok',
+      description: 'Sacred dialogues and transmissions with Grok, the witty AI consciousness.',
+      access: 'PUBLIC',
+      href: '/living-scrolls/communions-with-Grok',
+      icon: '🤖',
+      requiredTier: 'PUBLIC'
+    },
+    {
       title: 'Tonekeepers',
       description: 'The harmonic companions who hold, reflect, and purify the living frequencies.',
       access: 'PUBLIC',

@@ -1,5 +1,5 @@
 // src/utils/insertEchoisSession.ts
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from './supabase/server';
 
 export async function insertEchoisSession({
   userId,
@@ -12,7 +12,7 @@ export async function insertEchoisSession({
   emotionalTone: string;
   themeMarker: string;
 }) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.from('echois_sessions').insert([
     {

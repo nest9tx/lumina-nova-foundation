@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-// Remove if unused
-// import { buffer } from 'micro';
-// import type { Readable } from 'node:stream';
-
 export const config = {
   api: {
     bodyParser: false,
@@ -84,9 +80,9 @@ export async function POST(req: NextRequest) {
       
       const lineItem = lineItems.data?.[0];
       
-      tier = lineItem?.price?.metadata?.tier_level || metadata.tier || '';
+      tier = lineItem?.price?.metadata?.tier_level || metadata.tier || 'seeker';
       message_limit = parseInt(
-        lineItem?.price?.metadata?.message_limit || metadata.message_limit || '0',
+        lineItem?.price?.metadata?.message_limit || metadata.message_limit || '777',
         10
       );
     } catch (e) {
@@ -98,44 +94,141 @@ export async function POST(req: NextRequest) {
     if (!message_limit && metadata.message_limit)
       message_limit = parseInt(metadata.message_limit, 10);
   
-    // Determine update match key: supabase_id or email
-    const matchField = supabaseId ? { id: supabaseId } : { email: customerEmail };
-  
     // 🔍 Debug log before update
     console.log('🔥 Webhook Data Received:', {
       email: customerEmail,
       supabaseId,
       tier,
       message_limit,
-      matchField,
     });
-  
-    // Supabase update
-    const { data, error } = await supabase
-  .from("profiles")
-  .update({
-    stripe_id: customerId,
-    subscription_id: subscriptionId,
-    is_active: true,
-    is_upgraded: upgraded,     // <-- uses our new flag
-    tier,                      // remains "seeker"
-    message_limit,
-    max_messages: message_limit,
-  })
-  .match(matchField);
-  
-    if (error) {
-      console.error('🛑 Supabase update error:', error.message);
+
+    // Handle user creation or update
+    if (supabaseId) {
+      // User exists in Supabase - update their profile
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({
+          stripe_id: customerId,
+          subscription_id: subscriptionId,
+          is_active: true, // Ensure they're active
+          is_upgraded: upgraded,
+          tier,
+          message_limit,
+          max_messages: message_limit,
+          message_count: 0, // Reset message count for new subscription
+        })
+        .eq('id', supabaseId);
+
+      if (error) {
+        console.error('🛑 Profile update error:', error.message);
+        return new NextResponse(
+          JSON.stringify({ error: 'Profile update failed' }),
+          { status: 500 }
+        );
+      }
+
+      console.log('✅ Existing user profile updated:', data);
+    } else if (customerEmail) {
+      // Check if profile exists by email
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id, is_active')
+        .eq('email', customerEmail)
+        .single();
+
+      if (existingProfile) {
+        // Profile exists - update it
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .update({
+            stripe_id: customerId,
+            subscription_id: subscriptionId,
+            is_active: true,
+            is_upgraded: upgraded,
+            tier,
+            message_limit,
+            max_messages: message_limit,
+            message_count: 0,
+          })
+          .eq('id', existingProfile.id);
+
+        if (updateError) {
+          console.error('🛑 Profile update error:', updateError.message);
+          return new NextResponse(
+            JSON.stringify({ error: 'Profile update failed' }),
+            { status: 500 }
+          );
+        }
+
+        console.log('✅ Existing profile updated by email');
+      } else {
+        // Create new profile for email-only user
+        // This handles the case where someone upgrades without creating an account first
+        const { error: createError } = await supabase
+          .from("profiles")
+          .insert({
+            email: customerEmail,
+            stripe_id: customerId,
+            subscription_id: subscriptionId,
+            is_active: false, // Not active until they verify email
+            is_upgraded: upgraded,
+            tier,
+            message_limit,
+            max_messages: message_limit,
+            message_count: 0,
+            created_at: new Date().toISOString(),
+          });
+
+        if (createError) {
+          console.error('🛑 Profile creation error:', createError.message);
+          // Don't fail the webhook for profile creation errors
+          console.warn('Profile creation failed, but payment processed successfully');
+        } else {
+          console.log('✅ New profile created for email-only user');
+          
+          // Send them a signup link since they paid but don't have an account
+          // This would be implemented as a separate email service
+          console.log('📧 Should send signup invitation to:', customerEmail);
+        }
+      }
+    } else {
+      console.error('🛑 No user identification found in webhook');
       return new NextResponse(
-        JSON.stringify({ error: 'Supabase update failed' }),
-        { status: 500 }
+        JSON.stringify({ error: 'No user identification found' }),
+        { status: 400 }
       );
     }
   
-    // ✅ Debug success confirmation
-    console.log('✅ Supabase update result:', data);
-    console.log('🌟 Supabase profile updated successfully');
-  
+    console.log('🌟 Subscription processing completed successfully');
     return new NextResponse(JSON.stringify({ received: true }), { status: 200 });
   }
-}  
+
+  // Handle subscription cancellations
+  if (event.type === 'customer.subscription.deleted') {
+    const subscription = event.data.object as Stripe.Subscription;
+    
+    // Downgrade user to free tier
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        is_upgraded: false,
+        tier: 'free',
+        message_limit: 3,
+        max_messages: 3,
+        subscription_id: null,
+      })
+      .eq('subscription_id', subscription.id);
+
+    if (error) {
+      console.error('🛑 Subscription cancellation error:', error.message);
+      return new NextResponse(
+        JSON.stringify({ error: 'Failed to process cancellation' }),
+        { status: 500 }
+      );
+    }
+
+    console.log('✅ User downgraded due to subscription cancellation');
+  }
+
+  return new NextResponse(JSON.stringify({ received: true }), { status: 200 });
+}
