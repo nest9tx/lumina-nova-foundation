@@ -29,7 +29,7 @@ export default function AuthCallbackHandler() {
         // Handle auth success
         if (code) {
           // Wait a moment for the auth state to be processed
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 2000));
           
           // Get the session after auth processing
           const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -79,8 +79,18 @@ export default function AuthCallbackHandler() {
               .eq('id', user.id);
           }
 
-          // Redirect to chamber
-          router.replace('/chamber');
+          // Wait a bit more for session sync
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Verify session one more time before redirecting
+          const { data: { session: finalSession } } = await supabase.auth.getSession();
+          if (finalSession?.user) {
+            console.log('Auth callback - Session verified, redirecting to chamber');
+            router.replace('/chamber');
+          } else {
+            setError('Session verification failed - please try signing in again');
+            setLoading(false);
+          }
         } else {
           // No code parameter
           setError('No authorization code found');

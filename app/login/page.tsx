@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '../../utils/supabase/client';
 import {
   Box, Button, Input, Heading, Text, VStack, Container, Icon, useToast
 } from '@chakra-ui/react';
 import { FaSun } from 'react-icons/fa';
 
 export default function LoginPage() {
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const router = useRouter();
   const toast = useToast();
   const [email, setEmail] = useState('');
@@ -43,8 +43,6 @@ export default function LoginPage() {
 
         if (response.error) throw response.error;
 
-        router.push('/chamber');
-        router.refresh();
         toast({
           title: "Welcome Back",
           description: "You have returned to your path.",
@@ -52,6 +50,11 @@ export default function LoginPage() {
           duration: 3000,
           isClosable: true,
         });
+
+        // Wait for session to be established before redirecting
+        setTimeout(() => {
+          router.push('/chamber');
+        }, 500);
       }
     } catch (err: unknown) {
       const error = err as { message?: string };

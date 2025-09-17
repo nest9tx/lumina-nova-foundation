@@ -38,12 +38,19 @@ export async function middleware(request: NextRequest) {
     }
     if (session) {
       console.log('Middleware - User ID:', session.user?.id)
+      console.log('Middleware - User email:', session.user?.email)
     }
     
     // If accessing chamber without session, redirect to login
     if (!session && request.nextUrl.pathname.startsWith('/chamber')) {
       console.log('Middleware - No session found, redirecting to login')
       return NextResponse.redirect(new URL('/login', request.url))
+    }
+
+    // If we have a session, allow the request to continue
+    if (session && request.nextUrl.pathname.startsWith('/chamber')) {
+      console.log('Middleware - Valid session found, allowing chamber access')
+      return response
     }
 
   } catch (error) {
