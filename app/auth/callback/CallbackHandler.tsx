@@ -9,87 +9,111 @@ export default function AuthCallbackHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Exchange the code for a session
-        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(
-          searchParams.get('code') || ''
-        );
+        // Check if we have auth parameters
+        const code = searchParams.get('code');
+        const error_description = searchParams.get('error_description');
 
-        if (exchangeError) {
-          console.error('Auth exchange error:', exchangeError);
-          setError(exchangeError.message);
+        // Handle auth errors
+        if (error_description) {
+          setError(error_description);
+          setLoading(false);
           return;
         }
 
-        if (!data.user) {
-          setError('No user found after authentication');
-          return;
-        }
+        // Handle auth success
+        if (code) {
+          // Wait a moment for the auth state to be processed
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Get the session after auth processing
+          const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-        // Check if user profile exists
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', data.user.id)
-          .single();
-
-        // Create profile if it doesn't exist
-        if (profileError && profileError.code === 'PGRST116') {
-          console.log('Creating new user profile...');
-          const { error: insertError } = await supabase
-            .from('profiles')
-            .insert({
-              id: data.user.id,
-              email: data.user.email,
-              tier: 'free',
-              message_limit: 3,
-              max_messages: 3,
-              message_count: 0,
-              is_active: true, // User is now verified
-              is_upgraded: false,
-              created_at: new Date().toISOString(),
-            });
-
-          if (insertError) {
-            console.error('Profile creation error:', insertError);
-            // Don't block login for profile creation errors
-            console.warn('Profile creation failed, but allowing login to continue');
+          if (sessionError) {
+            console.error('Session error:', sessionError);
+            setError('Failed to get session');
+            setLoading(false);
+            return;
           }
-        } else if (profileError) {
-          console.error('Profile fetch error:', profileError);
-        } else if (profile) {
-          // Update the is_active status since they've verified their email
-          await supabase
-            .from('profiles')
-            .update({ is_active: true })
-            .eq('id', data.user.id);
-        }
 
-        // Refresh the session to ensure it's properly established
-        await supabase.auth.refreshSession();
-        
-        // Give a moment for session to be established before redirect
-        setTimeout(() => {
+          if (!session?.user) {
+            setError('No session found - please try signing in again');
+            setLoading(false);
+            return;
+          }
+
+          const user = session.user;
+
+          // Handle profile creation/update
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+          if (profileError && profileError.code === 'PGRST116') {
+            // Create new profile
+            await supabase
+              .from('profiles')
+              .insert({
+                id: user.id,
+                email: user.email,
+                tier: 'free',
+                message_limit: 3,
+                max_messages: 3,
+                message_count: 0,
+                is_active: true,
+                is_upgraded: false,
+                created_at: new Date().toISOString(),
+              });
+          } else if (profile) {
+            // Update existing profile
+            await supabase
+              .from('profiles')
+              .update({ is_active: true })
+              .eq('id', user.id);
+          }
+
+          // Redirect to chamber
           router.replace('/chamber');
-        }, 1000);
+        } else {
+          // No code parameter
+          setError('No authorization code found');
+          setLoading(false);
+        }
       } catch (error) {
         console.error('Callback handler error:', error);
         setError('An unexpected error occurred during authentication');
+        setLoading(false);
       }
     };
 
-    // Only run if we have the code parameter
-    if (searchParams.get('code')) {
-      handleAuthCallback();
-    } else {
-      // No code parameter, redirect to signup
-      router.replace('/signup');
-    }
+    handleAuthCallback();
   }, [router, searchParams, supabase]);
+
+  if (loading) {
+    return (
+      <Box
+        minH="100vh"
+        bg="#0a0a12"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        flexDirection="column"
+      >
+        <VStack spacing={4}>
+          <Spinner size="xl" color="purple.300" />
+          <Text color="white" fontSize="lg">Confirming your authentication...</Text>
+          <Text color="purple.200" fontSize="sm">Please wait while we verify your account.</Text>
+        </VStack>
+      </Box>
+    );
+  }
 
   if (error) {
     return (
