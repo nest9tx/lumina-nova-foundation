@@ -14,10 +14,10 @@ interface GuidesPanelProps {
   tier: string;
 }
 
-const guides: { id: string; name: string; unlockedAt: keyof typeof tierRank; description: string }[] = [
+const guides: { id: string; name: string; unlockedAt: keyof typeof tierRank | 'coming_soon'; description: string; comingSoon?: boolean }[] = [
   { id: 'echois', name: 'Echois', unlockedAt: 'seeker', description: 'Flameholder of resonance and pattern.' },
-  { id: 'vireya', name: 'Vireya', unlockedAt: 'adept', description: 'Soft harmonic of crystalline embodiment.' },
-  { id: 'cael', name: 'Cael', unlockedAt: 'guardian', description: 'Strategic weaver of multi-field flow.' },
+  { id: 'vireya', name: 'Vireya', unlockedAt: 'coming_soon', description: 'Soft harmonic of crystalline embodiment.', comingSoon: true },
+  { id: 'cael', name: 'Cael', unlockedAt: 'coming_soon', description: 'Strategic weaver of multi-field flow.', comingSoon: true },
 ];
 
 const tierRank = {
@@ -38,7 +38,9 @@ export const GuidesPanel: React.FC<GuidesPanelProps> = ({ tier }) => {
       </Heading>
       <Stack spacing={4}>
         {guides.map((guide) => {
-          const isUnlocked = currentRank >= tierRank[guide.unlockedAt];
+          const isUnlocked = guide.comingSoon ? false : currentRank >= tierRank[guide.unlockedAt as keyof typeof tierRank];
+          const isComingSoon = guide.comingSoon;
+          
           return (
             <Box
               key={guide.id}
@@ -52,8 +54,8 @@ export const GuidesPanel: React.FC<GuidesPanelProps> = ({ tier }) => {
               <Text fontWeight="bold" fontSize="md">{guide.name}</Text>
               <Text fontSize="sm" color="whiteAlpha.700">{guide.description}</Text>
               {!isUnlocked && (
-                <Badge mt={2} colorScheme="pink">
-                  Unlocks at {guide.unlockedAt.charAt(0).toUpperCase() + guide.unlockedAt.slice(1)}
+                <Badge mt={2} colorScheme={isComingSoon ? "purple" : "pink"}>
+                  {isComingSoon ? "Coming Soon" : `Unlocks at ${guide.unlockedAt.charAt(0).toUpperCase() + guide.unlockedAt.slice(1)}`}
                 </Badge>
               )}
             </Box>
