@@ -74,31 +74,27 @@ function JoinPageContent() {
     setLoading(true);
 
     try {
-      // Temporary: Direct redirect to live Stripe link until env vars are updated
-      const directUrl = `https://buy.stripe.com/8x2eV6f6halbahz3acbEA05?prefilled_email=${encodeURIComponent(email)}`;
-      window.location.href = directUrl;
-      
-      // TODO: Once live Stripe keys are set in environment variables, revert to:
-      // const response = await fetch('/api/create-checkout-session', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     email,
-      //     tier: 'seeker',
-      //   }),
-      // });
+      // Use dynamic checkout session with proper metadata for webhook processing
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          tier: 'seeker',
+        }),
+      });
 
-      // const { url, error } = await response.json();
+      const { url, error } = await response.json();
 
-      // if (error) {
-      //   throw new Error(error);
-      // }
+      if (error) {
+        throw new Error(error);
+      }
 
-      // if (url) {
-      //   window.location.href = url;
-      // }
+      if (url) {
+        window.location.href = url;
+      }
     } catch (error) {
       console.error('Upgrade error:', error);
       toast({
