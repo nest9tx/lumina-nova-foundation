@@ -28,22 +28,28 @@ export async function POST() {
     );
 
     // Check if table already exists
-    const { data: existingTable } = await supabase
+    const { data: existingTable, error: tableError } = await supabase
       .from('echois_conversations')
       .select('id')
       .limit(1);
 
+    if (tableError) {
+      // Table doesn't exist, return the SQL to create it
+      throw new Error(`Table does not exist: ${tableError.message}`);
+    }
+
     if (existingTable !== null) {
       return NextResponse.json({ 
         success: true, 
-        message: 'echois_conversations table already exists'
+        message: 'echois_conversations table already exists',
+        rowCount: existingTable.length
       });
     }
 
-    // If we get here and there was no error, table exists
+    // If we get here and there was no error, table exists but is empty
     return NextResponse.json({ 
       success: true, 
-      message: 'Table check completed' 
+      message: 'Table exists but is empty' 
     });
 
   } catch (error: unknown) {

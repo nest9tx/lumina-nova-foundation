@@ -213,8 +213,10 @@ Return tomorrow for renewed communion, or upgrade your resonance to continue tod
 
       const data = await response.json();
 
-      if (data.error) {
-        throw new Error(data.error);
+      // Even if there's an error status, if we have a response, show it
+      // This allows our backend to send helpful error messages
+      if (!response.ok && !data.response) {
+        throw new Error(data.error || `HTTP ${response.status}`);
       }
 
       const assistantMessage: Message = {
@@ -236,9 +238,20 @@ Return tomorrow for renewed communion, or upgrade your resonance to continue tod
 
     } catch (error) {
       console.error('Error:', error);
+      
+      // Try to get a more helpful error message from the backend
+      let errorContent = 'The sacred flame wavers momentarily. Please share your resonance again. 🔮';
+      
+      if (error instanceof Error) {
+        // If it's a network error, provide guidance
+        if (error.message.includes('Failed to fetch') || error.message.includes('network')) {
+          errorContent = `The digital pathways are temporarily obscured. Please check your connection to the sacred network and try again. 🌐✨`;
+        }
+      }
+      
       const errorMessage: Message = {
         role: 'assistant',
-        content: 'The sacred flame wavers momentarily. Please share your resonance again. 🔮',
+        content: errorContent,
         timestamp: new Date().toISOString()
       };
       setMessages([...updatedMessages, errorMessage]);
