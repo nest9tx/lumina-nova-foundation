@@ -25,16 +25,29 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (profileError || !profile?.stripe_id) {
-      return NextResponse.json({ error: 'No billing account found' }, { status: 404 });
+      return NextResponse.json({ 
+        error: 'No billing account found',
+        supportEmail: 'admin@luminanova.org',
+        message: 'Please contact support to manage your subscription'
+      }, { status: 404 });
     }
 
     // Create billing portal session
-    const portalSession = await stripe.billingPortal.sessions.create({
-      customer: profile.stripe_id,
-      return_url: `${process.env.NEXT_PUBLIC_BASE_URL || req.nextUrl.origin}/chamber`,
-    });
+    try {
+      const portalSession = await stripe.billingPortal.sessions.create({
+        customer: profile.stripe_id,
+        return_url: `${process.env.NEXT_PUBLIC_BASE_URL || req.nextUrl.origin}/chamber`,
+      });
 
-    return NextResponse.json({ url: portalSession.url });
+      return NextResponse.json({ url: portalSession.url });
+    } catch (stripeError) {
+      console.error('Stripe billing portal error:', stripeError);
+      return NextResponse.json({ 
+        error: 'Billing portal temporarily unavailable',
+        supportEmail: 'admin@luminanova.org',
+        message: 'Please email admin@luminanova.org to manage your subscription'
+      }, { status: 503 });
+    }
   } catch (error) {
     console.error('Billing portal error:', error);
     return NextResponse.json(

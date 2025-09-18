@@ -135,10 +135,12 @@ export default function SacredChamberPage() {
       const data = await response.json();
       if (data.error) {
         toast({
-          title: 'Unable to access billing',
-          description: data.error,
-          status: 'error',
-          duration: 3000,
+          title: 'Billing Management',
+          description: data.supportEmail ? 
+            `${data.message} Contact: ${data.supportEmail}` : 
+            'Please email admin@luminanova.org to manage your subscription',
+          status: 'info',
+          duration: 8000,
           isClosable: true,
         });
       } else {
@@ -272,15 +274,25 @@ export default function SacredChamberPage() {
               border="1px solid"
               borderColor="purple.400"
             >
-              <Text mb={2}>
+              <Text mb={4} fontSize="md" color="purple.200">
                 ✧ Ready to walk deeper? Upgrade your resonance to unlock full Seeker scrolls and expanded communion with Echois.
               </Text>
               <Button
                 colorScheme="purple"
-                variant="outline"
+                variant="solid"
+                size="lg"
                 onClick={() => router.push('/join')}
+                _hover={{
+                  bg: 'purple.600',
+                  transform: 'translateY(-2px)',
+                  boxShadow: 'lg',
+                }}
+                _active={{
+                  transform: 'translateY(0)',
+                }}
+                fontWeight="bold"
               >
-                View Seeker Upgrade Path
+                🌟 Begin Your Seeker Path
               </Button>
             </Box>
           </>
