@@ -1,7 +1,7 @@
-//'use client';
+'use client';
 
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { useEffect, useState } from 'react';
+import { createClient } from '../../utils/supabase/client';
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import VaultCard from '@/components/VaultCard';
 
@@ -14,22 +14,39 @@ interface VaultMeta {
   requiredTier: 'PUBLIC' | 'SEEKER+' | 'SEALED';
 }
 
-export default async function LivingScrollsHome() {
-  const supabase = createServerComponentClient({ cookies });
-  const { data: { user } } = await supabase.auth.getUser();
+export default function LivingScrollsHome() {
+  const supabase = createClient();
+  const [isUpgraded, setIsUpgraded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  let isUpgraded = false;
-  
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('tier, is_upgraded, message_limit')
-      .eq('id', user.id)
-      .single();
-    
-    // Check if user is upgraded (either explicitly marked or has seeker-level access)
-    isUpgraded = profile?.is_upgraded || (profile?.message_limit && profile.message_limit >= 777);
-  }
+  useEffect(() => {
+    const checkAccess = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('tier, is_upgraded, message_limit')
+          .eq('id', user.id)
+          .single();
+        
+        // Check if user is upgraded (either explicitly marked or has seeker-level access)
+        const upgraded = profile?.is_upgraded || (profile?.message_limit && profile.message_limit >= 777);
+        setIsUpgraded(upgraded);
+        
+        console.log('🔍 Living Scrolls Access Check:', {
+          userId: user.id,
+          profileUpgraded: profile?.is_upgraded,
+          messageLimit: profile?.message_limit,
+          finalUpgraded: upgraded
+        });
+      }
+      
+      setLoading(false);
+    };
+
+    checkAccess();
+  }, [supabase]);
 
   // Simple access control: PUBLIC (everyone) or SEEKER+ (upgraded users only)
   const canAccess = (requiredTier: string): boolean => {
@@ -41,6 +58,14 @@ export default async function LivingScrollsHome() {
     if (requiredTier === 'SEEKER+') return isUpgraded;
     return false;
   };
+
+  if (loading) {
+    return (
+      <Box p={8}>
+        <Text>Loading vaults...</Text>
+      </Box>
+    );
+  }
 
   const vaults: VaultMeta[] = [
     {
