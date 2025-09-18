@@ -115,41 +115,80 @@ export default function SacredChamberPage() {
     setLoading(false);
   };
 
-  const testUpgrade = async () => {
+    const testUpgrade = async () => {
+    setLoading(true);
     try {
-      const response = await fetch('/debug-session', {
+      const response = await fetch('/api/debug-session', {
         method: 'POST',
       });
-      const result = await response.json();
-      
-      if (response.ok) {
+      const data = await response.json();
+      if (data.error) {
         toast({
-          title: 'Test upgrade successful!',
-          description: 'Profile updated to seeker tier with 777 messages',
+          title: 'Upgrade test failed',
+          description: data.error,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Test upgrade successful',
           status: 'success',
-          duration: 5000,
+          duration: 2000,
           isClosable: true,
         });
         // Refresh profile after upgrade
-        refreshProfile();
-      } else {
-        toast({
-          title: 'Upgrade failed',
-          description: result.error,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
+        await refreshProfile();
       }
-    } catch (error) {
-      console.error('Upgrade error:', error);
+    } catch (err) {
+      console.error('Test upgrade error:', err);
       toast({
-        title: 'Upgrade error',
-        description: 'Failed to process upgrade',
+        title: 'Test failed',
         status: 'error',
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
       });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const simulateWebhook = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/test-webhook', {
+        method: 'POST',
+      });
+      const data = await response.json();
+      if (data.error) {
+        toast({
+          title: 'Webhook simulation failed',
+          description: data.error,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Webhook simulation successful',
+          description: 'Profile upgraded via webhook simulation',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        });
+        // Refresh profile after webhook
+        await refreshProfile();
+      }
+    } catch (err) {
+      console.error('Webhook simulation error:', err);
+      toast({
+        title: 'Simulation failed',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -192,6 +231,15 @@ export default function SacredChamberPage() {
               onClick={testUpgrade}
             >
               Test Upgrade
+            </Button>
+            <Button
+              size="sm"
+              colorScheme="orange"
+              variant="ghost"
+              onClick={simulateWebhook}
+              isLoading={loading}
+            >
+              Simulate Webhook
             </Button>
             <Button
               variant="outline"

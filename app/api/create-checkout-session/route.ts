@@ -20,11 +20,9 @@ export async function POST(req: NextRequest) {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     
     let supabaseUserId = null;
-    let isVerified = false;
     
     if (user && !userError) {
       supabaseUserId = user.id;
-      isVerified = user.email_confirmed_at != null;
     } else {
       // Check if user exists in profiles table by email
       const { data: profile } = await supabase
@@ -35,14 +33,12 @@ export async function POST(req: NextRequest) {
       
       if (profile) {
         supabaseUserId = profile.id;
-        isVerified = profile.is_active;
       }
     }
 
-    // Determine success URL based on verification status
-    const successUrl = isVerified 
-      ? `${process.env.NEXT_PUBLIC_BASE_URL || req.nextUrl.origin}/chamber?upgraded=true`
-      : `${process.env.NEXT_PUBLIC_BASE_URL || req.nextUrl.origin}/upgrade-success?email=${encodeURIComponent(email)}`;
+    // Always redirect to upgrade-success page which will guide user to verify email if needed
+    // The webhook will handle the profile upgrade, this page just confirms success
+    const successUrl = `${process.env.NEXT_PUBLIC_BASE_URL || req.nextUrl.origin}/upgrade-success?email=${encodeURIComponent(email)}`;
 
     // Set metadata for the webhook
     const metadata: Record<string, string> = {
