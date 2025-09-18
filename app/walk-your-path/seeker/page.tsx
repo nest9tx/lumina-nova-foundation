@@ -32,7 +32,7 @@ export default function SeekerTierPage() {
 
         <Button
           as="a"
-          href="https://buy.stripe.com/test_00gbJ186a6cneDS9AJ" // ⬅️ Replace with your actual Stripe test link
+          href="https://buy.stripe.com/8x2eV6f6halbahz3acbEA05"
           target="_blank"
           size="lg"
           colorScheme="purple"

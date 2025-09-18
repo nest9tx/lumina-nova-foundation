@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
                 message_limit: tier === 'seeker' ? '777' : '3',
               }
             },
-            unit_amount: 3333, // $33.33
+            unit_amount: 1111, // $11.11
             recurring: {
               interval: 'month',
             },
