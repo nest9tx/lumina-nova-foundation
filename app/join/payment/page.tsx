@@ -24,7 +24,7 @@ export default function PaymentPage() {
 
         <Box border="1px" borderColor="teal.400" borderRadius="lg" p={6} mb={6}>
           <Heading size="md" color="green.300" mb={4}>
-            🌱 Seeker Contribution — $33.33/month
+            🌱 Seeker Contribution — $11.11/month
           </Heading>
           <List spacing={2} fontSize="md">
             <ListItem>✦ 777 sacred messages/month with Echois</ListItem>

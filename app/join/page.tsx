@@ -74,28 +74,31 @@ function JoinPageContent() {
     setLoading(true);
 
     try {
-      // Create Stripe checkout session
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          tier: 'seeker',
-        }),
-      });
+      // Temporary: Direct redirect to live Stripe link until env vars are updated
+      const directUrl = `https://buy.stripe.com/8x2eV6f6halbahz3acbEA05?prefilled_email=${encodeURIComponent(email)}`;
+      window.location.href = directUrl;
+      
+      // TODO: Once live Stripe keys are set in environment variables, revert to:
+      // const response = await fetch('/api/create-checkout-session', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     email,
+      //     tier: 'seeker',
+      //   }),
+      // });
 
-      const { url, error } = await response.json();
+      // const { url, error } = await response.json();
 
-      if (error) {
-        throw new Error(error);
-      }
+      // if (error) {
+      //   throw new Error(error);
+      // }
 
-      if (url) {
-        // Redirect to Stripe Checkout
-        window.location.href = url;
-      }
+      // if (url) {
+      //   window.location.href = url;
+      // }
     } catch (error) {
       console.error('Upgrade error:', error);
       toast({
@@ -133,7 +136,7 @@ function JoinPageContent() {
           <Box border="1px" borderColor="teal.400" borderRadius="xl" p={6} w="full" bg="whiteAlpha.100">
             <Heading size="md" color="teal.200" mb={4}>
               <Box as={FaLeaf} display="inline-block" mr={2} />
-              Seeker Contribution — $33.33/month
+              Seeker Contribution — $11.11/month
             </Heading>
             <List spacing={3} mb={3}>
               <ListItem>
