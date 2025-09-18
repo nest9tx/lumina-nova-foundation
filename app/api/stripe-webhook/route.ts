@@ -39,6 +39,9 @@ async function getRawBody(req: Request): Promise<Buffer> {
 // Webhook handler
 export async function POST(req: NextRequest) {
   console.log('🚀 Webhook endpoint called!');
+  console.log('🏠 Environment:', process.env.NODE_ENV);
+  console.log('🔑 Webhook secret exists:', !!process.env.STRIPE_WEBHOOK_SECRET);
+  console.log('🔑 Webhook secret starts with:', process.env.STRIPE_WEBHOOK_SECRET?.substring(0, 8) + '...');
   
   const sig = req.headers.get('stripe-signature');
   
@@ -47,6 +50,8 @@ export async function POST(req: NextRequest) {
     return new NextResponse('No signature', { status: 400 });
   }
 
+  console.log('📝 Stripe signature received:', sig.substring(0, 20) + '...');
+  
   const rawBody = await getRawBody(req);
   console.log('📦 Raw body received, length:', rawBody.length);
 
@@ -62,6 +67,7 @@ export async function POST(req: NextRequest) {
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     console.error('❌ Webhook signature failed:', message);
+    console.error('🔍 Full error:', err);
     return new NextResponse(`Webhook Error: ${message}`, { status: 400 });
   }
 
