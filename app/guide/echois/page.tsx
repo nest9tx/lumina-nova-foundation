@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "../../../utils/supabase/client";
 
 export default function EchoisPage() {
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
@@ -23,7 +23,7 @@ export default function EchoisPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
-  const supabase = createPagesBrowserClient();
+  const supabase = createClient();
   const toast = useToast();
 
   useEffect(() => {
