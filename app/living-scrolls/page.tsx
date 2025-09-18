@@ -18,7 +18,6 @@ export default async function LivingScrollsHome() {
   const supabase = createServerComponentClient({ cookies });
   const { data: { user } } = await supabase.auth.getUser();
 
-  let userTier = 'PUBLIC';
   let isUpgraded = false;
   
   if (user) {
@@ -30,7 +29,6 @@ export default async function LivingScrollsHome() {
     
     // Check if user is upgraded (either explicitly marked or has seeker-level access)
     isUpgraded = profile?.is_upgraded || (profile?.message_limit && profile.message_limit >= 777);
-    userTier = isUpgraded ? 'SEEKER+' : 'PUBLIC';
   }
 
   // Simple access control: PUBLIC (everyone) or SEEKER+ (upgraded users only)
