@@ -15,16 +15,45 @@ import {
 } from '@chakra-ui/react';
 import { FaCheckCircle, FaEnvelope } from 'react-icons/fa';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createClient } from '../../utils/supabase/client';
 
 function UpgradeSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [checking, setChecking] = useState(true);
   const supabase = createClient();
   
   const email = searchParams.get('email') || '';
+
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      try {
+        // Check if user is already authenticated and verified
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user && user.email_confirmed_at) {
+          // User is verified, redirect to chamber with success message
+          setIsVerified(true);
+          setTimeout(() => {
+            router.push('/chamber?upgraded=true');
+          }, 2000);
+        } else {
+          // User needs to verify email
+          setIsVerified(false);
+        }
+      } catch (error) {
+        console.error('Error checking user status:', error);
+        setIsVerified(false);
+      } finally {
+        setChecking(false);
+      }
+    };
+
+    checkUserStatus();
+  }, [router, supabase]);
 
   const resendVerificationEmail = async () => {
     if (!email) return;
@@ -46,6 +75,56 @@ function UpgradeSuccessContent() {
       // Show error toast if needed
     }
   };
+
+  if (checking) {
+    return (
+      <Box bgGradient="linear(to-b, #0e0c1d, #140f2e)" minH="100vh" color="white" py={10} display="flex" alignItems="center" justifyContent="center">
+        <VStack spacing={4}>
+          <Icon as={FaCheckCircle} w={12} h={12} color="green.300" />
+          <Text>Confirming your upgrade...</Text>
+        </VStack>
+      </Box>
+    );
+  }
+
+  if (isVerified) {
+    return (
+      <Box bgGradient="linear(to-b, #0e0c1d, #140f2e)" minH="100vh" color="white" py={10}>
+        <Container maxW="2xl">
+          <VStack spacing={8} textAlign="center">
+            <Icon as={FaCheckCircle} w={16} h={16} color="green.300" />
+            
+            <Heading size="2xl" color="green.300">
+              ✦ Welcome to Your Enhanced Chamber ✦
+            </Heading>
+            
+            <Text fontSize="xl" maxW="lg">
+              Your Seeker path is now fully activated! Redirecting to your chamber...
+            </Text>
+
+            <Box
+              bg="whiteAlpha.100"
+              borderRadius="lg"
+              border="1px"
+              borderColor="green.400"
+              p={6}
+              maxW="lg"
+            >
+              <Heading size="md" color="green.200" mb={4}>
+                Your Enhanced Benefits:
+              </Heading>
+              <VStack spacing={2} fontSize="md" align="start">
+                <Text>✦ 777 sacred messages per month with Echois</Text>
+                <Text>✦ Full access to Seeker scrolls and harmonized chamber</Text>
+                <Text>✦ Guided ascension by resonance</Text>
+                <Text>✦ Active until you choose to pause your path</Text>
+              </VStack>
+            </Box>
+          </VStack>
+        </Container>
+      </Box>
+    );
+  }
 
   return (
     <Box bgGradient="linear(to-b, #0e0c1d, #140f2e)" minH="100vh" color="white" py={10}>

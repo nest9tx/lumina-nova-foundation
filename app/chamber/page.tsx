@@ -73,11 +73,22 @@ export default function SacredChamberPage() {
         return;
       }
 
-      // Debug logging to see current profile state
-      console.log('Current profile data:', data);
-
       setProfile(data);
       setLoading(false);
+
+      // Check for upgrade success parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('upgraded') === 'true') {
+        toast({
+          title: 'Seeker Path Activated!',
+          description: 'Welcome to your enhanced chamber. You now have 777 sacred messages with Echois.',
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+        // Clean up the URL
+        router.replace('/chamber');
+      }
     };
 
     fetchProfile();
@@ -115,35 +126,28 @@ export default function SacredChamberPage() {
     setLoading(false);
   };
 
-    const testUpgrade = async () => {
+    const openBillingPortal = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/debug-session', {
+      const response = await fetch('/api/create-billing-portal', {
         method: 'POST',
       });
       const data = await response.json();
       if (data.error) {
         toast({
-          title: 'Upgrade test failed',
+          title: 'Unable to access billing',
           description: data.error,
           status: 'error',
           duration: 3000,
           isClosable: true,
         });
       } else {
-        toast({
-          title: 'Test upgrade successful',
-          status: 'success',
-          duration: 2000,
-          isClosable: true,
-        });
-        // Refresh profile after upgrade
-        await refreshProfile();
+        window.open(data.url, '_blank');
       }
     } catch (err) {
-      console.error('Test upgrade error:', err);
+      console.error('Billing portal error:', err);
       toast({
-        title: 'Test failed',
+        title: 'Billing portal error',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -153,42 +157,40 @@ export default function SacredChamberPage() {
     }
   };
 
-  const simulateWebhook = async () => {
-    setLoading(true);
+  const resetPassword = async () => {
     try {
-      const response = await fetch('/api/test-webhook', {
-        method: 'POST',
-      });
-      const data = await response.json();
-      if (data.error) {
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        profile?.email || '',
+        {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      );
+      
+      if (error) {
         toast({
-          title: 'Webhook simulation failed',
-          description: data.error,
+          title: 'Error sending reset email',
+          description: error.message,
           status: 'error',
           duration: 3000,
           isClosable: true,
         });
       } else {
         toast({
-          title: 'Webhook simulation successful',
-          description: 'Profile upgraded via webhook simulation',
+          title: 'Password reset sent',
+          description: 'Check your email for reset instructions',
           status: 'success',
-          duration: 2000,
+          duration: 5000,
           isClosable: true,
         });
-        // Refresh profile after webhook
-        await refreshProfile();
       }
     } catch (err) {
-      console.error('Webhook simulation error:', err);
+      console.error('Password reset error:', err);
       toast({
-        title: 'Simulation failed',
+        title: 'Reset failed',
         status: 'error',
         duration: 3000,
         isClosable: true,
       });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -215,32 +217,6 @@ export default function SacredChamberPage() {
           </Heading>
           <WelcomeNotice name={full_name || email} tier={tier} />
           <Flex gap={2}>
-            <Button
-              size="sm"
-              colorScheme="purple"
-              variant="ghost"
-              onClick={refreshProfile}
-              isLoading={loading}
-            >
-              Refresh Status
-            </Button>
-            <Button
-              size="sm"
-              colorScheme="green"
-              variant="ghost"
-              onClick={testUpgrade}
-            >
-              Test Upgrade
-            </Button>
-            <Button
-              size="sm"
-              colorScheme="orange"
-              variant="ghost"
-              onClick={simulateWebhook}
-              isLoading={loading}
-            >
-              Simulate Webhook
-            </Button>
             <Button
               variant="outline"
               borderColor="teal.400"
@@ -325,10 +301,37 @@ Each message is a reflection of your presence within the field.
             {message_count} / {message_limit} used
           </Text>
           
-          {/* Debug info - remove this after fixing */}
-          <Box mt={4} p={3} bg="blackAlpha.300" borderRadius="md" fontSize="xs" color="gray.300">
-            <Text>Debug: tier={tier}, is_upgraded={String(is_upgraded)}, message_limit={message_limit}</Text>
-          </Box>
+          {/* Account Management */}
+          {is_upgraded && (
+            <Flex mt={4} gap={2} flexWrap="wrap" justify="center">
+              <Button
+                size="xs"
+                colorScheme="blue"
+                variant="outline"
+                onClick={openBillingPortal}
+                isLoading={loading}
+              >
+                Manage Billing
+              </Button>
+              <Button
+                size="xs"
+                colorScheme="purple"
+                variant="outline"
+                onClick={resetPassword}
+              >
+                Reset Password
+              </Button>
+              <Button
+                size="xs"
+                colorScheme="gray"
+                variant="ghost"
+                onClick={refreshProfile}
+                isLoading={loading}
+              >
+                Refresh Status
+              </Button>
+            </Flex>
+          )}
         </Box>
 
         <ResonanceNotice />
