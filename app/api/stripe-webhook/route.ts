@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
   }
 
   console.log('✅ Stripe event verified:', event.type);
+  console.log('📦 Full event data:', JSON.stringify(event, null, 2));
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
@@ -100,6 +101,9 @@ export async function POST(req: NextRequest) {
       supabaseId,
       tier,
       message_limit,
+      customerId,
+      subscriptionId,
+      upgraded,
     });
 
     // Handle user creation or update
