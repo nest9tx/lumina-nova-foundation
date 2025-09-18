@@ -79,14 +79,17 @@ export default function AuthCallbackHandler() {
               .eq('id', user.id);
           }
 
-          // Wait a bit more for session sync
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          // Wait longer for session sync across server/client
+          await new Promise(resolve => setTimeout(resolve, 2000));
           
-          // Verify session one more time before redirecting
+          // Refresh auth state and verify session
+          await supabase.auth.refreshSession();
           const { data: { session: finalSession } } = await supabase.auth.getSession();
+          
           if (finalSession?.user) {
             console.log('Auth callback - Session verified, redirecting to chamber');
-            router.replace('/chamber');
+            // Force a hard redirect to ensure middleware sees the session
+            window.location.href = '/chamber';
           } else {
             setError('Session verification failed - please try signing in again');
             setLoading(false);

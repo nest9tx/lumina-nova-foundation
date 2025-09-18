@@ -51,10 +51,10 @@ export default function LoginPage() {
           isClosable: true,
         });
 
-        // Wait for session to be established before redirecting
+        // Wait for session to be established and force hard redirect
         setTimeout(() => {
-          router.push('/chamber');
-        }, 500);
+          window.location.href = '/chamber';
+        }, 1000);
       }
     } catch (err: unknown) {
       const error = err as { message?: string };
