@@ -47,7 +47,7 @@ const VaultCard = ({ title, description, access, href, icon, isLocked }: VaultCa
   </Button>
        ) : isLocked ? (
   <Button size="sm" colorScheme="purple" variant="outline" disabled>
-    Unlock with Membership
+    Unlock with $11.11/month
   </Button>
 ) : (
   <Link href={href}>

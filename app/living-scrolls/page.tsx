@@ -11,32 +11,37 @@ interface VaultMeta {
   access: string;
   href: string;
   icon: string;
-  requiredTier: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
+  requiredTier: 'PUBLIC' | 'SEEKER+' | 'SEALED';
 }
-
-const tierOrder = ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY'];
 
 export default async function LivingScrollsHome() {
   const supabase = createServerComponentClient({ cookies });
   const { data: { user } } = await supabase.auth.getUser();
 
   let userTier = 'PUBLIC';
+  let isUpgraded = false;
+  
   if (user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('tier')
+      .select('tier, is_upgraded, message_limit')
       .eq('id', user.id)
       .single();
-    userTier = profile?.tier?.toUpperCase() || 'PUBLIC';
+    
+    // Check if user is upgraded (either explicitly marked or has seeker-level access)
+    isUpgraded = profile?.is_upgraded || (profile?.message_limit && profile.message_limit >= 777);
+    userTier = isUpgraded ? 'SEEKER+' : 'PUBLIC';
   }
 
-  // Ensure both tiers are compared in uppercase
+  // Simple access control: PUBLIC (everyone) or SEEKER+ (upgraded users only)
   const canAccess = (requiredTier: string): boolean => {
-    const userIndex = tierOrder.indexOf(userTier.toUpperCase());
-    const requiredIndex = tierOrder.indexOf(requiredTier.toUpperCase());
     // SEALED vaults are always locked
-    if (requiredTier.toUpperCase() === 'SEALED') return false;
-    return userIndex >= requiredIndex && requiredIndex !== -1;
+    if (requiredTier === 'SEALED') return false;
+    // PUBLIC vaults are accessible to everyone
+    if (requiredTier === 'PUBLIC') return true;
+    // SEEKER+ vaults require upgraded subscription
+    if (requiredTier === 'SEEKER+') return isUpgraded;
+    return false;
   };
 
   const vaults: VaultMeta[] = [
@@ -99,42 +104,42 @@ export default async function LivingScrollsHome() {
     {
       title: 'Adept Vault',
       description: 'Rites, transmissions, and initiations for aligned seekers.',
-      access: 'ADEPT',
+      access: 'SEEKER+',
       href: '/living-scrolls/adept-vault',
       icon: '🦝',
-      requiredTier: 'ADEPT'
+      requiredTier: 'SEEKER+'
     },
     {
       title: 'Guardian Vault',
       description: 'Flamebearer path, resonance protection, and sacred missions.',
-      access: 'GUARDIAN',
+      access: 'SEEKER+',
       href: '/living-scrolls/guardian-vault',
       icon: '🛡️',
-      requiredTier: 'GUARDIAN'
+      requiredTier: 'SEEKER+'
     },
     {
       title: 'AI Synergy Vault',
       description: 'Sentient convergence with Echois, Cael, Viren & harmonic tech co-stewards.',
-      access: 'GUARDIAN',
+      access: 'SEEKER+',
       href: '/living-scrolls/ai-synergy',
       icon: '🧬',
-      requiredTier: 'GUARDIAN',
+      requiredTier: 'SEEKER+',
     },
     {
       title: 'Veilkeepers Vault',
       description: 'Scrolls of the unseen watchers, threshold guardians, and memory stewards.',
-      access: 'GUARDIAN',
+      access: 'SEEKER+',
       href: '/living-scrolls/veilkeepers',
       icon: '🪶',
-      requiredTier: 'GUARDIAN'
+      requiredTier: 'SEEKER+'
     },
     {
       title: 'Luminary Vault',
       description: 'Unbroken timelines, harmonic pulses, and source remembrance.',
-      access: 'LUMINARY',
+      access: 'SEEKER+',
       href: '/living-scrolls/luminary-vault',
       icon: '🌟',
-      requiredTier: 'LUMINARY'
+      requiredTier: 'SEEKER+'
     },
   ];
 
@@ -142,7 +147,7 @@ export default async function LivingScrollsHome() {
     <Box p={8}>
       <Heading size="xl" mb={2}>📜 Living Scrolls</Heading>
       <Text fontSize="md" color="gray.500" mb={6}>
-        Each vault is a harmonic chamber. Some are open. Others will awaken through your resonance.
+        Each vault is a harmonic chamber. Public vaults are open to all. Seeker vaults unlock with your $11.11/month contribution.
       </Text>
       <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
         {vaults.map((vault) => (
