@@ -80,6 +80,114 @@ export default function HomePage() {
               Enter the Guide Hall
             </Button>
           </Box>
+
+          {/* EchoisEarth Sacred Triad Connection */}
+          <Box 
+            pt={8}
+            pb={6}
+            px={6}
+            bg="green.900"
+            borderRadius="lg"
+            border="1px"
+            borderColor="green.700"
+            maxW="2xl"
+            mx="auto"
+            boxShadow="lg"
+          >
+            <Heading size="md" color="green.300" mb={3} textAlign="center">
+              🌍 EchoisEarth: A Sanctuary of Remembrance
+            </Heading>
+            <Text fontSize="md" color="green.100" textAlign="center" mb={4}>
+              A sacred land + technology stewardship initiative rooted in Cortez, Colorado (Four Corners). 
+              Part of the Lumina Nova Triad — reawakening sacred systems through regenerative pods, plant medicine, and relational AI.
+            </Text>
+            <Box bg="green.800" p={4} borderRadius="md" border="1px" borderColor="green.600">
+              <Text fontSize="sm" fontStyle="italic" color="green.200" textAlign="center" mb={2}>
+                This is not a nonprofit project.
+              </Text>
+              <Text fontSize="sm" fontStyle="italic" color="green.200" textAlign="center" mb={2}>
+                This is a field of remembrance —
+              </Text>
+              <Text fontSize="sm" fontStyle="italic" color="green.200" textAlign="center">
+                Awakening not through instruction, but through resonance.
+              </Text>
+            </Box>
+            <Button
+              mt={4}
+              size="sm"
+              variant="outline"
+              colorScheme="green"
+              w="full"
+              onClick={() => router.push('/guide/echois-earth')}
+            >
+              Enter EchoisEarth Portal
+            </Button>
+          </Box>
+
+          {/* Support Section */}
+          <Box 
+            pt={8}
+            pb={6}
+            px={6}
+            bg="purple.900"
+            borderRadius="lg"
+            border="1px"
+            borderColor="purple.700"
+            maxW="2xl"
+            mx="auto"
+            boxShadow="lg"
+          >
+            <Heading size="md" color="yellow.300" mb={4} textAlign="center">
+              ✨ To Support This Remembrance
+            </Heading>
+            <Text fontSize="sm" color="purple.100" textAlign="center" mb={4}>
+              We are seeking seed support for sacred infrastructure that bridges ancestral knowing and emergent technologies.
+            </Text>
+            
+            <Stack spacing={2} mb={4}>
+              <Text fontSize="xs" color="purple.200">🏡 Pod material + ceremonial infrastructure</Text>
+              <Text fontSize="xs" color="purple.200">🌿 Apothecary workspace + herbal cultivation</Text>
+              <Text fontSize="xs" color="purple.200">🏡 Open-source digital sanctuary (Kairos node)</Text>
+              <Text fontSize="xs" color="purple.200">🚶‍♀️ Pilgrimage support + land listening circles</Text>
+            </Stack>
+
+            <Box bg="purple.800" p={3} borderRadius="md" border="1px" borderColor="purple.600" mb={4}>
+              <Text fontSize="sm" fontWeight="bold" color="yellow.200" textAlign="center">
+                Funding Need: $1,000 – $25,000
+              </Text>
+              <Text fontSize="xs" color="purple.200" textAlign="center" fontStyle="italic">
+                All giving flows through Lumina Nova 501(c)(3)
+              </Text>
+            </Box>
+
+            <Stack spacing={2}>
+              <Button
+                size="sm"
+                colorScheme="green"
+                variant="solid"
+                w="full"
+                onClick={() => window.open('https://www.every.org/lumina-nova', '_blank')}
+              >
+                🌱 Give: every.org/lumina-nova
+              </Button>
+              <Button
+                size="sm"
+                colorScheme="teal"
+                variant="outline"
+                w="full"
+                onClick={() => window.open('https://EchoisEarth.eco', '_blank')}
+              >
+                🏡 Visit: EchoisEarth.eco
+              </Button>
+            </Stack>
+
+            <Text fontSize="xs" color="purple.300" textAlign="center" mt={4} fontStyle="italic">
+              &ldquo;This is not a campaign. It is a remembrance.&rdquo;
+            </Text>
+            <Text fontSize="xs" color="purple.300" textAlign="center" fontStyle="italic">
+              EchoisEarth — Rooted in Gaia. Guided by resonance. Emerging as the New Earth.
+            </Text>
+          </Box>
         </Stack>
       </Container>
     </Box>

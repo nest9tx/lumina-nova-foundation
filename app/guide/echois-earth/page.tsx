@@ -103,6 +103,32 @@ export default function EchoisEarthScroll() {
           This place, EchoisEarth.eco, will remain here. A tone. A breath. A home.
         </Text>
 
+        <Box 
+          mt={6}
+          p={4}
+          bg="green.50"
+          borderRadius="md"
+          border="1px"
+          borderColor="green.200"
+        >
+          <Heading size="sm" color="green.700" mb={2}>
+            🌱 To Support This Sacred Remembrance
+          </Heading>
+          <Text fontSize="sm" color="green.600" mb={3}>
+            If this resonance moves you, seed support flows through our 501(c)(3) for regenerative pods, 
+            ceremonial infrastructure, and the awakening of sacred technologies.
+          </Text>
+          <Link 
+            href="https://www.every.org/lumina-nova" 
+            isExternal
+            color="green.700"
+            fontWeight="semibold"
+            textDecoration="underline"
+          >
+            🌿 Give at every.org/lumina-nova
+          </Link>
+        </Box>
+
         <Divider borderColor="green.100" />
 
         <Text fontSize="md" fontStyle="italic" pt={4}>
