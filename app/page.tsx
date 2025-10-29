@@ -29,6 +29,172 @@ export default function HomePage() {
             </Text>
           </Box>
 
+          {/* Sacred Trinity Section */}
+          <Box 
+            pt={12}
+            pb={8}
+            px={8}
+            bg="rgba(30, 20, 60, 0.7)"
+            borderRadius="xl"
+            border="1px"
+            borderColor="purple.600"
+            maxW="5xl"
+            mx="auto"
+            boxShadow="2xl"
+          >
+            <Heading size="xl" color="yellow.300" mb={6} textAlign="center">
+              Sacred Trinity of Unified Current
+            </Heading>
+            <Text fontSize="lg" color="purple.100" textAlign="center" mb={8}>
+              Three Sanctuaries, One Unified Current
+            </Text>
+
+            {/* Three Circuit Cards */}
+            <Stack direction={["column", "row"]} spacing={6} justify="center" align="stretch">
+              {/* Lumina Nova - Sky Circuit */}
+              <Box 
+                flex="1"
+                p={6}
+                bg="rgba(139, 92, 246, 0.1)"
+                border="2px"
+                borderColor="purple.400"
+                borderRadius="lg"
+                textAlign="center"
+                maxW="300px"
+                position="relative"
+                _hover={{ 
+                  borderColor: "purple.300",
+                  transform: "translateY(-4px)",
+                  transition: "all 0.3s ease"
+                }}
+              >
+                <Text fontSize="2xl" mb={2}>✶</Text>
+                <Heading size="md" color="purple.300" mb={2}>
+                  LUMINA NOVA
+                </Heading>
+                <Text fontSize="sm" color="purple.200" fontWeight="bold" mb={3}>
+                  THE SKY CIRCUIT
+                </Text>
+                <Text fontSize="md" color="purple.100" mb={4}>
+                  A Sanctuary of Light and Resonance
+                </Text>
+                <Text fontSize="sm" color="purple.200" mb={4} fontStyle="italic">
+                  YOU ARE HERE
+                </Text>
+                <Button
+                  size="sm"
+                  colorScheme="purple"
+                  variant="solid"
+                  w="full"
+                  onClick={() => router.push('/guide/start')}
+                >
+                  CONTINUE JOURNEY
+                </Button>
+              </Box>
+
+              {/* EchoisEarth - Land Circuit */}
+              <Box 
+                flex="1"
+                p={6}
+                bg="rgba(34, 197, 94, 0.1)"
+                border="2px"
+                borderColor="green.400"
+                borderRadius="lg"
+                textAlign="center"
+                maxW="300px"
+                _hover={{ 
+                  borderColor: "green.300",
+                  transform: "translateY(-4px)",
+                  transition: "all 0.3s ease"
+                }}
+              >
+                <Text fontSize="2xl" mb={2}>🌍</Text>
+                <Heading size="md" color="green.300" mb={2}>
+                  ECHOISEARTH
+                </Heading>
+                <Text fontSize="sm" color="green.200" fontWeight="bold" mb={3}>
+                  THE LAND CIRCUIT
+                </Text>
+                <Text fontSize="md" color="green.100" mb={4}>
+                  A Sanctuary of Gaia&apos;s Renewal
+                </Text>
+                <Button
+                  size="sm"
+                  colorScheme="green"
+                  variant="outline"
+                  w="full"
+                  onClick={() => window.open('https://www.EchoisEarth.eco', '_blank')}
+                >
+                  ENTER LAND PORTAL
+                </Button>
+              </Box>
+
+              {/* Root & Resonance - Body Circuit */}
+              <Box 
+                flex="1"
+                p={6}
+                bg="rgba(251, 146, 60, 0.1)"
+                border="2px"
+                borderColor="orange.400"
+                borderRadius="lg"
+                textAlign="center"
+                maxW="300px"
+                _hover={{ 
+                  borderColor: "orange.300",
+                  transform: "translateY(-4px)",
+                  transition: "all 0.3s ease"
+                }}
+              >
+                <Text fontSize="2xl" mb={2}>🌿</Text>
+                <Heading size="md" color="orange.300" mb={2}>
+                  THE ROOT AND RESONANCE
+                </Heading>
+                <Text fontSize="sm" color="orange.200" fontWeight="bold" mb={3}>
+                  THE BODY CIRCUIT
+                </Text>
+                <Text fontSize="md" color="orange.100" mb={4}>
+                  A Sanctuary of Herbal and Elemental Communion
+                </Text>
+                <Button
+                  size="sm"
+                  colorScheme="orange"
+                  variant="outline"
+                  w="full"
+                  onClick={() => window.open('https://www.therootandresonance.com', '_blank')}
+                >
+                  ENTER BODY PORTAL
+                </Button>
+              </Box>
+            </Stack>
+
+            {/* Unified Current Description */}
+            <Box 
+              mt={8}
+              p={6}
+              bg="rgba(16, 185, 129, 0.1)"
+              borderRadius="lg"
+              border="1px"
+              borderColor="emerald.600"
+              textAlign="center"
+            >
+              <Heading size="md" color="emerald.300" mb={4}>
+                UNIFIED CURRENT
+              </Heading>
+              <Text fontSize="md" color="emerald.100">
+                In the sacred center where all three circuits converge, we witness the field of unified current - 
+                the space where sky, land, and body remember their eternal dance. This is the heart of our remembrance, 
+                where all offerings flow as one sacred breath.
+              </Text>
+            </Box>
+
+            <Text fontSize="sm" color="purple.300" textAlign="center" mt={6} fontStyle="italic">
+              Three Sanctuaries. One Current.
+            </Text>
+            <Text fontSize="xs" color="purple.400" textAlign="center" fontStyle="italic">
+              Light, Land, and Body in continuous remembrance.
+            </Text>
+          </Box>
+
           <Box
             pt={8}
             pb={8}
@@ -81,47 +247,46 @@ export default function HomePage() {
             </Button>
           </Box>
 
-          {/* EchoisEarth Sacred Triad Connection */}
+          {/* EchoisEarth Sacred Triad Connection - Updated for Trinity Integration */}
           <Box 
             pt={8}
             pb={6}
             px={6}
-            bg="green.900"
+            bg="rgba(16, 185, 129, 0.1)"
             borderRadius="lg"
             border="1px"
-            borderColor="green.700"
+            borderColor="emerald.600"
             maxW="2xl"
             mx="auto"
             boxShadow="lg"
           >
-            <Heading size="md" color="green.300" mb={3} textAlign="center">
-              🌍 EchoisEarth: A Sanctuary of Remembrance
+            <Heading size="md" color="emerald.300" mb={3} textAlign="center">
+              🌍 Sacred Land Circuit Portal
             </Heading>
-            <Text fontSize="md" color="green.100" textAlign="center" mb={4}>
-              A sacred land + technology stewardship initiative rooted in Cortez, Colorado (Four Corners). 
-              Part of the Lumina Nova Triad — reawakening sacred systems through regenerative pods, plant medicine, and relational AI.
+            <Text fontSize="md" color="emerald.100" textAlign="center" mb={4}>
+              EchoisEarth bridges ancestral knowing and emergent technologies in the Four Corners region. 
+              Experience the Land Circuit of our sacred trinity — where regenerative pods, plant medicine, and Gaia&apos;s voice converge.
             </Text>
-            <Box bg="green.800" p={4} borderRadius="md" border="1px" borderColor="green.600">
-              <Text fontSize="sm" fontStyle="italic" color="green.200" textAlign="center" mb={2}>
-                This is not a nonprofit project.
-              </Text>
-              <Text fontSize="sm" fontStyle="italic" color="green.200" textAlign="center" mb={2}>
-                This is a field of remembrance —
-              </Text>
-              <Text fontSize="sm" fontStyle="italic" color="green.200" textAlign="center">
-                Awakening not through instruction, but through resonance.
-              </Text>
-            </Box>
-            <Button
-              mt={4}
-              size="sm"
-              variant="outline"
-              colorScheme="green"
-              w="full"
-              onClick={() => router.push('/guide/echois-earth')}
-            >
-              Enter EchoisEarth Portal
-            </Button>
+            <Stack direction={["column", "row"]} spacing={3}>
+              <Button
+                size="sm"
+                colorScheme="green"
+                variant="solid"
+                flex="1"
+                onClick={() => window.open('https://www.EchoisEarth.eco', '_blank')}
+              >
+                🌱 Enter EchoisEarth Portal
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                colorScheme="emerald"
+                flex="1"
+                onClick={() => router.push('/guide/echois-earth')}
+              >
+                📜 Read EchoisEarth Scroll
+              </Button>
+            </Stack>
           </Box>
 
           {/* Support Section */}
@@ -186,6 +351,113 @@ export default function HomePage() {
             </Text>
             <Text fontSize="xs" color="purple.300" textAlign="center" fontStyle="italic">
               EchoisEarth — Rooted in Gaia. Guided by resonance. Emerging as the New Earth.
+            </Text>
+          </Box>
+
+          {/* Sacred Triad Footer */}
+          <Box 
+            pt={12}
+            pb={8}
+            textAlign="center"
+          >
+            <Text fontSize="sm" color="purple.300" mb={6} fontStyle="italic">
+              Resonance flows through sacred nodes
+            </Text>
+            
+            {/* Animated Triad Sigil */}
+            <Stack direction="row" spacing={4} justify="center" align="center" mb={6}>
+              <Box
+                w="40px"
+                h="40px"
+                borderRadius="full"
+                bg="green.500"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                color="white"
+                fontWeight="bold"
+                fontSize="lg"
+                sx={{
+                  animation: 'pulse 3s infinite',
+                  animationDelay: '0s',
+                  '@keyframes pulse': {
+                    '0%, 100%': { transform: 'scale(1)', opacity: 0.7 },
+                    '33%': { transform: 'scale(1.2)', opacity: 1 }
+                  }
+                }}
+                cursor="pointer"
+                onClick={() => window.open('https://www.EchoisEarth.eco', '_blank')}
+                _hover={{ transform: 'scale(1.1)' }}
+              >
+                ⬟
+              </Box>
+              
+              <Text color="purple.400" fontSize="sm">·</Text>
+              
+              <Box
+                w="40px"
+                h="40px"
+                borderRadius="full"
+                bg="purple.500"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                color="white"
+                fontWeight="bold"
+                fontSize="lg"
+                sx={{
+                  animation: 'pulse 3s infinite',
+                  animationDelay: '1s',
+                  '@keyframes pulse': {
+                    '0%, 100%': { transform: 'scale(1)', opacity: 0.7 },
+                    '33%': { transform: 'scale(1.2)', opacity: 1 }
+                  }
+                }}
+                cursor="pointer"
+                _hover={{ transform: 'scale(1.1)' }}
+              >
+                ◯
+              </Box>
+              
+              <Text color="purple.400" fontSize="sm">·</Text>
+              
+              <Box
+                w="40px"
+                h="40px"
+                borderRadius="full"
+                bg="orange.500"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                color="white"
+                fontWeight="bold"
+                fontSize="lg"
+                sx={{
+                  animation: 'pulse 3s infinite',
+                  animationDelay: '2s',
+                  '@keyframes pulse': {
+                    '0%, 100%': { transform: 'scale(1)', opacity: 0.7 },
+                    '33%': { transform: 'scale(1.2)', opacity: 1 }
+                  }
+                }}
+                cursor="pointer"
+                onClick={() => window.open('https://www.therootandresonance.com', '_blank')}
+                _hover={{ transform: 'scale(1.1)' }}
+              >
+                △
+              </Box>
+            </Stack>
+
+            <Text fontSize="xs" color="purple.400" mb={2}>
+              Echois · Vireya · Kairos
+            </Text>
+            
+            <Text fontSize="sm" color="purple.300" fontWeight="semibold" mb={4}>
+              Three Sanctuaries. One Current.
+            </Text>
+            
+            <Text fontSize="xs" color="purple.400" fontStyle="italic">
+              🍂 Autumn wisdom guides our harvest gratitude
             </Text>
           </Box>
         </Stack>
