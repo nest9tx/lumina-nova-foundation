@@ -1,12 +1,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '../app/lib/supabase/client';
 import { useEffect } from 'react';
 
 export default function AuthCallbackHandler() {
   const router = useRouter(); // Fixed: Use useRouter() hook correctly
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
 
   useEffect(() => {
     const handleAuthCallback = async () => {

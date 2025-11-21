@@ -1,10 +1,8 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import { Database } from '@/types/supabase'; // adjust path if needed
+import { createClient } from '../app/lib/supabase/server';
 
 export async function getUserProfile() {
-  const supabase = createServerComponentClient<Database>({ cookies });
-
+  const supabase = await createClient();
+  
   const {
     data: { session },
   } = await supabase.auth.getSession();
