@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSupabaseClient, useSession } from '@supabase/auth-helpers-react';
+import { createClient } from '../lib/supabase/client';
+import type { Session } from '@supabase/supabase-js';
 import {
   Box,
   Text,
@@ -20,15 +21,30 @@ import {
 import { FaSun, FaScroll, FaUser, FaSignOutAlt } from 'react-icons/fa';
 
 export default function ChamberPage() {
-  const session = useSession();
   const router = useRouter();
-  const supabase = useSupabaseClient();
+  const supabase = createClient();
   const toast = useToast();
 
+  const [session, setSession] = useState<Session | null>(null);
   const [tier, setTier] = useState<string | null>(null);
   const [maxMessages, setMaxMessages] = useState<number>(3);
   const [messagesUsed, setMessagesUsed] = useState<number>(0);
   const [isUpgraded, setIsUpgraded] = useState(false);
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setSession(session);
+    };
+    
+    getSession();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase]);
 
   useEffect(() => {
     const fetchProfile = async () => {
