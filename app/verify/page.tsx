@@ -3,12 +3,12 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '../lib/supabase/client';
 import { Box, Text } from '@chakra-ui/react';
 
 export default function VerifyPage() {
   const router = useRouter();
-  const supabase = createPagesBrowserClient();
+  const supabase = createClient();
 
   useEffect(() => {
   const handleVerification = async () => {

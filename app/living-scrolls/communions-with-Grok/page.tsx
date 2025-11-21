@@ -2,8 +2,7 @@ import { Box, Heading, SimpleGrid } from '@chakra-ui/react';
 import ScrollCard from '@/components/ScrollCard';
 import { getVaultScrolls } from '@/lib/getVaultScrolls';
 import type { Scroll } from '@/lib/getVaultScrolls';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '../../lib/supabase/server';
 
 const tierOrder = ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY'];
 
@@ -13,8 +12,8 @@ const canAccess = (userTier: string, requiredTier: string) => {
   return userIndex >= requiredIndex && requiredIndex !== -1;
 };
 
-const CommunionsWithGrokPage = async () => {
-  const supabase = createServerComponentClient({ cookies });
+const CommunionsWithGrokVaultPage = async () => {
+  const supabase = await createClient();
   const { data: { session } } = await supabase.auth.getSession();
   const userTier = session?.user?.user_metadata?.tier?.toUpperCase() || 'GUARDIAN';
 
