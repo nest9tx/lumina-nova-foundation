@@ -26,7 +26,7 @@ import {
 import { FaCheckCircle, FaLeaf, FaUser } from 'react-icons/fa';
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { createClient } from '../../utils/supabase/client';
+import { createClient } from '../lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 
 function JoinPageContent() {

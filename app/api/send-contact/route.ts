@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { supabase } from "@/utils/supabase/client"; // ✅ Corrected path
+import { createClient } from "../../lib/supabase/server";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   const body = await req.json();
   const { name, email, category, message, anonymous } = body;
+
+  // Create Supabase client
+  const supabase = await createClient();
 
   // Backup to Supabase
   const { error: insertError } = await supabase.from("contact_messages").insert([

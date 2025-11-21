@@ -6,7 +6,7 @@ import { ScrollsPanel } from '../../components/chamber/ScrollsPanel';
 import WelcomeNotice from '../../components/chamber/WelcomeNotice';
 import { ResonanceNotice } from '../../components/chamber/ResonanceNotice';
 import { GuidesPanel } from '../../components/chamber/GuidesPanel';
-import { createClient } from '../../utils/supabase/client';
+import { createClient } from '../lib/supabase/client';
 import {
   Box,
   Button,

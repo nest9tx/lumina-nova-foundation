@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '../../utils/supabase/client';
+import { createClient } from '../lib/supabase/client';
 import {
   Box, Button, Input, Heading, Text, VStack, Container, Icon, useToast
 } from '@chakra-ui/react';
@@ -22,10 +22,21 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      // Debug environment variables
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error(`Missing environment variables: URL=${!!supabaseUrl}, KEY=${!!supabaseKey}`);
+      }
+
       if (isSignup) {
         const response = await supabase.auth.signUp({
           email,
-          password,          
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          }          
         });
 
         if (response.error) throw response.error;
@@ -58,6 +69,7 @@ export default function LoginPage() {
       }
     } catch (err: unknown) {
       const error = err as { message?: string };
+      console.error('Authentication error:', error);
       toast({
         title: "Error",
         description: error?.message || "Unexpected error occurred.",

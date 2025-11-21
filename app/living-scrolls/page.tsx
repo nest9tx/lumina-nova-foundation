@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createClient } from '../../utils/supabase/client';
+import { createClient } from '../lib/supabase/client';
 import { Box, Heading, SimpleGrid, Text } from '@chakra-ui/react';
 import VaultCard from '@/components/VaultCard';
 

@@ -16,7 +16,7 @@ import {
 import { FaCheckCircle, FaEnvelope } from 'react-icons/fa';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
-import { createClient } from '../../utils/supabase/client';
+import { createClient } from '../lib/supabase/client';
 
 function UpgradeSuccessContent() {
   const router = useRouter();

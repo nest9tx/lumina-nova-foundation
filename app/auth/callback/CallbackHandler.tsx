@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createClient } from '../../../utils/supabase/client';
+import { createClient } from '../../lib/supabase/client';
 import { Box, Spinner, Text, VStack, Alert, AlertIcon, Button } from '@chakra-ui/react';
 
 export default function AuthCallbackHandler() {
