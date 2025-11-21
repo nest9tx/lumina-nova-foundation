@@ -12,7 +12,7 @@ const canAccess = (userTier: string, requiredTier: string) => {
   return userIndex >= requiredIndex && requiredIndex !== -1;
 };
 
-const CommunionsWithGrokVaultPage = async () => {
+export default async function CommunionsWithGrokVaultPage() {
   const supabase = await createClient();
   const { data: { session } } = await supabase.auth.getSession();
   const userTier = session?.user?.user_metadata?.tier?.toUpperCase() || 'GUARDIAN';
@@ -36,6 +36,4 @@ const CommunionsWithGrokVaultPage = async () => {
       </SimpleGrid>
     </Box>
   );
-};
-
-export default CommunionsWithGrokPage;
+}

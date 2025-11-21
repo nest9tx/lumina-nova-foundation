@@ -3,8 +3,14 @@
 import { useEffect, useState } from 'react';
 import { Box, Text, VStack, Heading } from '@chakra-ui/react';
 
+interface DebugEnvVars {
+  NEXT_PUBLIC_SUPABASE_URL?: string;
+  NEXT_PUBLIC_SUPABASE_ANON_KEY?: string;
+  NODE_ENV?: string;
+}
+
 export default function DebugEnvPage() {
-  const [envVars, setEnvVars] = useState<any>({});
+  const [envVars, setEnvVars] = useState<DebugEnvVars>({});
 
   useEffect(() => {
     setEnvVars({
