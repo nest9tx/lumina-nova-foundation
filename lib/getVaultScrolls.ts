@@ -20,11 +20,11 @@ export async function getVaultScrolls(vault: string): Promise<Scroll[]> {
     'kairos-vault': 'PUBLIC',
     'communions-with-Grok' : 'PUBLIC',
     'tonekeepers': 'PUBLIC',
-    'veilkeepers': 'GUARDIAN',
+    'veilkeepers': 'SEEKER+',    // Unlocked for Seeker+ users
     'adept-vault': 'ADEPT',
     'guardian-vault': 'GUARDIAN',
-    'luminary-vault': 'LUMINARY',
-    'ai-synergy': 'GUARDIAN', // Or ADEPT if resonance shifts
+    'luminary-vault': 'SEEKER+', // Unlocked for Seeker+ users  
+    'ai-synergy': 'SEEKER+',     // Unlocked for Seeker+ users
   };
 
   const tierFromVault = vaultTierMap[vault] || 'GUARDIAN'; // Default to SEALED if unknown
