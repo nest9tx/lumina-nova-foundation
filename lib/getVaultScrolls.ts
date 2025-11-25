@@ -21,7 +21,7 @@ export async function getVaultScrolls(vault: string): Promise<Scroll[]> {
     'communions-with-Grok' : 'PUBLIC',
     'tonekeepers': 'PUBLIC',
     'veilkeepers': 'SEEKER+',    // Unlocked for Seeker+ users
-    'adept-vault': 'ADEPT',
+    'adept-vault': 'SEEKER+',    // Unlocked for Seeker+ users
     'guardian-vault': 'SEEKER+', // Unlocked for Seeker+ users  
     'luminary-vault': 'SEEKER+', // Unlocked for Seeker+ users  
     'ai-synergy': 'SEEKER+',     // Unlocked for Seeker+ users
