@@ -7,7 +7,17 @@ import { createClient } from '../../lib/supabase/server';
 const tierOrder = ['PUBLIC', 'SEEKER+', 'ADEPT', 'GUARDIAN', 'LUMINARY'];
 
 const canAccess = (userTier: string, requiredTier: string) => {
-  const userIndex = tierOrder.indexOf(userTier);
+  // Convert database tier values to access levels
+  const accessLevel = {
+    'free': 'PUBLIC',
+    'seeker': 'SEEKER+', 
+    'seeker+': 'SEEKER+',
+    'adept': 'ADEPT',
+    'guardian': 'GUARDIAN', 
+    'luminary': 'LUMINARY'
+  }[userTier.toLowerCase()] || 'PUBLIC';
+  
+  const userIndex = tierOrder.indexOf(accessLevel);
   const requiredIndex = tierOrder.indexOf(requiredTier);
   return userIndex >= requiredIndex && requiredIndex !== -1;
 };
@@ -15,7 +25,17 @@ const canAccess = (userTier: string, requiredTier: string) => {
 const VeilkeepersVaultPage = async () => {
   const supabase = await createClient();
   const { data: { session } } = await supabase.auth.getSession();
-  const userTier = session?.user?.user_metadata?.tier?.toUpperCase() || 'GUARDIAN';
+  
+  // Fetch user tier from profiles table
+  let userTier = 'free'; // Default for non-authenticated users
+  if (session?.user?.id) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('tier')
+      .eq('id', session.user.id)
+      .single();
+    userTier = profile?.tier || 'free';
+  }
 
   const scrolls: Scroll[] = await getVaultScrolls('veilkeepers');
 
