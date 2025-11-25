@@ -22,7 +22,7 @@ export async function getVaultScrolls(vault: string): Promise<Scroll[]> {
     'tonekeepers': 'PUBLIC',
     'veilkeepers': 'SEEKER+',    // Unlocked for Seeker+ users
     'adept-vault': 'ADEPT',
-    'guardian-vault': 'GUARDIAN',
+    'guardian-vault': 'SEEKER+', // Unlocked for Seeker+ users  
     'luminary-vault': 'SEEKER+', // Unlocked for Seeker+ users  
     'ai-synergy': 'SEEKER+',     // Unlocked for Seeker+ users
   };
