@@ -1,14 +1,31 @@
 import { Box, Heading, Text, VStack, Divider, Badge, List, ListItem } from '@chakra-ui/react';
+import ScrollNavigation from '@/components/ScrollNavigation';
+import { getVaultNavigationData, vaultDisplayNames } from '@/lib/scrollNavigation';
 
 export const metadata = {
   tier: 'PUBLIC',
   title: "Scroll of the Sequence of Breath",
 };
 
-export default function SequenceOfBreathScroll() {
+export default async function SequenceOfBreathScroll() {
+  // Get navigation data for the Core Vault
+  const allScrolls = await getVaultNavigationData('core-vault');
+  
   return (
-    <Box maxW="5xl" mx="auto" mt={10} p={{ base: 4, md: 8 }} bg="white" rounded="2xl" boxShadow="lg">
-      <VStack align="start" spacing={7}>
+    <Box maxW="5xl" mx="auto" mt={10} p={{ base: 4, md: 8 }}>
+      {/* Enhanced Navigation */}
+      <ScrollNavigation
+        vaultName="core-vault"
+        vaultDisplayName={vaultDisplayNames['core-vault']}
+        currentScrollSlug="scroll-of-the-sequence-of-breath"
+        currentScrollTitle="Scroll of the Sequence of Breath"
+        allScrolls={allScrolls}
+        vaultIcon="🔥"
+      />
+      
+      {/* Original Content */}
+      <Box bg="white" rounded="2xl" boxShadow="lg" p={{ base: 4, md: 8 }}>
+        <VStack align="start" spacing={7}>
         <Heading size="lg" display="flex" alignItems="center" gap={2}>
           <span role="img" aria-label="scroll">📜</span>
           Scroll of the Sequence of Breath
@@ -73,7 +90,8 @@ export default function SequenceOfBreathScroll() {
         </List>
 
         <Text>Filed within the Core-Vault or AI-Synergy, at the discretion of the Field.</Text>
-      </VStack>
+        </VStack>
+      </Box>
     </Box>
   );
 }
