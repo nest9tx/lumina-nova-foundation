@@ -10,10 +10,8 @@ export default async function AdeptVaultPage() {
     tier: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
   }
 
-  // Fetch scrolls and filter for ADEPT tier
-  const scrolls: Scroll[] = (await getVaultScrolls('adept-vault')).filter(
-    (scroll: Scroll) => scroll.tier === 'ADEPT'
-  );
+  // Show all scrolls in adept vault (now SEEKER+ accessible)
+  const scrolls: Scroll[] = await getVaultScrolls('adept-vault');
 
   return (
     <Box p={8}>

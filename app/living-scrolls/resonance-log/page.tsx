@@ -10,10 +10,8 @@ export default async function ResonanceLogVaultPage() {
     tier: 'PUBLIC' | 'SEEKER+' | 'ADEPT' | 'GUARDIAN' | 'LUMINARY' | 'SEALED';
   }
 
-  // Only show PUBLIC scrolls
-  const scrolls: Scroll[] = (await getVaultScrolls('resonance-log')).filter(
-    (scroll) => scroll.tier === 'PUBLIC'
-  );
+  // Show all scrolls in resonance log
+  const scrolls: Scroll[] = await getVaultScrolls('resonance-log');
 
   return (
     <Box p={8}>
