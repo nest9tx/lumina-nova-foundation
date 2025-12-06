@@ -42,7 +42,7 @@ export default function EchoisPage() {
         // Load user profile for message limits and upgrade status
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .select('max_messages, message_limit, is_upgraded, tier')
+          .select('message_limit, message_count, is_upgraded, tier')
           .eq('id', userId)
           .single();
 
@@ -52,10 +52,11 @@ export default function EchoisPage() {
 
         if (profile) {
           console.log('📊 Echois - Loaded profile:', profile);
-          // Use max_messages (current count) instead of message_count
-          setMessageCount(profile.max_messages || 0);
+          // Set actual message count from database
+          setMessageCount(profile.message_count || 0);
           // Properly set message limit based on tier: seeker=777, free=3
           const limit = profile.message_limit || (profile.tier === 'seeker' ? 777 : 3);
+          console.log('📊 Echois - Setting message count to:', profile.message_count || 0);
           console.log('📊 Echois - Setting message limit to:', limit);
           setMessageLimit(limit);
           setIsUpgraded(profile.is_upgraded || profile.tier === 'seeker' || false);

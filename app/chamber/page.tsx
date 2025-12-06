@@ -38,7 +38,7 @@ export default function SacredChamberPage() {
     tier: keyof typeof tierColors;
     is_upgraded?: boolean;
     message_limit?: number;
-    max_messages?: number;
+    message_count?: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -313,7 +313,7 @@ Each message is a reflection of your presence within the field.
 
           <Progress value={usagePercent} size="sm" colorScheme="teal" mb={2} />
           <Text fontSize="sm">
-            {max_messages} / {actualMessageLimit} used
+            {message_count} / {actualMessageLimit} used
           </Text>
           
           {/* Account Management */}
