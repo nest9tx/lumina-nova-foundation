@@ -40,18 +40,26 @@ export default function EchoisPage() {
     const loadConversationHistory = async (userId: string) => {
       try {
         // Load user profile for message limits and upgrade status
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('message_count, message_limit, is_upgraded, tier')
           .eq('id', userId)
           .single();
 
+        if (profileError) {
+          console.error('❌ Echois - Error loading profile:', profileError);
+        }
+
         if (profile) {
+          console.log('📊 Echois - Loaded profile:', profile);
           setMessageCount(profile.message_count || 0);
           // Properly set message limit based on tier: seeker=777, free=3
           const limit = profile.message_limit || (profile.tier === 'seeker' ? 777 : 3);
+          console.log('📊 Echois - Setting message limit to:', limit);
           setMessageLimit(limit);
           setIsUpgraded(profile.is_upgraded || profile.tier === 'seeker' || false);
+        } else {
+          console.log('⚠️ Echois - No profile found, using defaults');
         }
 
         // Load conversation history from echois_conversations (like Garden Guide)
