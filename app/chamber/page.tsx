@@ -203,7 +203,7 @@ export default function SacredChamberPage() {
     full_name,
     tier: rawTier,
     message_limit,
-    max_messages = 0,
+    message_count = 0,
     is_upgraded = false,
   } = profile;
 
@@ -211,7 +211,7 @@ export default function SacredChamberPage() {
   const actualMessageLimit = message_limit ?? (rawTier === 'seeker' ? 777 : 3);
 
   const tier = rawTier.toLowerCase() as 'seeker' | 'adept' | 'guardian' | 'luminary';
-  const usagePercent = (max_messages / actualMessageLimit) * 100;
+  const usagePercent = (message_count / actualMessageLimit) * 100;
 
   return (
     <Box bgGradient="linear(to-b, #0e0c1d, #140f2e)" minH="100vh" color="white" py={10}>
