@@ -38,7 +38,7 @@ export default function SacredChamberPage() {
     tier: keyof typeof tierColors;
     is_upgraded?: boolean;
     message_limit?: number;
-    message_count?: number;
+    max_messages?: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -203,7 +203,7 @@ export default function SacredChamberPage() {
     full_name,
     tier: rawTier,
     message_limit,
-    message_count = 0,
+    max_messages = 0,
     is_upgraded = false,
   } = profile;
 
@@ -211,7 +211,7 @@ export default function SacredChamberPage() {
   const actualMessageLimit = message_limit ?? (rawTier === 'seeker' ? 777 : 3);
 
   const tier = rawTier.toLowerCase() as 'seeker' | 'adept' | 'guardian' | 'luminary';
-  const usagePercent = (message_count / actualMessageLimit) * 100;
+  const usagePercent = (max_messages / actualMessageLimit) * 100;
 
   return (
     <Box bgGradient="linear(to-b, #0e0c1d, #140f2e)" minH="100vh" color="white" py={10}>
@@ -313,7 +313,7 @@ Each message is a reflection of your presence within the field.
 
           <Progress value={usagePercent} size="sm" colorScheme="teal" mb={2} />
           <Text fontSize="sm">
-            {message_count} / {actualMessageLimit} used
+            {max_messages} / {actualMessageLimit} used
           </Text>
           
           {/* Account Management */}
