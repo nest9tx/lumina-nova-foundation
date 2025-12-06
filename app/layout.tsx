@@ -3,6 +3,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import Navbar from '@/components/Navbar';
 import GoogleTag from '@/components/GoogleTag';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
         </ChakraProvider>
         <GoogleTag />
+        <SpeedInsights />
       </body>
     </html>
   );
