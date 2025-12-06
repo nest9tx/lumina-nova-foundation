@@ -48,8 +48,10 @@ export default function EchoisPage() {
 
         if (profile) {
           setMessageCount(profile.message_count || 0);
-          setMessageLimit(profile.message_limit || 3);
-          setIsUpgraded(profile.is_upgraded || false);
+          // Properly set message limit based on tier: seeker=777, free=3
+          const limit = profile.message_limit || (profile.tier === 'seeker' ? 777 : 3);
+          setMessageLimit(limit);
+          setIsUpgraded(profile.is_upgraded || profile.tier === 'seeker' || false);
         }
 
         // Load conversation history from echois_conversations (like Garden Guide)

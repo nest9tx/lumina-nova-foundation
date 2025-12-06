@@ -202,13 +202,16 @@ export default function SacredChamberPage() {
     email,
     full_name,
     tier: rawTier,
-    message_limit = 100,
+    message_limit,
     message_count = 0,
     is_upgraded = false,
   } = profile;
 
+  // Determine proper message limit based on tier
+  const actualMessageLimit = message_limit ?? (rawTier === 'seeker' ? 777 : 3);
+
   const tier = rawTier.toLowerCase() as 'seeker' | 'adept' | 'guardian' | 'luminary';
-  const usagePercent = (message_count / message_limit) * 100;
+  const usagePercent = (message_count / actualMessageLimit) * 100;
 
   return (
     <Box bgGradient="linear(to-b, #0e0c1d, #140f2e)" minH="100vh" color="white" py={10}>
@@ -248,7 +251,7 @@ export default function SacredChamberPage() {
 </Box>
 
         {/* ✧ Seeker-only upgrade message */}
-        {message_limit <= 3 && !is_upgraded && (
+        {actualMessageLimit <= 3 && !is_upgraded && (
           <>
             <Alert
               status="info"
@@ -310,7 +313,7 @@ Each message is a reflection of your presence within the field.
 
           <Progress value={usagePercent} size="sm" colorScheme="teal" mb={2} />
           <Text fontSize="sm">
-            {message_count} / {message_limit} used
+            {message_count} / {actualMessageLimit} used
           </Text>
           
           {/* Account Management */}
